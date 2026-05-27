@@ -9,9 +9,8 @@ class SnackConfig {
     var dismissOnBackPress: Boolean = false
     var anchorViewId: Int? = null
     var position: SnackPosition = SnackPosition.Bottom
-
-    // call-site only — no default
     var type: SnackType? = null
+    var showCancelAction: Boolean = true
 
     internal var action: Pair<String, () -> Unit>? = null
     fun action(label: String, block: () -> Unit) { action = label to block }

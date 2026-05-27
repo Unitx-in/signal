@@ -7,7 +7,7 @@ import com.unitx.signal_core.launcher.Signal
 class MyApp : Application() {
     override fun onCreate() {
         super.onCreate()
-        Signal.init(this) {
+        Signal.createCore(this) {
             snack {
                 duration = 2500L
                 dismissOnBackPress = false

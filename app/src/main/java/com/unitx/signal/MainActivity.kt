@@ -2,6 +2,7 @@ package com.unitx.signal
 
 import android.R.attr.type
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -58,7 +59,11 @@ fun TestScreen() {
         }) { Text("Success Snack") }
 
         Button(onClick = {
-            Signal.snack("Something went wrong") { type = SnackType.Error }
+            Signal.snack("File uploaded") {
+                type = SnackType.Error
+                showCancelAction = false
+                action("Cancel") { Log.i("Snackbar", "View Action Pressed") }
+            }
         }) { Text("Error Snack") }
 
         Button(onClick = {

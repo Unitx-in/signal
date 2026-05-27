@@ -1,33 +1,32 @@
 package com.unitx.signal_core.core
 
-import android.app.Activity
 import android.app.Application
-import android.os.Bundle
-import androidx.fragment.app.FragmentActivity
+import com.unitx.signal_core.common.SignalQueue
+import com.unitx.signal_core.common.config.SignalConfig
+import com.unitx.signal_core.handler.DialogHandler
+import com.unitx.signal_core.handler.SnackHandler
+import com.unitx.signal_core.handler.ToastHandler
+import com.unitx.signal_core.handler.snack.SnackAnimator
+import com.unitx.signal_core.handler.snack.SnackDismissScheduler
+import com.unitx.signal_core.handler.snack.SnackViewManager
+import com.unitx.signal_core.provider.ActivityProvider
 
-class SignalCore(app: Application) : Application.ActivityLifecycleCallbacks {
+class SignalCore(
+    app: Application,
+    config: SignalConfig
+) {
 
-    private var foregroundActivity: Activity? = null
+    internal val activityProvider = ActivityProvider(app)
+    private val queue = SignalQueue()
 
-    init {
-        app.registerActivityLifecycleCallbacks(this)
-        android.util.Log.d("Signal", "ActivityLifecycleCallbacks registered on: $app")
-    }
-
-    fun current(): Activity? = foregroundActivity
-
-    override fun onActivityResumed(activity: Activity) {
-        android.util.Log.d("Signal", "onActivityResumed: $activity")
-        foregroundActivity = activity
-    }
-
-    override fun onActivityPaused(activity: Activity) {
-        if (foregroundActivity == activity) foregroundActivity = null
-    }
-
-    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
-    override fun onActivityStarted(activity: Activity) {}
-    override fun onActivityStopped(activity: Activity) {}
-    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
-    override fun onActivityDestroyed(activity: Activity) {}
+    internal val toastHandler = ToastHandler(activityProvider, config.toastConfig)
+    internal val snackHandler = SnackHandler(
+        activityProvider = activityProvider,
+        defaultConfig = config.snackConfig,
+        queue = queue,
+        viewManager = SnackViewManager(activityProvider),
+        animator = SnackAnimator(),
+        scheduler = SnackDismissScheduler()
+    )
+    internal val dialogHandler = DialogHandler(activityProvider, config.dialogConfig)
 }

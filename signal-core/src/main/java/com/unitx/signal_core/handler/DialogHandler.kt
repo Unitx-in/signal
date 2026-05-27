@@ -1,27 +1,22 @@
 package com.unitx.signal_core.handler
 
 import android.app.AlertDialog
-import com.unitx.signal_core.common.SignalHandler
 import com.unitx.signal_core.common.config.DialogConfig
-import com.unitx.signal_core.core.SignalCore
+import com.unitx.signal_core.provider.ActivityProvider
 
 class DialogHandler(
-    private val host: SignalCore,
+    private val activityProvider: ActivityProvider,
     private val defaultConfig: DialogConfig
-) : SignalHandler {
+) {
 
     private var currentDialog: AlertDialog? = null
 
-    override val isShowing: Boolean
+    val isShowing: Boolean
         get() = currentDialog?.isShowing == true
 
     fun show(block: DialogConfig.() -> Unit) {
-        val config = DialogConfig().apply {
-            type = defaultConfig.type
-            cancelable = defaultConfig.cancelable
-        }.apply(block)
-
-        val activity = host.current() ?: return
+        val config = DialogConfig().apply(block)
+        val activity = activityProvider.current() ?: return
 
         currentDialog?.dismiss()
         currentDialog = AlertDialog.Builder(activity)
@@ -41,16 +36,13 @@ class DialogHandler(
             }
             .create()
             .also { dialog ->
-                // dismiss safely if activity is finishing
                 if (!activity.isFinishing && !activity.isDestroyed) {
                     dialog.show()
                 }
             }
     }
 
-    override fun show() {}
-
-    override fun dismiss() {
+    fun dismiss() {
         currentDialog?.dismiss()
         currentDialog = null
     }

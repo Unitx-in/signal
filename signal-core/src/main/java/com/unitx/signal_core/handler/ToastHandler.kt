@@ -3,10 +3,10 @@ package com.unitx.signal_core.handler
 import android.widget.Toast
 import com.unitx.signal_core.common.SignalDuration
 import com.unitx.signal_core.common.config.ToastConfig
-import com.unitx.signal_core.core.SignalCore
+import com.unitx.signal_core.provider.ActivityProvider
 
 class ToastHandler(
-    private val host: SignalCore,
+    private val activityProvider: ActivityProvider,
     private val defaultConfig: ToastConfig
 ) {
 
@@ -15,12 +15,8 @@ class ToastHandler(
     fun show(message: String) = show(message) {}
 
     fun show(message: String, block: ToastConfig.() -> Unit) {
-        val config = ToastConfig().apply {
-            duration = defaultConfig.duration
-            type = defaultConfig.type
-        }.apply(block)
-
-        val activity = host.current() ?: return
+        val config = ToastConfig().apply(block)
+        val activity = activityProvider.current() ?: return
 
         currentToast?.cancel()
         currentToast = Toast.makeText(
