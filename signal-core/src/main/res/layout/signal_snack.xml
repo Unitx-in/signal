@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:visibility="gone"
+    android:orientation="horizontal"
+    tools:visibility="visible"
+    android:id="@+id/s_ll_snack_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:layout_margin="14dp"
+    android:background="@android:color/white"
+    android:elevation="6dp"
+    android:gravity="center_vertical"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        android:id="@+id/s_snack_icon"
+        android:layout_width="48dp"
+        android:layout_height="match_parent"
+        android:padding="14dp"
+        android:contentDescription="@string/content_snack_icon"
+        tools:src="@tools:sample/avatars"
+        android:background="@color/signalGreen"
+        />
+
+    <Space
+        android:layout_width="12dp"
+        android:layout_height="0dp" />
+
+    <TextView
+        android:id="@+id/s_snack_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="#000000"
+        android:layout_marginVertical="14dp"
+        android:textSize="16sp"
+        tools:text="@tools:sample/lorem"/>
+
+    <ImageView
+        android:id="@+id/s_snack_action_cancel"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_snack_close"
+        android:layout_marginHorizontal="14dp"
+        android:contentDescription="@string/content_snack_cancel" />
+
+</LinearLayout>

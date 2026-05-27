@@ -1,17 +1,28 @@
 package com.unitx.signal
 
+import android.R.attr.type
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.unitx.signal.ui.theme.SignalTheme
+import com.unitx.signal_core.common.SnackType
+import com.unitx.signal_core.launcher.Signal
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,10 +31,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             SignalTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding)
+                    ) {
+                        TestScreen()
+                    }
                 }
             }
         }
@@ -31,17 +45,26 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun TestScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(onClick = {
+            Signal.snack("Item saved successfully") { type = SnackType.Success }
+        }) { Text("Success Snack") }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    SignalTheme {
-        Greeting("Android")
+        Button(onClick = {
+            Signal.snack("Something went wrong") { type = SnackType.Error }
+        }) { Text("Error Snack") }
+
+        Button(onClick = {
+            Signal.snack("First message") { type = SnackType.Info }
+            Signal.snack("Second message") { type = SnackType.Warning }
+            Signal.snack("Third message") { type = SnackType.Success }
+        }) { Text("Test Queue") }
     }
 }

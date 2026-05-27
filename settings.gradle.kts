@@ -24,4 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Signal"
 include(":app")
- 
+include(":signal-core")
