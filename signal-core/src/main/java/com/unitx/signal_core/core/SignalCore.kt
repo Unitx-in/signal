@@ -22,7 +22,7 @@ class SignalCore(
     internal val toastHandler = ToastHandler(activityProvider, config.toastConfig)
     internal val snackHandler = SnackHandler(
         activityProvider = activityProvider,
-        defaultConfig = config.snackConfig,
+        globalConfig = config.snackConfig,
         queue = queue,
         viewManager = SnackViewManager(activityProvider),
         animator = SnackAnimator(),

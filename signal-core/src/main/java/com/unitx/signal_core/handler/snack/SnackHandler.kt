@@ -7,14 +7,14 @@ import com.unitx.signal_core.provider.ActivityProvider
 
 class SnackHandler(
     private val activityProvider: ActivityProvider,
-    private val defaultConfig: SnackConfig,
+    private val globalConfig: SnackConfig,
     private val queue: SignalQueue,
     private val viewManager: SnackViewManager,
     private val animator: SnackAnimator,
     private val scheduler: SnackDismissScheduler
 ) {
 
-    private var currentConfig: SnackConfig = defaultConfig
+    private var currentConfig: SnackConfig = globalConfig.copy()
     private val destroyListener: (Activity) -> Unit = { release() }
 
     init {
@@ -27,7 +27,7 @@ class SnackHandler(
     fun show(message: String) = show(message) {}
 
     fun show(message: String, block: SnackConfig.() -> Unit) {
-        val config = defaultConfig.copy().apply(block)
+        val config = globalConfig.copy().apply(block)
         config.message = message
 
         queue.enqueue(
@@ -37,14 +37,14 @@ class SnackHandler(
         )
     }
 
-    private fun display(config: SnackConfig) {
-        currentConfig = config
-        val attached = viewManager.attach(config, onDismiss = { dismiss() })
+    private fun display(localConfig: SnackConfig) {
+        currentConfig = localConfig
+        val attached = viewManager.attach(localConfig, onDismiss = { dismiss() })
         if (!attached) return
 
         val container = viewManager.container ?: return
-        animator.slideIn(container, config.position)
-        scheduler.schedule(config.duration) { dismiss() }
+        animator.slideIn(container, localConfig.position)
+        scheduler.schedule(localConfig.duration) { dismiss() }
     }
 
     fun dismiss() {
