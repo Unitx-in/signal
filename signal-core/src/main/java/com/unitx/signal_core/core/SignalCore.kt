@@ -4,7 +4,7 @@ import android.app.Application
 import com.unitx.signal_core.queue.SignalQueue
 import com.unitx.signal_core.common.config.SignalConfig
 import com.unitx.signal_core.handler.DialogHandler
-import com.unitx.signal_core.handler.SnackHandler
+import com.unitx.signal_core.handler.snack.SnackHandler
 import com.unitx.signal_core.handler.ToastHandler
 import com.unitx.signal_core.handler.snack.SnackAnimator
 import com.unitx.signal_core.handler.snack.SnackDismissScheduler

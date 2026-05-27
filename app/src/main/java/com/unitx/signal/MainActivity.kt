@@ -67,7 +67,7 @@ fun TestScreen() {
             Signal.snack("First message") { type = SnackType.Info }
             Signal.snack("Second message") {
                 type = SnackType.Warning
-                position = SnackPosition.Top
+                position = SnackPosition.Bottom
             }
             Signal.snack("Third message") { type = SnackType.Success }
         }) { Text("Test Queue") }

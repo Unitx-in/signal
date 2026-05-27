@@ -11,7 +11,7 @@ class MyApp : Application() {
             snack {
                 duration = 2500L
                 dismissOnBackPress = false
-                position = SnackPosition.Bottom
+                position = SnackPosition.Top
             }
         }
     }

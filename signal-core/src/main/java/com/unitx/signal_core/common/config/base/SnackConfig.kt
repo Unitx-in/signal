@@ -14,4 +14,15 @@ class SnackConfig {
 
     internal var action: Pair<String, () -> Unit>? = null
     fun action(label: String, block: () -> Unit) { action = label to block }
+
+    internal fun copy(): SnackConfig = SnackConfig().also {
+        it.message = message
+        it.duration = duration
+        it.dismissOnBackPress = dismissOnBackPress
+        it.anchorViewId = anchorViewId
+        it.position = position
+        it.type = type
+        it.showCancelAction = showCancelAction
+        it.action = action
+    }
 }

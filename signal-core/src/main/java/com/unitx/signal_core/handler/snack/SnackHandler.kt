@@ -1,11 +1,8 @@
-package com.unitx.signal_core.handler
+package com.unitx.signal_core.handler.snack
 
 import android.app.Activity
 import com.unitx.signal_core.queue.SignalQueue
 import com.unitx.signal_core.common.config.base.SnackConfig
-import com.unitx.signal_core.handler.snack.SnackAnimator
-import com.unitx.signal_core.handler.snack.SnackDismissScheduler
-import com.unitx.signal_core.handler.snack.SnackViewManager
 import com.unitx.signal_core.provider.ActivityProvider
 
 class SnackHandler(
@@ -17,6 +14,7 @@ class SnackHandler(
     private val scheduler: SnackDismissScheduler
 ) {
 
+    private var currentConfig: SnackConfig = defaultConfig
     private val destroyListener: (Activity) -> Unit = { release() }
 
     init {
@@ -29,7 +27,7 @@ class SnackHandler(
     fun show(message: String) = show(message) {}
 
     fun show(message: String, block: SnackConfig.() -> Unit) {
-        val config = SnackConfig().apply(block)
+        val config = defaultConfig.copy().apply(block)
         config.message = message
 
         queue.enqueue(
@@ -40,6 +38,7 @@ class SnackHandler(
     }
 
     private fun display(config: SnackConfig) {
+        currentConfig = config
         val attached = viewManager.attach(config, onDismiss = { dismiss() })
         if (!attached) return
 
@@ -51,7 +50,7 @@ class SnackHandler(
     fun dismiss() {
         scheduler.cancel()
         val container = viewManager.container ?: run { queue.next(); return }
-        animator.slideOut(container, defaultConfig.position) {
+        animator.slideOut(container, currentConfig.position) {
             queue.next()
         }
     }
