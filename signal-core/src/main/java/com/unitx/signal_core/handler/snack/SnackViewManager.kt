@@ -25,10 +25,6 @@ class SnackViewManager(
     val isShowing: Boolean
         get() = binding?.snackContainer?.visibility == View.VISIBLE
 
-    /**
-     * Inflates and attaches the snack view if not already present, then binds [config] to it.
-     * Returns false if the activity or root view is unavailable.
-     */
     fun attach(config: SnackConfig, onDismiss: () -> Unit): Boolean {
         val activity = activityProvider.current() ?: return false
         val rootView = activity.window.decorView.rootView as? ViewGroup ?: return false
@@ -39,35 +35,36 @@ class SnackViewManager(
                 rootView,
                 false
             )
-
-            val params = FrameLayout.LayoutParams(
+            rootView.addView(binding!!.root, FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                gravity = when (config.position) {
-                    SnackPosition.Bottom -> Gravity.BOTTOM
-                    SnackPosition.Top -> Gravity.TOP
-                }
-            }
-
-            rootView.addView(binding!!.root, params)
-            applyWindowInsets(config.position)
+            ))
         }
 
+        applyPosition(config.position)
         bind(config, onDismiss)
         return true
     }
 
-    private fun applyWindowInsets(position: SnackPosition) {
+    private fun applyPosition(position: SnackPosition) {
         val root = binding?.root ?: return
+        val layoutParams = root.layoutParams as FrameLayout.LayoutParams
+        layoutParams.gravity = when (position) {
+            SnackPosition.Bottom -> Gravity.BOTTOM
+            SnackPosition.Top -> Gravity.TOP
+        }
+        root.layoutParams = layoutParams
+
         ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            val layoutParams = view.layoutParams as FrameLayout.LayoutParams
+            val params = view.layoutParams as FrameLayout.LayoutParams
+            params.topMargin = 0
+            params.bottomMargin = 0
             when (position) {
-                SnackPosition.Bottom -> layoutParams.bottomMargin = systemBars.bottom
-                SnackPosition.Top -> layoutParams.topMargin = systemBars.top
+                SnackPosition.Bottom -> params.bottomMargin = systemBars.bottom
+                SnackPosition.Top -> params.topMargin = systemBars.top
             }
-            view.layoutParams = layoutParams
+            view.layoutParams = params
             insets
         }
         ViewCompat.requestApplyInsets(root)

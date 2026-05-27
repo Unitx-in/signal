@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.unitx.signal.ui.theme.SignalTheme
+import com.unitx.signal_core.common.type.SnackPosition
 import com.unitx.signal_core.common.type.SnackType
 import com.unitx.signal_core.launcher.Signal
 
@@ -64,7 +65,10 @@ fun TestScreen() {
 
         Button(onClick = {
             Signal.snack("First message") { type = SnackType.Info }
-            Signal.snack("Second message") { type = SnackType.Warning }
+            Signal.snack("Second message") {
+                type = SnackType.Warning
+                position = SnackPosition.Top
+            }
             Signal.snack("Third message") { type = SnackType.Success }
         }) { Text("Test Queue") }
     }
