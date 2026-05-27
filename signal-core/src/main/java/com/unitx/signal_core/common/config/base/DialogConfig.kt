@@ -1,6 +1,6 @@
-package com.unitx.signal_core.common.config
+package com.unitx.signal_core.common.config.base
 
-import com.unitx.signal_core.common.SignalType
+import com.unitx.signal_core.common.type.SignalType
 
 class DialogConfig {
     var title: String = ""

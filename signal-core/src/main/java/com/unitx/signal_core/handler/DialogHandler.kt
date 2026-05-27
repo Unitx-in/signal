@@ -1,7 +1,7 @@
 package com.unitx.signal_core.handler
 
 import android.app.AlertDialog
-import com.unitx.signal_core.common.config.DialogConfig
+import com.unitx.signal_core.common.config.base.DialogConfig
 import com.unitx.signal_core.provider.ActivityProvider
 
 class DialogHandler(

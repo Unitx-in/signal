@@ -1,4 +1,4 @@
-package com.unitx.signal_core.common
+package com.unitx.signal_core.common.type
 
 sealed class SignalDuration {
     object Short : SignalDuration()

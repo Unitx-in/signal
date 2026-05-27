@@ -1,7 +1,7 @@
 package com.unitx.signal_core.core
 
 import android.app.Application
-import com.unitx.signal_core.common.SignalQueue
+import com.unitx.signal_core.queue.SignalQueue
 import com.unitx.signal_core.common.config.SignalConfig
 import com.unitx.signal_core.handler.DialogHandler
 import com.unitx.signal_core.handler.SnackHandler

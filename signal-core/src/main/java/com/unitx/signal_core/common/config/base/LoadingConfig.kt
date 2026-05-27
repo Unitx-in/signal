@@ -1,6 +1,6 @@
-package com.unitx.signal_core.common.config
+package com.unitx.signal_core.common.config.base
 
-import com.unitx.signal_core.common.LoadingAnimation
+import com.unitx.signal_core.common.type.LoadingAnimation
 
 class LoadingConfig {
     var message: String = "Please wait..."

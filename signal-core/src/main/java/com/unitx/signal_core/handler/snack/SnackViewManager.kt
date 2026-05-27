@@ -8,8 +8,8 @@ import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.unitx.signal_core.common.SnackPosition
-import com.unitx.signal_core.common.config.SnackConfig
+import com.unitx.signal_core.common.type.SnackPosition
+import com.unitx.signal_core.common.config.base.SnackConfig
 import com.unitx.signal_core.databinding.SignalSnackBinding
 import com.unitx.signal_core.provider.ActivityProvider
 

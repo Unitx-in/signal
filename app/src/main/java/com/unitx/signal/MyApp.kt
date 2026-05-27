@@ -1,7 +1,7 @@
 package com.unitx.signal
 
 import android.app.Application
-import com.unitx.signal_core.common.SnackPosition
+import com.unitx.signal_core.common.type.SnackPosition
 import com.unitx.signal_core.launcher.Signal
 
 class MyApp : Application() {

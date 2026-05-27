@@ -2,7 +2,7 @@ package com.unitx.signal_core.handler.snack
 
 import android.view.View
 import androidx.core.view.doOnLayout
-import com.unitx.signal_core.common.SnackPosition
+import com.unitx.signal_core.common.type.SnackPosition
 
 class SnackAnimator {
 

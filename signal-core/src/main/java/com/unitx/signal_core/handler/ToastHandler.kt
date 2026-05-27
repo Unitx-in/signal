@@ -1,8 +1,8 @@
 package com.unitx.signal_core.handler
 
 import android.widget.Toast
-import com.unitx.signal_core.common.SignalDuration
-import com.unitx.signal_core.common.config.ToastConfig
+import com.unitx.signal_core.common.type.SignalDuration
+import com.unitx.signal_core.common.config.base.ToastConfig
 import com.unitx.signal_core.provider.ActivityProvider
 
 class ToastHandler(

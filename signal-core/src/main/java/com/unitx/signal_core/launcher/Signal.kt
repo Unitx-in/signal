@@ -1,10 +1,10 @@
 package com.unitx.signal_core.launcher
 
 import android.app.Application
-import com.unitx.signal_core.common.config.DialogConfig
+import com.unitx.signal_core.common.config.base.DialogConfig
 import com.unitx.signal_core.common.config.SignalConfig
-import com.unitx.signal_core.common.config.SnackConfig
-import com.unitx.signal_core.common.config.ToastConfig
+import com.unitx.signal_core.common.config.base.SnackConfig
+import com.unitx.signal_core.common.config.base.ToastConfig
 import com.unitx.signal_core.core.SignalCore
 
 object Signal {

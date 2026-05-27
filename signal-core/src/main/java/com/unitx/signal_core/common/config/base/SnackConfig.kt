@@ -1,7 +1,7 @@
-package com.unitx.signal_core.common.config
+package com.unitx.signal_core.common.config.base
 
-import com.unitx.signal_core.common.SnackPosition
-import com.unitx.signal_core.common.SnackType
+import com.unitx.signal_core.common.type.SnackPosition
+import com.unitx.signal_core.common.type.SnackType
 
 class SnackConfig {
     var message: String = ""

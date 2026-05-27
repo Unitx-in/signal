@@ -1,8 +1,8 @@
 package com.unitx.signal_core.handler
 
 import android.app.Activity
-import com.unitx.signal_core.common.SignalQueue
-import com.unitx.signal_core.common.config.SnackConfig
+import com.unitx.signal_core.queue.SignalQueue
+import com.unitx.signal_core.common.config.base.SnackConfig
 import com.unitx.signal_core.handler.snack.SnackAnimator
 import com.unitx.signal_core.handler.snack.SnackDismissScheduler
 import com.unitx.signal_core.handler.snack.SnackViewManager

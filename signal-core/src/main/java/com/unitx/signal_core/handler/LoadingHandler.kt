@@ -8,9 +8,9 @@
 //import android.widget.TextView
 //import androidx.fragment.app.FragmentActivity
 //import com.unitx.signal_core.R
-//import com.unitx.signal_core.common.LoadingAnimation
+//import com.unitx.signal_core.common.type.LoadingAnimation
 //import com.unitx.signal_core.common.SignalHandler
-//import com.unitx.signal_core.common.config.LoadingConfig
+//import com.unitx.signal_core.common.config.base.LoadingConfig
 //import com.unitx.signal_core.core.SignalHost
 //
 //class LoadingHandler(
