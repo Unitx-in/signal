@@ -1,11 +1,30 @@
-package com.unitx.signal_core.handler.snack
+package com.unitx.signal_core.common.helper
 
 import android.view.View
 import androidx.core.view.doOnLayout
 import com.unitx.signal_core.common.type.SnackPosition
 
-class SnackAnimator {
+class SignalAnimator {
 
+    fun fadeIn(container: View) {
+        container.visibility = View.VISIBLE
+        container.alpha = 0f
+        container.animate()
+            .alpha(1f)
+            .setDuration(250)
+            .start()
+    }
+
+    fun fadeOut(container: View, onEnd: () -> Unit) {
+        container.animate()
+            .alpha(0f)
+            .setDuration(200)
+            .withEndAction {
+                container.visibility = View.GONE
+                onEnd()
+            }
+            .start()
+    }
     fun slideIn(container: View, position: SnackPosition) {
         container.visibility = View.VISIBLE
         container.doOnLayout {

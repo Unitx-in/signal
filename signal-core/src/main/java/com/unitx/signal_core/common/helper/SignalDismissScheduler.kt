@@ -1,9 +1,9 @@
-package com.unitx.signal_core.handler.snack
+package com.unitx.signal_core.common.helper
 
 import android.os.Handler
 import android.os.Looper
 
-class SnackDismissScheduler {
+class SignalDismissScheduler {
 
     private val mainHandler = Handler(Looper.getMainLooper())
     private var dismissRunnable: Runnable? = null

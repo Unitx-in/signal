@@ -2,6 +2,8 @@ package com.unitx.signal_core.handler.toast
 
 import android.app.Activity
 import com.unitx.signal_core.common.config.base.ToastConfig
+import com.unitx.signal_core.common.helper.SignalAnimator
+import com.unitx.signal_core.common.helper.SignalDismissScheduler
 import com.unitx.signal_core.provider.ActivityProvider
 import com.unitx.signal_core.queue.SignalQueue
 
@@ -10,8 +12,8 @@ class ToastHandler(
     private val globalConfig: ToastConfig,
     private val queue: SignalQueue,
     private val viewManager: ToastViewManager,
-    private val animator: ToastAnimator,
-    private val scheduler: ToastDismissScheduler
+    private val animator: SignalAnimator,
+    private val scheduler: SignalDismissScheduler
 ) {
 
     private var currentConfig: ToastConfig = globalConfig.copy()

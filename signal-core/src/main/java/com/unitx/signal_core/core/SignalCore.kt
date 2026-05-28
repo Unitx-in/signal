@@ -5,12 +5,10 @@ import com.unitx.signal_core.common.config.SignalConfig
 import com.unitx.signal_core.common.theme.SignalThemeResolver
 import com.unitx.signal_core.handler.DialogHandler
 import com.unitx.signal_core.handler.toast.ToastHandler
-import com.unitx.signal_core.handler.snack.SnackAnimator
-import com.unitx.signal_core.handler.snack.SnackDismissScheduler
-import com.unitx.signal_core.handler.snack.SnackHandler
-import com.unitx.signal_core.handler.snack.SnackViewManager
-import com.unitx.signal_core.handler.toast.ToastAnimator
-import com.unitx.signal_core.handler.toast.ToastDismissScheduler
+import com.unitx.signal_core.common.helper.SignalAnimator
+import com.unitx.signal_core.common.helper.SignalDismissScheduler
+import com.unitx.signal_core.handler.snackbar.SnackHandler
+import com.unitx.signal_core.handler.snackbar.SnackViewManager
 import com.unitx.signal_core.handler.toast.ToastViewManager
 import com.unitx.signal_core.provider.ActivityProvider
 import com.unitx.signal_core.queue.SignalQueue
@@ -29,16 +27,16 @@ class SignalCore(
         globalConfig = config.toastConfig,
         queue = queue,
         viewManager = ToastViewManager(activityProvider, themeResolver),
-        animator = ToastAnimator(),
-        scheduler = ToastDismissScheduler()
+        animator = SignalAnimator(),
+        scheduler = SignalDismissScheduler()
     )
     internal val snackHandler = SnackHandler(
         activityProvider = activityProvider,
         globalConfig = config.snackConfig,
         queue = queue,
         viewManager = SnackViewManager(activityProvider, themeResolver),
-        animator = SnackAnimator(),
-        scheduler = SnackDismissScheduler()
+        animator = SignalAnimator(),
+        scheduler = SignalDismissScheduler()
     )
     internal val dialogHandler = DialogHandler(activityProvider, config.dialogConfig)
 }

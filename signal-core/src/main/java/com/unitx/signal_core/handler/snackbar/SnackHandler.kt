@@ -1,8 +1,10 @@
-package com.unitx.signal_core.handler.snack
+package com.unitx.signal_core.handler.snackbar
 
 import android.app.Activity
 import com.unitx.signal_core.queue.SignalQueue
 import com.unitx.signal_core.common.config.base.SnackConfig
+import com.unitx.signal_core.common.helper.SignalAnimator
+import com.unitx.signal_core.common.helper.SignalDismissScheduler
 import com.unitx.signal_core.provider.ActivityProvider
 
 class SnackHandler(
@@ -10,8 +12,8 @@ class SnackHandler(
     private val globalConfig: SnackConfig,
     private val queue: SignalQueue,
     private val viewManager: SnackViewManager,
-    private val animator: SnackAnimator,
-    private val scheduler: SnackDismissScheduler
+    private val animator: SignalAnimator,
+    private val scheduler: SignalDismissScheduler
 ) {
 
     private var currentConfig: SnackConfig = globalConfig.copy()
