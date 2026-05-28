@@ -2,14 +2,15 @@ package com.unitx.signal_core.handler.snack
 
 import android.content.Context
 import android.content.res.Configuration
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.core.R
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -94,11 +95,13 @@ class SnackViewManager(
         }
 
         type?.let { type ->
-            val typeColor = if (isNight) type.backColorDark else type.backColorLight
-            b.snackIcon.backgroundTintList = ContextCompat.getColorStateList(b.root.context, typeColor)
+            val backgroundColor = if (isNight) type.backColorDark else type.backColorLight
+            if (isNight) b.snackIcon.imageTintList = ContextCompat.getColorStateList(b.root.context, android.R.color.white)
+            b.snackIcon.backgroundTintList = ContextCompat.getColorStateList(b.root.context, backgroundColor)
+
         } ?: run {
             b.snackIcon.backgroundTintList = null
-            b.snackIcon.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+            b.snackIcon.setBackgroundColor(Color.TRANSPARENT)
         }
 
 //        val iconBackground = resolved.snackIconBackground
