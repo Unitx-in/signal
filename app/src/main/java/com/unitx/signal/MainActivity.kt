@@ -18,8 +18,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.unitx.signal.ui.theme.SignalTheme
+import com.unitx.signal_core.common.type.IconPosition
 import com.unitx.signal_core.common.type.SnackPosition
 import com.unitx.signal_core.common.type.SnackType
+import com.unitx.signal_core.common.type.ToastPosition
+import com.unitx.signal_core.common.type.ToastType
 import com.unitx.signal_core.launcher.Signal
 
 class MainActivity : ComponentActivity() {
@@ -34,7 +37,7 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .padding(innerPadding)
                     ) {
-                        TestScreen()
+                        ToastScreen()
                     }
                 }
             }
@@ -43,7 +46,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun TestScreen() {
+fun SnackScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -72,5 +75,53 @@ fun TestScreen() {
             }
             Signal.snack("Third message") { type = SnackType.Success }
         }) { Text("Test Queue") }
+    }
+}
+
+@Composable
+fun ToastScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(onClick = {
+            Signal.toast("Item saved successfully") { type = ToastType.Success }
+        }) { Text("Success Toast") }
+
+        Button(onClick = {
+            Signal.toast("Something went wrong") { type = ToastType.Error }
+        }) { Text("Error Toast") }
+
+        Button(onClick = {
+            Signal.toast("Low storage warning") {
+                type = ToastType.Warning
+                position = ToastPosition.Top
+            }
+        }) { Text("Warning Top Toast") }
+
+        Button(onClick = {
+            Signal.toast("Update available") {
+                type = ToastType.Info
+                position = ToastPosition.Center
+            }
+        }) { Text("Info Center Toast") }
+
+        Button(onClick = {
+            Signal.toast("File deleted") {
+                type = ToastType.Error
+                position = ToastPosition.Bottom
+                iconRes = com.unitx.signal_core.R.drawable.ic_snack_close
+                iconPosition = IconPosition.Start
+            }
+        }) { Text("Toast with Icon") }
+
+        Button(onClick = {
+            Signal.toast("First")
+            Signal.toast("Second") { type = ToastType.Success }
+            Signal.toast("Third") { type = ToastType.Error }
+        }) { Text("Rapid Toasts") }
     }
 }

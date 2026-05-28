@@ -9,6 +9,9 @@ import com.unitx.signal_core.handler.snack.SnackAnimator
 import com.unitx.signal_core.handler.snack.SnackDismissScheduler
 import com.unitx.signal_core.handler.snack.SnackHandler
 import com.unitx.signal_core.handler.snack.SnackViewManager
+import com.unitx.signal_core.handler.toast.ToastAnimator
+import com.unitx.signal_core.handler.toast.ToastDismissScheduler
+import com.unitx.signal_core.handler.toast.ToastViewManager
 import com.unitx.signal_core.provider.ActivityProvider
 import com.unitx.signal_core.queue.SignalQueue
 
@@ -21,7 +24,14 @@ class SignalCore(
     private val queue = SignalQueue()
     private val themeResolver = SignalThemeResolver(config.theme)
 
-    internal val toastHandler = ToastHandler(activityProvider, config.toastConfig)
+    internal val toastHandler = ToastHandler(
+        activityProvider = activityProvider,
+        globalConfig = config.toastConfig,
+        queue = queue,
+        viewManager = ToastViewManager(activityProvider, themeResolver),
+        animator = ToastAnimator(),
+        scheduler = ToastDismissScheduler()
+    )
     internal val snackHandler = SnackHandler(
         activityProvider = activityProvider,
         globalConfig = config.snackConfig,

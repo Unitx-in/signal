@@ -33,7 +33,7 @@ class ActivityProvider(app: Application) : Application.ActivityLifecycleCallback
     }
 
     override fun onActivityDestroyed(activity: Activity) {
-        destroyListeners.forEach { it(activity) }
+        destroyListeners.toList().forEach { it(activity) }
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
