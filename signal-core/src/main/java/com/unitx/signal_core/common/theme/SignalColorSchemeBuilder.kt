@@ -1,22 +1,23 @@
 package com.unitx.signal_core.common.theme
 
 import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
 
 class SignalColorSchemeBuilder {
-    @ColorInt var snackBackground: Int? = null
-    @ColorInt var snackTextColor: Int? = null
-    @ColorInt var snackActionTextColor: Int? = null
-    @ColorInt var snackCancelIconTint: Int? = null
-//    @ColorInt var snackIconBackground: Int? = null
+    @ColorRes var snackBackground: Int? = null
+    @ColorRes var snackTextColor: Int? = null
+    @ColorRes var snackActionTextColor: Int? = null
+    @ColorRes var snackCancelIconTint: Int? = null
+//    @_root_ide_package_.androidx.annotation.ColorRes var snackIconBackground: Int? = null
 
-    @ColorInt var toastBackground: Int? = null
-    @ColorInt var toastTextColor: Int? = null
+    @ColorRes var toastBackground: Int? = null
+    @ColorRes var toastTextColor: Int? = null
 
-    @ColorInt var dialogBackground: Int? = null
-    @ColorInt var dialogTextColor: Int? = null
+    @ColorRes var dialogBackground: Int? = null
+    @ColorRes var dialogTextColor: Int? = null
 
-    @ColorInt var bannerBackground: Int? = null
-    @ColorInt var bannerTextColor: Int? = null
+    @ColorRes var bannerBackground: Int? = null
+    @ColorRes var bannerTextColor: Int? = null
 
     fun build() = SignalColorScheme(
         snackBackground = snackBackground,

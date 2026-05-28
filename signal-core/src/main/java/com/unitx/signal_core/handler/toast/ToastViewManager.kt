@@ -1,7 +1,6 @@
 package com.unitx.signal_core.handler.toast
 
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -14,7 +13,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.unitx.signal_core.R
 import com.unitx.signal_core.common.config.base.ToastConfig
-import com.unitx.signal_core.common.theme.SignalDefaults
 import com.unitx.signal_core.common.theme.SignalThemeResolver
 import com.unitx.signal_core.common.type.IconPosition
 import com.unitx.signal_core.common.type.ToastPosition
@@ -88,30 +86,20 @@ class ToastViewManager(
 
     private fun applyTheme(context: Context, config: ToastConfig) {
         val b = binding ?: return
-        val isNight = (context.resources.configuration.uiMode and
-                Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
         val scheme = themeResolver.resolve(context)
-        val resolved = SignalDefaults.resolve(scheme, isNight)
+        val type = config.type
 
-        resolved.toastBackground?.let { b.toastContainer.setCardBackgroundColor(it) }
-        resolved.toastTextColor?.let { b.toastText.setTextColor(it) }
+        val backgroundColor = scheme.toastBackground ?: type.backgroundColor
+        val strokeColor = scheme.toastStrokeColor ?: type.foregroundColor
+        val textColor = scheme.toastTextColor ?: type.foregroundColor
+        val iconColor = scheme.toastIconColor ?: type.foregroundColor
 
-        config.type?.let { type ->
-            val strokeColorRes = if (isNight) type.strokeColorDark else type.strokeColorLight
-            b.toastContainer.strokeColor = ContextCompat.getColor(context, strokeColorRes)
-            b.toastContainer.strokeWidth = dpToPx(context, 2)
-        } ?: run {
-            b.toastContainer.strokeWidth = 0
-        }
-
-        if (config.lightIconOnDarkTheme && isNight) {
-            b.toastText.compoundDrawables.forEach { drawable ->
-                drawable?.setTintList(ContextCompat.getColorStateList(b.root.context, android.R.color.white))
-            }
-        } else {
-            b.toastText.compoundDrawables.forEach { drawable ->
-                drawable?.clearColorFilter()
-            }
+        b.toastContainer.setCardBackgroundColor(ContextCompat.getColor(context, backgroundColor))
+        b.toastContainer.strokeWidth = dpToPx(context, 2)
+        b.toastContainer.strokeColor = ContextCompat.getColor(context, strokeColor)
+        b.toastText.setTextColor(ContextCompat.getColor(context, textColor))
+        b.toastText.compoundDrawables.forEach { drawable ->
+            drawable?.setTintList(ContextCompat.getColorStateList(context, iconColor))
         }
     }
 

@@ -7,10 +7,9 @@ import com.unitx.signal_core.common.type.ToastType
 class ToastConfig {
     var duration: Long = 2000L
     var position: ToastPosition = ToastPosition.Bottom
-    var type: ToastType? = null
+    var type: ToastType = ToastType.Info
     var iconRes: Int? = null
     var iconPosition: IconPosition = IconPosition.Start
-    var lightIconOnDarkTheme: Boolean = true
 
     internal fun copy(): ToastConfig = ToastConfig().also {
         it.duration = duration
@@ -18,6 +17,5 @@ class ToastConfig {
         it.type = type
         it.iconRes = iconRes
         it.iconPosition = iconPosition
-        it.lightIconOnDarkTheme = lightIconOnDarkTheme
     }
 }

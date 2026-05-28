@@ -41,13 +41,13 @@ object SignalDefaults {
     fun resolve(scheme: SignalColorScheme, isNight: Boolean): SignalColorScheme {
         val defaults = if (isNight) dark else light
         return SignalColorScheme(
-            snackBackground = scheme.snackBackground ?: defaults.snackBackground,
-            snackTextColor = scheme.snackTextColor ?: defaults.snackTextColor,
-            snackActionTextColor = scheme.snackActionTextColor ?: defaults.snackActionTextColor,
-            snackCancelIconTint = scheme.snackCancelIconTint ?: defaults.snackCancelIconTint,
+            snackBackground = scheme.snackBackground,
+            snackTextColor = scheme.snackTextColor,
+            snackActionTextColor = scheme.snackActionTextColor,
+            snackCancelIconTint = scheme.snackCancelIconTint,
 //            snackIconBackground = scheme.snackIconBackground, // Needs to be null if not defined in global config, as colors will be provided by Snack type
 
-            toastBackground = scheme.toastBackground ?: defaults.toastBackground,
+            toastBackground = scheme.toastBackground,
             toastTextColor = scheme.toastTextColor ?: defaults.toastTextColor,
 
             dialogBackground = scheme.dialogBackground ?: defaults.dialogBackground,

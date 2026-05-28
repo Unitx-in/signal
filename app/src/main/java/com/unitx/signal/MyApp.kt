@@ -12,8 +12,14 @@ class MyApp : Application() {
         super.onCreate()
         Signal.createCore(this) {
             theme {
-                light { snackBackground = Color.WHITE }
-                dark { snackBackground = "#000000".toColorInt() }
+                light {
+                    snackBackground = R.color.white
+//                    toastBackground = R.color.white
+                }
+                dark {
+                    snackBackground = R.color.black
+//                    toastBackground = R.color.black
+                }
             }
             snack {
                 duration = 2500L
