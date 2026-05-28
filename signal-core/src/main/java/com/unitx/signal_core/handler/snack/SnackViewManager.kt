@@ -1,5 +1,10 @@
 package com.unitx.signal_core.handler.snack
 
+import android.content.Context
+import android.content.res.Configuration
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -10,11 +15,15 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.unitx.signal_core.common.type.SnackPosition
 import com.unitx.signal_core.common.config.base.SnackConfig
+import com.unitx.signal_core.common.theme.SignalDefaults
+import com.unitx.signal_core.common.theme.SignalThemeResolver
+import com.unitx.signal_core.common.type.SnackType
 import com.unitx.signal_core.databinding.SignalSnackBinding
 import com.unitx.signal_core.provider.ActivityProvider
 
 class SnackViewManager(
-    private val activityProvider: ActivityProvider
+    private val activityProvider: ActivityProvider,
+    private val themeResolver: SignalThemeResolver
 ) {
 
     private var binding: SignalSnackBinding? = null
@@ -42,6 +51,7 @@ class SnackViewManager(
         }
 
         applyPosition(config.position)
+        applyTheme(activity, config.type)
         bind(config, onDismiss)
         return true
     }
@@ -70,27 +80,58 @@ class SnackViewManager(
         ViewCompat.requestApplyInsets(root)
     }
 
+    private fun applyTheme(context: Context, type: SnackType?) {
+        val b = binding ?: return
+        val isNight = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+        val scheme = themeResolver.resolve(context)
+        val resolved = SignalDefaults.resolve(scheme, isNight)
+
+        resolved.snackBackground?.let { b.snackContainer.setBackgroundColor(it) }
+        resolved.snackTextColor?.let { b.snackText.setTextColor(it) }
+        resolved.snackActionTextColor?.let { b.snackActionCustom.setTextColor(it) }
+        resolved.snackCancelIconTint?.let {
+            b.snackActionCancel.colorFilter = PorterDuffColorFilter(it, PorterDuff.Mode.SRC_IN)
+        }
+
+        type?.let { type ->
+            val typeColor = if (isNight) type.backColorDark else type.backColorLight
+            b.snackIcon.backgroundTintList = ContextCompat.getColorStateList(b.root.context, typeColor)
+        } ?: run {
+            b.snackIcon.backgroundTintList = null
+            b.snackIcon.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+        }
+
+//        val iconBackground = resolved.snackIconBackground
+//        if (iconBackground != null) {
+//            b.snackIcon.backgroundTintList = null
+//            b.snackIcon.setBackgroundColor(iconBackground)
+//        } else {
+//            type?.let { type ->
+//                val typeColor = if (isNight) type.backColorDark else type.backColorLight
+//                b.snackIcon.backgroundTintList = ContextCompat.getColorStateList(b.root.context, typeColor)
+//            } ?: run {
+//                b.snackIcon.backgroundTintList = null
+//                b.snackIcon.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+//            }
+//        }
+    }
+
     private fun bind(config: SnackConfig, onDismiss: () -> Unit) {
         val b = binding ?: return
 
         b.snackText.text = config.message
-
-        config.type?.let { type ->
-            b.snackIcon.setImageResource(type.icon)
-            b.snackIcon.backgroundTintList =
-                ContextCompat.getColorStateList(b.root.context, type.backColor)
-        }
+        b.snackIcon.setImageResource(config.type?.icon ?: SnackType.default.icon)
 
         config.action?.let { (label, block) ->
-            b.snackActionCuston.visibility = View.VISIBLE
-            b.snackActionCuston.text = label
-            b.snackActionCuston.setOnClickListener {
+            b.snackActionCustom.visibility = View.VISIBLE
+            b.snackActionCustom.text = label
+            b.snackActionCustom.setOnClickListener {
                 block()
                 onDismiss()
             }
         } ?: run {
-            b.snackActionCuston.visibility = View.GONE
-            b.snackActionCuston.setOnClickListener(null)
+            b.snackActionCustom.visibility = View.GONE
+            b.snackActionCustom.setOnClickListener(null)
         }
 
         b.snackActionCancel.visibility = if (config.showCancelAction) View.VISIBLE else View.GONE
