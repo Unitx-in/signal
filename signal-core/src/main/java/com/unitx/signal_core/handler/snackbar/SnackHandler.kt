@@ -61,5 +61,6 @@ class SnackHandler(
         activityProvider.removeOnDestroyListener(destroyListener)
         scheduler.cancel()
         viewManager.release()
+        queue.clear()
     }
 }
