@@ -54,8 +54,9 @@ class ToastViewManager(
         }
 
         applyPosition(config.position)
-        applyTheme(activity, config)
         bind(message, config)
+        applyTheme(activity, config)
+
         return true
     }
 
@@ -101,6 +102,16 @@ class ToastViewManager(
             b.toastContainer.strokeWidth = dpToPx(context, 2)
         } ?: run {
             b.toastContainer.strokeWidth = 0
+        }
+
+        if (config.lightIconOnDarkTheme && isNight) {
+            b.toastText.compoundDrawables.forEach { drawable ->
+                drawable?.setTintList(ContextCompat.getColorStateList(b.root.context, android.R.color.white))
+            }
+        } else {
+            b.toastText.compoundDrawables.forEach { drawable ->
+                drawable?.clearColorFilter()
+            }
         }
     }
 

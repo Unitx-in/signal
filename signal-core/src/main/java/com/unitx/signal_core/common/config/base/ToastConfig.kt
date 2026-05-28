@@ -10,6 +10,7 @@ class ToastConfig {
     var type: ToastType? = null
     var iconRes: Int? = null
     var iconPosition: IconPosition = IconPosition.Start
+    var lightIconOnDarkTheme: Boolean = true
 
     internal fun copy(): ToastConfig = ToastConfig().also {
         it.duration = duration
@@ -17,5 +18,6 @@ class ToastConfig {
         it.type = type
         it.iconRes = iconRes
         it.iconPosition = iconPosition
+        it.lightIconOnDarkTheme = lightIconOnDarkTheme
     }
 }

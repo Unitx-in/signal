@@ -97,6 +97,7 @@ class SnackViewManager(
         type?.let { type ->
             val backgroundColor = if (isNight) type.backColorDark else type.backColorLight
             if (isNight) b.snackIcon.imageTintList = ContextCompat.getColorStateList(b.root.context, android.R.color.white)
+            else b.snackIcon.clearColorFilter()
             b.snackIcon.backgroundTintList = ContextCompat.getColorStateList(b.root.context, backgroundColor)
 
         } ?: run {

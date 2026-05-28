@@ -5,6 +5,7 @@ import android.graphics.Color
 import com.unitx.signal_core.common.type.SnackPosition
 import com.unitx.signal_core.launcher.Signal
 import androidx.core.graphics.toColorInt
+import com.unitx.signal_core.common.type.ToastPosition
 
 class MyApp : Application() {
     override fun onCreate() {
@@ -18,6 +19,9 @@ class MyApp : Application() {
                 duration = 2500L
                 dismissOnBackPress = false
                 position = SnackPosition.Top
+            }
+            toast {
+                position = ToastPosition.Bottom
             }
         }
     }

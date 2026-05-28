@@ -112,7 +112,7 @@ fun ToastScreen() {
         Button(onClick = {
             Signal.toast("File deleted") {
                 type = ToastType.Error
-                position = ToastPosition.Bottom
+                position = ToastPosition.Top
                 iconRes = com.unitx.signal_core.R.drawable.ic_snack_close
                 iconPosition = IconPosition.Start
             }

@@ -4,6 +4,7 @@
     <color name="signalLightBlue">#C8E2EC</color>
     <color name="signalLightYellow">#F2F1D4</color>
     <color name="signalLightRed">#F5CECF</color>
+    <color name="toastLightRed">#c9969a</color>
     <color name="signalGreen">#2D6723</color>
     <color name="signalRed">#932D34</color>
     <color name="signalBlue">#446680</color>

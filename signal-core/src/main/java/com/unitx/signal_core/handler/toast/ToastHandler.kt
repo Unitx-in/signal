@@ -1,10 +1,7 @@
-package com.unitx.signal_core.handler
+package com.unitx.signal_core.handler.toast
 
 import android.app.Activity
 import com.unitx.signal_core.common.config.base.ToastConfig
-import com.unitx.signal_core.handler.toast.ToastAnimator
-import com.unitx.signal_core.handler.toast.ToastDismissScheduler
-import com.unitx.signal_core.handler.toast.ToastViewManager
 import com.unitx.signal_core.provider.ActivityProvider
 import com.unitx.signal_core.queue.SignalQueue
 
