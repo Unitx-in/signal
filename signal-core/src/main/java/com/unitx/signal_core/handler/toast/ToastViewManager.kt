@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.annotation.ColorInt
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -89,17 +90,30 @@ class ToastViewManager(
         val scheme = themeResolver.resolve(context)
         val type = config.type
 
-        val backgroundColor = scheme.toastBackground ?: type.backgroundColor
-        val strokeColor = scheme.toastStrokeColor ?: type.foregroundColor
-        val textColor = scheme.toastTextColor ?: type.foregroundColor
-        val iconColor = scheme.toastIconColor ?: type.foregroundColor
+        @ColorInt
+        val backgroundColor = scheme.toastBackground
+            ?: ContextCompat.getColor(context, type.backgroundColor)
 
-        b.toastContainer.setCardBackgroundColor(ContextCompat.getColor(context, backgroundColor))
+        @ColorInt
+        val strokeColor = scheme.toastStrokeColor
+            ?: ContextCompat.getColor(context, type.foregroundColor)
+
+        @ColorInt
+        val textColor = scheme.toastTextColor
+            ?: ContextCompat.getColor(context, type.foregroundColor)
+
+        @ColorInt
+        val iconColor = scheme.toastIconColor
+            ?: ContextCompat.getColor(context, type.foregroundColor)
+
+        b.toastContainer.setCardBackgroundColor(backgroundColor)
         b.toastContainer.strokeWidth = dpToPx(context, 2)
-        b.toastContainer.strokeColor = ContextCompat.getColor(context, strokeColor)
-        b.toastText.setTextColor(ContextCompat.getColor(context, textColor))
+        b.toastContainer.strokeColor = strokeColor
+
+        b.toastText.setTextColor(textColor)
+
         b.toastText.compoundDrawables.forEach { drawable ->
-            drawable?.setTintList(ContextCompat.getColorStateList(context, iconColor))
+            drawable?.setTint(iconColor)
         }
     }
 

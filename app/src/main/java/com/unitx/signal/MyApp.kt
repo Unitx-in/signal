@@ -2,6 +2,7 @@ package com.unitx.signal
 
 import android.app.Application
 import android.graphics.Color
+import androidx.core.content.ContextCompat
 import com.unitx.signal_core.common.type.SnackPosition
 import com.unitx.signal_core.launcher.Signal
 import androidx.core.graphics.toColorInt
@@ -13,17 +14,17 @@ class MyApp : Application() {
         Signal.createCore(this) {
             theme {
                 light {
-                    snackBackground = R.color.white
-//                    toastBackground = R.color.white
+                    snackBackground = Color.WHITE
+                    toastBackground = ContextCompat.getColor(applicationContext, R.color.white)
                 }
                 dark {
-                    snackBackground = R.color.black
+                    snackBackground = Color.BLACK
 //                    toastBackground = R.color.black
                 }
             }
             snack {
                 duration = 2500L
-                dismissOnBackPress = false
+                dismissOnBackPress = true
                 position = SnackPosition.Top
             }
             toast {

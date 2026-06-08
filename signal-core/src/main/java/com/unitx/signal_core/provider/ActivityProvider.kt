@@ -29,10 +29,11 @@ class ActivityProvider(app: Application) : Application.ActivityLifecycleCallback
     }
 
     override fun onActivityPaused(activity: Activity) {
-        if (foregroundActivity?.get() == activity) foregroundActivity = null
+
     }
 
     override fun onActivityDestroyed(activity: Activity) {
+        if (foregroundActivity?.get() == activity) foregroundActivity = null
         destroyListeners.toList().forEach { it(activity) }
     }
 

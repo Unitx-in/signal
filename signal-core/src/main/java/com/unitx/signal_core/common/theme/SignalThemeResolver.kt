@@ -8,6 +8,7 @@ class SignalThemeResolver(private val theme: SignalTheme) {
     fun resolve(context: Context): SignalColorScheme {
         val isNight = (context.resources.configuration.uiMode and
                 Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
-        return if (isNight) theme.dark else theme.light
+        val userScheme = if (isNight) theme.dark else theme.light
+        return SignalDefaults.resolve(userScheme, isNight)
     }
 }

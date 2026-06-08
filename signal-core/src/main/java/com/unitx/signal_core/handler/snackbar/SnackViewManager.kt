@@ -2,7 +2,6 @@ package com.unitx.signal_core.handler.snackbar
 
 import android.content.Context
 import android.content.res.Configuration
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.view.Gravity
@@ -10,12 +9,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.unitx.signal_core.common.type.SnackPosition
 import com.unitx.signal_core.common.config.base.SnackConfig
-import com.unitx.signal_core.common.theme.SignalDefaults
 import com.unitx.signal_core.common.theme.SignalThemeResolver
 import com.unitx.signal_core.common.type.SnackType
 import com.unitx.signal_core.databinding.SignalSnackBinding
@@ -80,43 +79,22 @@ class SnackViewManager(
         ViewCompat.requestApplyInsets(root)
     }
 
-    private fun applyTheme(context: Context, type: SnackType?) {
+    private fun applyTheme(context: Context, type: SnackType) {
         val b = binding ?: return
         val isNight = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
         val scheme = themeResolver.resolve(context)
-        val resolved = SignalDefaults.resolve(scheme, isNight)
 
-        resolved.snackBackground?.let { b.snackContainer.setBackgroundColor(it) }
-        resolved.snackTextColor?.let { b.snackText.setTextColor(it) }
-        resolved.snackActionTextColor?.let { b.snackActionCustom.setTextColor(it) }
-        resolved.snackCancelIconTint?.let {
+        scheme.snackBackground?.let { b.snackContainer.setBackgroundColor(it) }
+        scheme.snackTextColor?.let { b.snackText.setTextColor(it) }
+        scheme.snackActionTextColor?.let { b.snackActionCustom.setTextColor(it) }
+        scheme.snackCancelIconTint?.let {
             b.snackActionCancel.colorFilter = PorterDuffColorFilter(it, PorterDuff.Mode.SRC_IN)
         }
 
-        type?.let { type ->
-            val backgroundColor = if (isNight) type.backColorDark else type.backColorLight
-            if (isNight) b.snackIcon.imageTintList = ContextCompat.getColorStateList(b.root.context, android.R.color.white)
-            else b.snackIcon.clearColorFilter()
-            b.snackIcon.backgroundTintList = ContextCompat.getColorStateList(b.root.context, backgroundColor)
-
-        } ?: run {
-            b.snackIcon.backgroundTintList = null
-            b.snackIcon.setBackgroundColor(Color.TRANSPARENT)
-        }
-
-//        val iconBackground = resolved.snackIconBackground
-//        if (iconBackground != null) {
-//            b.snackIcon.backgroundTintList = null
-//            b.snackIcon.setBackgroundColor(iconBackground)
-//        } else {
-//            type?.let { type ->
-//                val typeColor = if (isNight) type.backColorDark else type.backColorLight
-//                b.snackIcon.backgroundTintList = ContextCompat.getColorStateList(b.root.context, typeColor)
-//            } ?: run {
-//                b.snackIcon.backgroundTintList = null
-//                b.snackIcon.setBackgroundColor(android.graphics.Color.TRANSPARENT)
-//            }
-//        }
+        val iconBackgroundColor = if (isNight) type.iconBackDark else type.iconBackLight
+        if (isNight) b.snackIcon.imageTintList = ContextCompat.getColorStateList(b.root.context, android.R.color.white)
+        else b.snackIcon.clearColorFilter()
+        b.snackIcon.backgroundTintList = ContextCompat.getColorStateList(b.root.context, iconBackgroundColor)
     }
 
     private fun bind(config: SnackConfig, onDismiss: () -> Unit) {

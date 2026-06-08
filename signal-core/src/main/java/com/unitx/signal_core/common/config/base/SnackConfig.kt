@@ -9,7 +9,7 @@ class SnackConfig {
     var dismissOnBackPress: Boolean = false
     var anchorViewId: Int? = null
     var position: SnackPosition = SnackPosition.Bottom
-    var type: SnackType? = null
+    var type: SnackType = SnackType.Info
     var showCancelAction: Boolean = true
 
     internal var action: Pair<String, () -> Unit>? = null

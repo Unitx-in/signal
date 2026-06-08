@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .padding(innerPadding)
                     ) {
-                        ToastScreen()
+                        SnackScreen()
                     }
                 }
             }

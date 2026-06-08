@@ -1,6 +1,10 @@
 package com.unitx.signal_core.handler.snackbar
 
 import android.app.Activity
+import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AppCompatActivity
 import com.unitx.signal_core.queue.SignalQueue
 import com.unitx.signal_core.common.config.base.SnackConfig
 import com.unitx.signal_core.common.helper.SignalAnimator
@@ -18,6 +22,8 @@ class SnackHandler(
 
     private var currentConfig: SnackConfig = globalConfig.copy()
     private val destroyListener: (Activity) -> Unit = { release() }
+
+    private var backPressCallback: OnBackPressedCallback? = null
 
     init {
         activityProvider.addOnDestroyListener(destroyListener)
@@ -44,12 +50,24 @@ class SnackHandler(
         val attached = viewManager.attach(localConfig, onDismiss = { dismiss() })
         if (!attached) return
 
+        if (currentConfig.dismissOnBackPress) {
+            val activity = activityProvider.current() as? ComponentActivity
+            activity?.let {
+                backPressCallback = object : OnBackPressedCallback(true) {
+                    override fun handleOnBackPressed() { dismiss() }
+                }
+                it.onBackPressedDispatcher.addCallback(it, backPressCallback!!)
+            }
+        }
+
         val container = viewManager.container ?: return
         animator.slideIn(container, localConfig.position)
         scheduler.schedule(localConfig.duration) { dismiss() }
     }
 
     fun dismiss() {
+        backPressCallback?.remove()
+        backPressCallback = null
         scheduler.cancel()
         val container = viewManager.container ?: run { queue.next(); return }
         animator.slideOut(container, currentConfig.position) {
@@ -58,6 +76,8 @@ class SnackHandler(
     }
 
     private fun release() {
+        backPressCallback?.remove()
+        backPressCallback = null
         activityProvider.removeOnDestroyListener(destroyListener)
         scheduler.cancel()
         viewManager.release()
