@@ -1,5 +1,6 @@
 package com.unitx.signal_core.common.config.base
 
+import androidx.annotation.DrawableRes
 import com.unitx.signal_core.common.type.IconPosition
 import com.unitx.signal_core.common.type.ToastPosition
 import com.unitx.signal_core.common.type.ToastType
@@ -8,6 +9,7 @@ class ToastConfig {
     var duration: Long = 2000L
     var position: ToastPosition = ToastPosition.Bottom
     var type: ToastType = ToastType.Info
+    @DrawableRes
     var iconRes: Int? = null
     var iconPosition: IconPosition = IconPosition.Start
 

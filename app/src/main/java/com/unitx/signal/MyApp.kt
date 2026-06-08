@@ -19,7 +19,7 @@ class MyApp : Application() {
                 }
                 dark {
                     snackBackground = Color.BLACK
-//                    toastBackground = R.color.black
+//                    toastBackground = ContextCompat.getColor(applicationContext, R.color.black)
                 }
             }
             snack {

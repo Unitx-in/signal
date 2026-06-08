@@ -2,6 +2,7 @@ package com.unitx.signal_core.handler.toast
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -89,6 +90,8 @@ class ToastViewManager(
         val b = binding ?: return
         val scheme = themeResolver.resolve(context)
         val type = config.type
+
+        Log.i("ToastBackground", scheme.toastBackground.toString())
 
         @ColorInt
         val backgroundColor = scheme.toastBackground
