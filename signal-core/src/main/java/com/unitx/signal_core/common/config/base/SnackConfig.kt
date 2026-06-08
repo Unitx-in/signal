@@ -7,7 +7,8 @@ class SnackConfig {
     var message: String = ""
     var duration: Long = 2500L
     var dismissOnBackPress: Boolean = false
-    var anchorViewId: Int? = null
+    var topOffset: Int = 0
+    var bottomOffset: Int = 0
     var position: SnackPosition = SnackPosition.Bottom
     var type: SnackType = SnackType.Info
     var showCancelAction: Boolean = true
@@ -19,7 +20,8 @@ class SnackConfig {
         it.message = message
         it.duration = duration
         it.dismissOnBackPress = dismissOnBackPress
-        it.anchorViewId = anchorViewId
+        it.topOffset = topOffset
+        it.bottomOffset = bottomOffset
         it.position = position
         it.type = type
         it.showCancelAction = showCancelAction

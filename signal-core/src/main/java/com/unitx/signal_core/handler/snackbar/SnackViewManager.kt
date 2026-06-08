@@ -49,13 +49,13 @@ class SnackViewManager(
             ))
         }
 
-        applyPosition(config.position)
+        applyPosition(config.position, config.topOffset, config.bottomOffset)
         applyTheme(activity, config.type)
         bind(config, onDismiss)
         return true
     }
 
-    private fun applyPosition(position: SnackPosition) {
+    private fun applyPosition(position: SnackPosition, topOffset: Int, bottomOffset: Int) {
         val root = binding?.root ?: return
         val layoutParams = root.layoutParams as FrameLayout.LayoutParams
         layoutParams.gravity = when (position) {
@@ -70,15 +70,14 @@ class SnackViewManager(
             params.topMargin = 0
             params.bottomMargin = 0
             when (position) {
-                SnackPosition.Bottom -> params.bottomMargin = systemBars.bottom
-                SnackPosition.Top -> params.topMargin = systemBars.top
+                SnackPosition.Bottom -> params.bottomMargin = systemBars.bottom + bottomOffset
+                SnackPosition.Top -> params.topMargin = systemBars.top + topOffset
             }
             view.layoutParams = params
             insets
         }
         ViewCompat.requestApplyInsets(root)
     }
-
     private fun applyTheme(context: Context, type: SnackType) {
         val b = binding ?: return
         val isNight = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
