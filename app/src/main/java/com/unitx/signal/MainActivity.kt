@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.unitx.signal.ui.theme.SignalTheme
+import com.unitx.signal_core.common.type.DialogType
 import com.unitx.signal_core.common.type.IconPosition
 import com.unitx.signal_core.common.type.SnackPosition
 import com.unitx.signal_core.common.type.SnackType
@@ -37,11 +38,88 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .padding(innerPadding)
                     ) {
-                        ToastScreen()
+                        DialogScreen()
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun DialogScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(onClick = {
+            Signal.dialog {
+                title = "Successful purchase!"
+                message = "Your order has been placed and will arrive in 3-5 business days."
+                type = DialogType.Positive
+                positive("Got it") { Log.i("Dialog", "Confirmed") }
+            }
+        }) { Text("Success Dialog") }
+
+        Button(onClick = {
+            Signal.dialog {
+                title = "Delete file?"
+                message = "This action cannot be undone. The file will be permanently removed."
+                type = DialogType.Error
+                positive("Delete") { Log.i("Dialog", "Deleted") }
+                negative("Cancel")
+            }
+        }) { Text("Error Dialog with Actions") }
+
+        Button(onClick = {
+            Signal.dialog {
+                title = "Low storage"
+                message = "You are running low on storage. Consider clearing some space."
+                type = DialogType.Action
+                cancelable = false
+                positive("Clear now") { Log.i("Dialog", "Clear pressed") }
+                negative("Dismiss")
+            }
+        }) { Text("Warning Non-cancelable") }
+
+        Button(onClick = {
+            Signal.dialog {
+                title = "Update available"
+                message = "A new version is available. Update now to get the latest features."
+                type = DialogType.Default
+                positive("Update") { Log.i("Dialog", "Update pressed") }
+                negative("Later")
+            }
+        }) { Text("Info Dialog") }
+
+        Button(onClick = {
+            Signal.dialog {
+                title = "Session expiring"
+                message = "Your session will expire in 2 minutes."
+                type = DialogType.Action
+                autoDismiss = true
+                duration = 3000L
+                positive("Stay logged in") { Log.i("Dialog", "Session extended") }
+            }
+        }) { Text("Auto Dismiss Dialog") }
+
+        Button(onClick = {
+            Signal.dialog {
+                title = "First dialog"
+                message = "This is the first in queue."
+                type = DialogType.Default
+                positive("Next") { Log.i("Dialog", "First confirmed") }
+            }
+            Signal.dialog {
+                title = "Second dialog"
+                message = "This appears after the first is dismissed."
+                type = DialogType.Positive
+                positive("Done") { Log.i("Dialog", "Second confirmed") }
+            }
+        }) { Text("Test Queue") }
     }
 }
 

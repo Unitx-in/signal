@@ -1,7 +1,6 @@
 package com.unitx.signal_core.common.theme
 
 import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
 
 data class SignalColorScheme(
     @ColorInt val snackBackground: Int? = null,
@@ -18,7 +17,10 @@ data class SignalColorScheme(
 
 
     @ColorInt val dialogBackground: Int? = null,
+    @ColorInt val dialogPrimaryColor: Int? = null,
+    @ColorInt val dialogSecondaryColor: Int? = null,
     @ColorInt val dialogTextColor: Int? = null,
+    @ColorInt val dialogPrimaryButtonTextColor : Int? = null,
 
     @ColorInt val bannerBackground: Int? = null,
     @ColorInt val bannerTextColor: Int? = null,

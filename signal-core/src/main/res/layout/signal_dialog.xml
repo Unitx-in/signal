@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dialogCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="24dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="8dp"
+    app:cardBackgroundColor="@android:color/white">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Header background -->
+        <View
+            android:id="@+id/dialogHeaderBg"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:background="@color/signalLightGreen"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/dialogHeaderLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:text="Positive dialog"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/poppins_reg"
+            android:textColor="@color/signalGreen"
+            android:layout_marginStart="16dp"
+            app:layout_constraintTop_toTopOf="@id/dialogHeaderBg"
+            app:layout_constraintBottom_toBottomOf="@id/dialogHeaderBg"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/dialogClose" />
+
+        <!-- Close icon -->
+        <ImageView
+            android:id="@+id/dialogClose"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_snack_close"
+            android:contentDescription="Close"
+            app:tint="@color/signalGreen"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintTop_toTopOf="@id/dialogHeaderBg"
+            app:layout_constraintBottom_toBottomOf="@id/dialogHeaderBg"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Icon -->
+        <ImageView
+            android:id="@+id/dialogIcon"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:src="@drawable/ic_signal_success"
+            android:padding="6dp"
+            android:contentDescription="Dialog icon"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@id/dialogHeaderBg"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- Heading -->
+        <TextView
+            android:id="@+id/dialogTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:text="Successful purchase!"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/poppins_bold"
+            android:textColor="@color/signalGreen"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@id/dialogHeaderBg"
+            app:layout_constraintStart_toEndOf="@id/dialogIcon"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Message -->
+        <TextView
+            android:id="@+id/dialogMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:text="Do you know Material X system contains material design components re-styled as it should look and behave for today."
+            android:textSize="13sp"
+            android:lineSpacingMultiplier="1.4"
+            android:textColor="@color/signalBlack"
+            android:fontFamily="@font/lora_reg"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="6dp"
+            app:layout_constraintTop_toBottomOf="@id/dialogTitle"
+            app:layout_constraintStart_toEndOf="@id/dialogIcon"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Divider -->
+        <View
+            android:id="@+id/dialogDivider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/signalDivider"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@id/dialogMessage"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Secondary button -->
+        <Button
+            android:id="@+id/dialogSecondaryBtn"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            tools:text="Secondary"
+            android:textSize="14sp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/poppins_reg"
+            android:background="@drawable/dialog_sec_button_back"
+            android:textColor="@color/signalGreen"
+            app:layout_constraintTop_toBottomOf="@id/dialogDivider"
+            app:layout_constraintEnd_toStartOf="@id/dialogPrimaryBtn"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <!-- Primary button -->
+        <Button
+            android:id="@+id/dialogPrimaryBtn"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            tools:text="Primary Action"
+            android:textSize="14sp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/poppins_reg"
+            android:background="@drawable/dialog_primary_btn_back"
+            android:textColor="@android:color/white"
+            app:layout_constraintTop_toBottomOf="@id/dialogDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

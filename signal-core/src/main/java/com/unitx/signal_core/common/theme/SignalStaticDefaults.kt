@@ -1,31 +1,19 @@
 package com.unitx.signal_core.common.theme
 
-import android.content.Context
-import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
-import com.unitx.signal_core.common.type.SnackType
 
-object SignalDefaults {
+object SignalStaticDefaults {
     val light = SignalColorScheme(
         snackBackground = Color.WHITE,
         snackTextColor = Color.BLACK,
         snackActionTextColor = Color.BLACK,
         snackCancelIconTint = Color.BLACK,
         dialogBackground = Color.WHITE,
-        dialogTextColor = Color.BLACK,
+        dialogPrimaryButtonTextColor = Color.WHITE,
+
         bannerBackground = Color.WHITE,
         bannerTextColor = Color.BLACK,
-
-//        These defaults are defined in Types
-//        snackIconBackground: Color.LTGRAY,
-//        toastBackground = Color.WHITE,
-//        toastTextColor = Color.BLACK,
-//        toastStrokeColor = Color.BLACK,
-//        toastIconColor = Color.BLACK,
     )
 
     val dark = SignalColorScheme(
@@ -33,8 +21,9 @@ object SignalDefaults {
         snackTextColor = Color.WHITE,
         snackActionTextColor = Color.WHITE,
         snackCancelIconTint = Color.WHITE,
-        dialogBackground = "#1E1E1E".toColorInt(),
-        dialogTextColor = Color.WHITE,
+        dialogBackground = Color.WHITE,
+        dialogPrimaryButtonTextColor = Color.WHITE,
+
         bannerBackground = "#1E1E1E".toColorInt(),
         bannerTextColor = Color.WHITE,
     )
@@ -46,8 +35,10 @@ object SignalDefaults {
             snackTextColor = scheme.snackTextColor ?: defaults.snackTextColor,
             snackActionTextColor = scheme.snackActionTextColor ?: defaults.snackActionTextColor,
             snackCancelIconTint = scheme.snackCancelIconTint ?: defaults.snackCancelIconTint,
+
             dialogBackground = scheme.dialogBackground ?: defaults.dialogBackground,
-            dialogTextColor = scheme.dialogTextColor ?: defaults.dialogTextColor,
+            dialogPrimaryButtonTextColor = scheme.dialogPrimaryButtonTextColor ?: defaults.dialogPrimaryButtonTextColor,
+
             bannerBackground = scheme.bannerBackground ?: defaults.bannerBackground,
             bannerTextColor = scheme.bannerTextColor ?: defaults.bannerTextColor,
 
@@ -57,6 +48,9 @@ object SignalDefaults {
             toastTextColor = scheme.toastTextColor,
             toastStrokeColor = scheme.toastStrokeColor,
             toastIconColor = scheme.toastIconColor,
+            dialogPrimaryColor = scheme.dialogPrimaryColor,
+            dialogSecondaryColor = scheme.dialogSecondaryColor,
+            dialogTextColor = scheme.dialogTextColor
         )
     }
 }

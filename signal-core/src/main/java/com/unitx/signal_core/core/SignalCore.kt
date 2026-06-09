@@ -3,10 +3,11 @@ package com.unitx.signal_core.core
 import android.app.Application
 import com.unitx.signal_core.common.config.SignalConfig
 import com.unitx.signal_core.common.theme.SignalThemeResolver
-import com.unitx.signal_core.handler.DialogHandler
+import com.unitx.signal_core.handler.dialog.DialogHandler
 import com.unitx.signal_core.handler.toast.ToastHandler
 import com.unitx.signal_core.common.helper.SignalAnimator
 import com.unitx.signal_core.common.helper.SignalDismissScheduler
+import com.unitx.signal_core.handler.dialog.DialogViewManager
 import com.unitx.signal_core.handler.snackbar.SnackHandler
 import com.unitx.signal_core.handler.snackbar.SnackViewManager
 import com.unitx.signal_core.handler.toast.ToastViewManager
@@ -38,5 +39,12 @@ class SignalCore(
         animator = SignalAnimator(),
         scheduler = SignalDismissScheduler()
     )
-    internal val dialogHandler = DialogHandler(activityProvider, config.dialogConfig)
+    internal val dialogHandler = DialogHandler(
+        activityProvider = activityProvider,
+        globalConfig = config.dialogConfig,
+        queue = queue,
+        viewManager = DialogViewManager(activityProvider, themeResolver),
+        animator = SignalAnimator(),
+        scheduler = SignalDismissScheduler()
+    )
 }

@@ -9,6 +9,6 @@ class SignalThemeResolver(private val theme: SignalTheme) {
         val isNight = (context.resources.configuration.uiMode and
                 Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
         val userScheme = if (isNight) theme.dark else theme.light
-        return SignalDefaults.resolve(userScheme, isNight)
+        return SignalStaticDefaults.resolve(userScheme, isNight)
     }
 }

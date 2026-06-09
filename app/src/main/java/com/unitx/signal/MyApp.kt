@@ -30,6 +30,7 @@ class MyApp : Application() {
             toast {
                 position = ToastPosition.Bottom
             }
+
         }
     }
 }
