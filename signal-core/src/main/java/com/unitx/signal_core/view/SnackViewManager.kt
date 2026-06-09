@@ -20,7 +20,7 @@ import com.unitx.signal_core.contract.type.SnackType
 import com.unitx.signal_core.databinding.SignalSnackBinding
 import com.unitx.signal_core.provider.ActivityProvider
 
-class SnackViewManager(
+internal class SnackViewManager(
     private val activityProvider: ActivityProvider,
     private val themeResolver: SignalThemeResolver
 ) {

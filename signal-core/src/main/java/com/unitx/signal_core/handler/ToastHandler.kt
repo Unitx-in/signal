@@ -8,7 +8,7 @@ import com.unitx.signal_core.provider.ActivityProvider
 import com.unitx.signal_core.queue.SignalQueue
 import com.unitx.signal_core.view.ToastViewManager
 
-class ToastHandler(
+internal class ToastHandler(
     private val activityProvider: ActivityProvider,
     private val globalConfig: ToastConfig,
     private val queue: SignalQueue,

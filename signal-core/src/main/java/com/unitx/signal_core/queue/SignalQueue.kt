@@ -1,6 +1,6 @@
 package com.unitx.signal_core.queue
 
-class SignalQueue {
+internal class SignalQueue {
     private val queue = ArrayDeque<QueueEntry>()
     private var current: QueueEntry? = null
 

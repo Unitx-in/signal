@@ -5,7 +5,7 @@ import android.app.Application
 import android.os.Bundle
 import java.lang.ref.WeakReference
 
-class ActivityProvider(app: Application) : Application.ActivityLifecycleCallbacks {
+internal class ActivityProvider(app: Application) : Application.ActivityLifecycleCallbacks {
 
     private var foregroundActivity: WeakReference<Activity>? = null
     private val destroyListeners = mutableListOf<(Activity) -> Unit>()

@@ -20,7 +20,7 @@ import com.unitx.signal_core.contract.position.ToastPosition
 import com.unitx.signal_core.databinding.SignalToastBinding
 import com.unitx.signal_core.provider.ActivityProvider
 
-class ToastViewManager(
+internal class ToastViewManager(
     private val activityProvider: ActivityProvider,
     private val themeResolver: SignalThemeResolver
 ) {

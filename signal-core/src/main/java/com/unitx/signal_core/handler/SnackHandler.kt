@@ -10,7 +10,7 @@ import com.unitx.signal_core.provider.ActivityProvider
 import com.unitx.signal_core.queue.SignalQueue
 import com.unitx.signal_core.view.SnackViewManager
 
-class SnackHandler(
+internal class SnackHandler(
     private val activityProvider: ActivityProvider,
     private val globalConfig: SnackConfig,
     private val queue: SignalQueue,

@@ -15,7 +15,7 @@ import com.unitx.signal_core.theme.SignalThemeResolver
 import com.unitx.signal_core.databinding.SignalDialogBinding
 import com.unitx.signal_core.provider.ActivityProvider
 
-class DialogViewManager(
+internal class DialogViewManager(
     private val activityProvider: ActivityProvider,
     private val themeResolver: SignalThemeResolver
 ) {

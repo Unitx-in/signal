@@ -3,7 +3,7 @@ package com.unitx.signal_core.theme
 import android.graphics.Color
 import androidx.core.graphics.toColorInt
 
-object SignalStaticDefaults {
+internal object SignalStaticDefaults {
     val light = SignalColorScheme(
         snackBackground = Color.WHITE,
         snackTextColor = Color.BLACK,

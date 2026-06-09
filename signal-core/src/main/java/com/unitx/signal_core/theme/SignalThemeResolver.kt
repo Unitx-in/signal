@@ -3,7 +3,7 @@ package com.unitx.signal_core.theme
 import android.content.Context
 import android.content.res.Configuration
 
-class SignalThemeResolver(private val theme: SignalTheme) {
+internal class SignalThemeResolver(private val theme: SignalTheme) {
 
     fun resolve(context: Context): SignalColorScheme {
         val isNight = (context.resources.configuration.uiMode and

@@ -10,7 +10,7 @@ import com.unitx.signal_core.provider.ActivityProvider
 import com.unitx.signal_core.queue.SignalQueue
 import com.unitx.signal_core.view.DialogViewManager
 
-class DialogHandler(
+internal class DialogHandler(
     private val activityProvider: ActivityProvider,
     private val globalConfig: DialogConfig,
     private val queue: SignalQueue,
