@@ -51,6 +51,8 @@ internal class DialogViewManager(
         dimOverlay = View(context).apply {
             setBackgroundColor(0x99000000.toInt())
             alpha = 0f
+            isClickable = true
+            isFocusable = true
             animate().alpha(1f).setDuration(220).start()
             layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,

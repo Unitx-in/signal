@@ -7,7 +7,6 @@ class SignalColorSchemeBuilder {
     @ColorInt var snackTextColor: Int? = null
     @ColorInt var snackActionTextColor: Int? = null
     @ColorInt var snackCancelIconTint: Int? = null
-//    @_root_ide_package_.androidx.annotation._root_ide_package_.androidx.annotation.ColorInt var snackIconBackground: Int? = null
 
     @ColorInt var toastBackground: Int? = null
     @ColorInt var toastTextColor: Int? = null
@@ -28,7 +27,6 @@ class SignalColorSchemeBuilder {
         snackTextColor = snackTextColor,
         snackActionTextColor = snackActionTextColor,
         snackCancelIconTint = snackCancelIconTint,
-//        snackIconBackground = snackIconBackground,
         toastBackground = toastBackground,
         toastTextColor = toastTextColor,
         dialogBackground = dialogBackground,
