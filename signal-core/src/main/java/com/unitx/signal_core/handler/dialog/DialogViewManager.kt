@@ -34,7 +34,7 @@ class DialogViewManager(
         val rootView = activity.window.decorView.rootView as? ViewGroup ?: return false
 
         inflateDim(activity, rootView, config.cancelable, onDismiss)
-        inflateDialog(activity, rootView)
+        inflateDialog(activity, rootView, config.horizontalMargin)
 
         applyTheme(activity, config)
         bind(config, onDismiss)
@@ -61,7 +61,7 @@ class DialogViewManager(
         rootView.addView(dimOverlay)
     }
 
-    private fun inflateDialog(context: Context, rootView: ViewGroup) {
+    private fun inflateDialog(context: Context, rootView: ViewGroup, horizontalMargin: Int) {
         if (binding != null) return
         binding = SignalDialogBinding.inflate(LayoutInflater.from(context), rootView, false)
         rootView.addView(
@@ -71,6 +71,9 @@ class DialogViewManager(
                 FrameLayout.LayoutParams.WRAP_CONTENT
             ).apply {
                 gravity = Gravity.CENTER
+                val margin = (horizontalMargin * context.resources.displayMetrics.density).toInt()
+                leftMargin = margin
+                rightMargin = margin
             }
         )
     }
@@ -96,22 +99,14 @@ class DialogViewManager(
         val secondaryBtnTextColor = scheme.dialogPrimaryColor ?: ContextCompat.getColor(context, type.primaryColor)
 
         b.dialogCard.setCardBackgroundColor(bgColor)
-
         b.dialogHeaderBg.setBackgroundColor(headerColor)
         b.dialogHeaderLabel.setTextColor(headingColor)
-        b.dialogHeaderLabel.text = ContextCompat.getString(context, type.headerTitle)
-
         b.dialogClose.imageTintList = ColorStateList.valueOf(closeButtonColor)
-
-        b.dialogIcon.setImageResource(type.icon)
         b.dialogIcon.imageTintList = ColorStateList.valueOf(iconColor)
-
         b.dialogTitle.setTextColor(titleColor)
         b.dialogMessage.setTextColor(messageColor)
-
         (b.dialogPrimaryBtn.background as? GradientDrawable)?.setColor(primaryBtnBackColor)
         b.dialogPrimaryBtn.setTextColor(primaryBtnTextColor)
-
         (b.dialogSecondaryBtn.background as? GradientDrawable)?.setStroke(1, secondaryBtnTextColor)
         b.dialogSecondaryBtn.setTextColor(secondaryBtnTextColor)
     }
@@ -120,9 +115,16 @@ class DialogViewManager(
         val b = binding ?: return
 
         b.dialogTitle.text = config.title
-        b.dialogTitle.text = config.title
         b.dialogMessage.text = config.message
         b.dialogClose.setOnClickListener { onDismiss() }
+        b.dialogIcon.setImageResource(config.icon ?: config.type.icon)
+
+        config.header.takeIf { it.isNotBlank() }?.let { h->
+            b.dialogHeaderLabel.text = h
+        } ?: run {
+            b.dialogHeaderLabel.text = ContextCompat.getString(b.root.context, config.type.header)
+        }
+
 
         config.positive?.let { (label, block) ->
             b.dialogPrimaryBtn.visibility = View.VISIBLE

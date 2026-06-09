@@ -10,7 +10,7 @@ enum class DialogType(
     @DrawableRes val icon: Int,
     @ColorRes val secondaryColor: Int,
     @ColorRes val primaryColor: Int,
-    @StringRes val headerTitle: Int,
+    @StringRes val header: Int,
 
     ) {
     Error(

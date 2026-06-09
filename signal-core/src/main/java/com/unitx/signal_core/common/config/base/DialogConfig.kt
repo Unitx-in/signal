@@ -1,23 +1,19 @@
 package com.unitx.signal_core.common.config.base
 
-import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.unitx.signal_core.common.type.DialogType
-import com.unitx.signal_core.common.type.SignalType
 
 class DialogConfig {
     var title: String = ""
     var message: String = ""
+    var header: String = ""
+    @DrawableRes var icon: Int? = null
     var type: DialogType = DialogType.Default
     var cancelable: Boolean = true
+    var horizontalMargin: Int = 24
     internal var positive: Pair<String, () -> Unit>? = null
     internal var negative: Pair<String, () -> Unit>? = null
-
-    @DrawableRes var icon: Int? = null
-    @ColorRes var secondaryColor: Int? = null
-    @ColorRes var primaryColor: Int? = null
-    @StringRes var headerTitle: Int? = null
     var autoDismiss: Boolean = false
     var duration: Long = 4000L
 
@@ -32,9 +28,8 @@ class DialogConfig {
         it.autoDismiss = autoDismiss
         it.duration = duration
         it.icon = icon
-        it.secondaryColor = secondaryColor
-        it.primaryColor = primaryColor
-        it.headerTitle = headerTitle
+        it.header = header
+        it.horizontalMargin = horizontalMargin
         it.positive = positive
         it.negative = negative
     }
