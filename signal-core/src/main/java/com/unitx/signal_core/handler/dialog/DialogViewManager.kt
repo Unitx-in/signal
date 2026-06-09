@@ -143,13 +143,14 @@ class DialogViewManager(
         }
     }
 
-    fun release() {
+    fun release(onReleased: () -> Unit = {}) {
         val rootView = activityProvider.current()?.window?.decorView?.rootView as? ViewGroup
         dimOverlay?.animate()?.alpha(0f)?.setDuration(180)?.withEndAction {
             binding?.root?.let { rootView?.removeView(it) }
             dimOverlay?.let { rootView?.removeView(it) }
             binding = null
             dimOverlay = null
+            onReleased()
         }?.start()
     }
 }

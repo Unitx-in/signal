@@ -48,7 +48,7 @@ class DialogHandler(
         animator.scaleIn(card)
 
         if (config.autoDismiss) {
-            scheduler.schedule(config.duration) { dismiss() }
+            scheduler.schedule(config.autoDismissDuration) { dismiss() }
         }
 
         if (config.cancelable) {
@@ -67,8 +67,9 @@ class DialogHandler(
 
         val card = viewManager.container ?: run { queue.next(); return }
         animator.scaleOut(card) {
-            viewManager.release()
-            queue.next()
+            viewManager.release {
+                queue.next()
+            }
         }
     }
 

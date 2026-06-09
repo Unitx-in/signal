@@ -15,7 +15,7 @@ class MyApp : Application() {
             theme {
                 light {
                     snackBackground = Color.WHITE
-                    toastBackground = ContextCompat.getColor(applicationContext, R.color.white)
+//                    toastBackground = ContextCompat.getColor(applicationContext, R.color.white)
                 }
                 dark {
                     snackBackground = Color.BLACK

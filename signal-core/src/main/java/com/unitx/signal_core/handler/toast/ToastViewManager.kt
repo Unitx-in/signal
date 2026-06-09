@@ -91,8 +91,6 @@ class ToastViewManager(
         val scheme = themeResolver.resolve(context)
         val type = config.type
 
-        Log.i("ToastBackground", scheme.toastBackground.toString())
-
         @ColorInt
         val backgroundColor = scheme.toastBackground
             ?: ContextCompat.getColor(context, type.backgroundColor)
