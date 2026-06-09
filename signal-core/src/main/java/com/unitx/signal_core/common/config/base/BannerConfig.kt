@@ -1,6 +1,6 @@
 package com.unitx.signal_core.common.config.base
 
-import com.unitx.signal_core.common.type.BannerPosition
+import com.unitx.signal_core.common.position.BannerPosition
 import com.unitx.signal_core.common.type.SignalType
 
 class BannerConfig {

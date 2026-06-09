@@ -1,4 +1,4 @@
-package com.unitx.signal_core.handler.dialog
+package com.unitx.signal_core.view
 
 import android.content.Context
 import android.content.res.ColorStateList

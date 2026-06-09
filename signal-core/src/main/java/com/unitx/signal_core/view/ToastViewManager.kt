@@ -1,8 +1,7 @@
-package com.unitx.signal_core.handler.toast
+package com.unitx.signal_core.view
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -16,8 +15,8 @@ import androidx.core.view.WindowInsetsCompat
 import com.unitx.signal_core.R
 import com.unitx.signal_core.common.config.base.ToastConfig
 import com.unitx.signal_core.common.theme.SignalThemeResolver
-import com.unitx.signal_core.common.type.IconPosition
-import com.unitx.signal_core.common.type.ToastPosition
+import com.unitx.signal_core.common.position.IconPosition
+import com.unitx.signal_core.common.position.ToastPosition
 import com.unitx.signal_core.databinding.SignalToastBinding
 import com.unitx.signal_core.provider.ActivityProvider
 

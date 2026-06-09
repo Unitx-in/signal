@@ -4,9 +4,9 @@ import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import androidx.core.view.doOnLayout
-import com.unitx.signal_core.common.type.SnackPosition
+import com.unitx.signal_core.common.position.SnackPosition
 
-class SignalAnimator {
+object SignalAnimator {
 
     fun fadeIn(container: View) {
         container.visibility = View.VISIBLE

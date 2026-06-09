@@ -1,6 +1,6 @@
 package com.unitx.signal_core.common.config.base
 
-import com.unitx.signal_core.common.type.SnackPosition
+import com.unitx.signal_core.common.position.SnackPosition
 import com.unitx.signal_core.common.type.SnackType
 
 class SnackConfig {

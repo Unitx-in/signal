@@ -1,8 +1,8 @@
 package com.unitx.signal_core.common.config.base
 
 import androidx.annotation.DrawableRes
-import com.unitx.signal_core.common.type.IconPosition
-import com.unitx.signal_core.common.type.ToastPosition
+import com.unitx.signal_core.common.position.IconPosition
+import com.unitx.signal_core.common.position.ToastPosition
 import com.unitx.signal_core.common.type.ToastType
 
 class ToastConfig {

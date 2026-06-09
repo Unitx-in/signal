@@ -1,5 +1,6 @@
-package com.unitx.signal_core.handler.snackbar
+package com.unitx.signal_core.view
 
+import android.R
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.PorterDuff
@@ -9,13 +10,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.unitx.signal_core.common.type.SnackPosition
 import com.unitx.signal_core.common.config.base.SnackConfig
 import com.unitx.signal_core.common.theme.SignalThemeResolver
+import com.unitx.signal_core.common.position.SnackPosition
 import com.unitx.signal_core.common.type.SnackType
 import com.unitx.signal_core.databinding.SignalSnackBinding
 import com.unitx.signal_core.provider.ActivityProvider
@@ -91,7 +91,7 @@ class SnackViewManager(
         }
 
         val iconBackgroundColor = if (isNight) type.iconBackDark else type.iconBackLight
-        if (isNight) b.snackIcon.imageTintList = ContextCompat.getColorStateList(b.root.context, android.R.color.white)
+        if (isNight) b.snackIcon.imageTintList = ContextCompat.getColorStateList(b.root.context, R.color.white)
         else b.snackIcon.clearColorFilter()
         b.snackIcon.backgroundTintList = ContextCompat.getColorStateList(b.root.context, iconBackgroundColor)
     }
@@ -100,7 +100,7 @@ class SnackViewManager(
         val b = binding ?: return
 
         b.snackText.text = config.message
-        b.snackIcon.setImageResource(config.type?.icon ?: SnackType.default.icon)
+        b.snackIcon.setImageResource(config.type?.icon ?: SnackType.Companion.default.icon)
 
         config.action?.let { (label, block) ->
             b.snackActionCustom.visibility = View.VISIBLE

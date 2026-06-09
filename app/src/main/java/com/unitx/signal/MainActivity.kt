@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -22,10 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.unitx.signal.ui.theme.SignalTheme
 import com.unitx.signal_core.common.type.DialogType
-import com.unitx.signal_core.common.type.IconPosition
-import com.unitx.signal_core.common.type.SnackPosition
+import com.unitx.signal_core.common.position.IconPosition
+import com.unitx.signal_core.common.position.SnackPosition
 import com.unitx.signal_core.common.type.SnackType
-import com.unitx.signal_core.common.type.ToastPosition
+import com.unitx.signal_core.common.position.ToastPosition
 import com.unitx.signal_core.common.type.ToastType
 import com.unitx.signal_core.launcher.Signal
 

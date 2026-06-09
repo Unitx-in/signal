@@ -1,4 +1,4 @@
-package com.unitx.signal_core.handler.toast
+package com.unitx.signal_core.handler
 
 import android.app.Activity
 import com.unitx.signal_core.common.config.base.ToastConfig
@@ -6,6 +6,7 @@ import com.unitx.signal_core.common.helper.SignalAnimator
 import com.unitx.signal_core.common.helper.SignalDismissScheduler
 import com.unitx.signal_core.provider.ActivityProvider
 import com.unitx.signal_core.queue.SignalQueue
+import com.unitx.signal_core.view.ToastViewManager
 
 class ToastHandler(
     private val activityProvider: ActivityProvider,

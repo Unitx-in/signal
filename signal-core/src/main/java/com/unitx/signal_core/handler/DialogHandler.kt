@@ -1,4 +1,4 @@
-package com.unitx.signal_core.handler.dialog
+package com.unitx.signal_core.handler
 
 import android.app.Activity
 import androidx.activity.ComponentActivity
@@ -8,6 +8,7 @@ import com.unitx.signal_core.common.helper.SignalAnimator
 import com.unitx.signal_core.common.helper.SignalDismissScheduler
 import com.unitx.signal_core.provider.ActivityProvider
 import com.unitx.signal_core.queue.SignalQueue
+import com.unitx.signal_core.view.DialogViewManager
 
 class DialogHandler(
     private val activityProvider: ActivityProvider,
