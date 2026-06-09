@@ -10,8 +10,8 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.unitx.signal_core.R
-import com.unitx.signal_core.common.config.base.DialogConfig
-import com.unitx.signal_core.common.theme.SignalThemeResolver
+import com.unitx.signal_core.contract.config.base.DialogConfig
+import com.unitx.signal_core.theme.SignalThemeResolver
 import com.unitx.signal_core.databinding.SignalDialogBinding
 import com.unitx.signal_core.provider.ActivityProvider
 

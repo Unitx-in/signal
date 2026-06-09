@@ -1,4 +1,4 @@
-package com.unitx.signal_core.common.theme
+package com.unitx.signal_core.theme
 
 class SignalTheme {
     var light: SignalColorScheme = SignalColorScheme()

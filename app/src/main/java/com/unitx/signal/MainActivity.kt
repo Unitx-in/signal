@@ -19,13 +19,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.unitx.signal.ui.theme.SignalTheme
-import com.unitx.signal_core.common.type.DialogType
-import com.unitx.signal_core.common.position.IconPosition
-import com.unitx.signal_core.common.position.SnackPosition
-import com.unitx.signal_core.common.type.SnackType
-import com.unitx.signal_core.common.position.ToastPosition
-import com.unitx.signal_core.common.type.ToastType
-import com.unitx.signal_core.launcher.Signal
+import com.unitx.signal_core.contract.type.DialogType
+import com.unitx.signal_core.contract.position.IconPosition
+import com.unitx.signal_core.contract.position.SnackPosition
+import com.unitx.signal_core.contract.type.SnackType
+import com.unitx.signal_core.contract.position.ToastPosition
+import com.unitx.signal_core.contract.type.ToastType
+import com.unitx.signal_core.main.Signal
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

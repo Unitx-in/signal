@@ -2,9 +2,9 @@ package com.unitx.signal
 
 import android.app.Application
 import android.graphics.Color
-import com.unitx.signal_core.common.position.SnackPosition
-import com.unitx.signal_core.launcher.Signal
-import com.unitx.signal_core.common.position.ToastPosition
+import com.unitx.signal_core.contract.position.SnackPosition
+import com.unitx.signal_core.main.Signal
+import com.unitx.signal_core.contract.position.ToastPosition
 
 class MyApp : Application() {
     override fun onCreate() {

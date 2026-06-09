@@ -10,7 +10,7 @@
 //import androidx.constraintlayout.widget.ConstraintLayout
 //import com.unitx.signal_core.R
 //import com.unitx.signal_core.common.SignalHandler
-//import com.unitx.signal_core.queue.SignalQueue
+//import com.unitx.signal_core.feature.SignalQueue
 //import com.unitx.signal_core.common.config.base.BannerConfig
 //import com.unitx.signal_core.core.SignalHost
 //

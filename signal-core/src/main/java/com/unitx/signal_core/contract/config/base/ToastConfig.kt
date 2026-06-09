@@ -1,9 +1,9 @@
-package com.unitx.signal_core.common.config.base
+package com.unitx.signal_core.contract.config.base
 
 import androidx.annotation.DrawableRes
-import com.unitx.signal_core.common.position.IconPosition
-import com.unitx.signal_core.common.position.ToastPosition
-import com.unitx.signal_core.common.type.ToastType
+import com.unitx.signal_core.contract.position.IconPosition
+import com.unitx.signal_core.contract.position.ToastPosition
+import com.unitx.signal_core.contract.type.ToastType
 
 class ToastConfig {
     var duration: Long = 2000L

@@ -1,9 +1,9 @@
-package com.unitx.signal_core.common.config
+package com.unitx.signal_core.contract.config
 
-import com.unitx.signal_core.common.config.base.DialogConfig
-import com.unitx.signal_core.common.config.base.SnackConfig
-import com.unitx.signal_core.common.config.base.ToastConfig
-import com.unitx.signal_core.common.theme.SignalTheme
+import com.unitx.signal_core.contract.config.base.DialogConfig
+import com.unitx.signal_core.contract.config.base.SnackConfig
+import com.unitx.signal_core.contract.config.base.ToastConfig
+import com.unitx.signal_core.theme.SignalTheme
 
 class SignalConfig {
     internal val snackConfig = SnackConfig()

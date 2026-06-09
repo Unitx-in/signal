@@ -1,4 +1,4 @@
-package com.unitx.signal_core.common.theme
+package com.unitx.signal_core.theme
 
 import android.graphics.Color
 import androidx.core.graphics.toColorInt

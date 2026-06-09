@@ -1,6 +1,5 @@
-package com.unitx.signal_core.common.type
+package com.unitx.signal_core.contract.type
 
-import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import com.unitx.signal_core.R
 

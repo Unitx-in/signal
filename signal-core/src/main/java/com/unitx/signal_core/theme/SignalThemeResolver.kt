@@ -1,4 +1,4 @@
-package com.unitx.signal_core.common.theme
+package com.unitx.signal_core.theme
 
 import android.content.Context
 import android.content.res.Configuration

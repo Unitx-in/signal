@@ -1,4 +1,4 @@
-package com.unitx.signal_core.common.type
+package com.unitx.signal_core.contract.type
 
 sealed class LoadingAnimation {
     object Default : LoadingAnimation()

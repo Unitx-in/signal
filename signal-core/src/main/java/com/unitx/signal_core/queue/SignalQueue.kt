@@ -1,13 +1,6 @@
 package com.unitx.signal_core.queue
 
 class SignalQueue {
-
-    data class QueueEntry(
-        val show: () -> Unit,
-        val dismiss: () -> Unit,
-        val isShowing: () -> Boolean
-    )
-
     private val queue = ArrayDeque<QueueEntry>()
     private var current: QueueEntry? = null
 

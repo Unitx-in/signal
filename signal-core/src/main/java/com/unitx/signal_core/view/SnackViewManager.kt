@@ -13,10 +13,10 @@ import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.unitx.signal_core.common.config.base.SnackConfig
-import com.unitx.signal_core.common.theme.SignalThemeResolver
-import com.unitx.signal_core.common.position.SnackPosition
-import com.unitx.signal_core.common.type.SnackType
+import com.unitx.signal_core.contract.config.base.SnackConfig
+import com.unitx.signal_core.theme.SignalThemeResolver
+import com.unitx.signal_core.contract.position.SnackPosition
+import com.unitx.signal_core.contract.type.SnackType
 import com.unitx.signal_core.databinding.SignalSnackBinding
 import com.unitx.signal_core.provider.ActivityProvider
 

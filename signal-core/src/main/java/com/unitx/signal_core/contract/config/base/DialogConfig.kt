@@ -1,7 +1,7 @@
-package com.unitx.signal_core.common.config.base
+package com.unitx.signal_core.contract.config.base
 
 import androidx.annotation.DrawableRes
-import com.unitx.signal_core.common.type.DialogType
+import com.unitx.signal_core.contract.type.DialogType
 
 class DialogConfig {
 

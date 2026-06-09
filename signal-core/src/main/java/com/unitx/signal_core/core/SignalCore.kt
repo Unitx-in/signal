@@ -1,12 +1,12 @@
 package com.unitx.signal_core.core
 
 import android.app.Application
-import com.unitx.signal_core.common.config.SignalConfig
-import com.unitx.signal_core.common.theme.SignalThemeResolver
+import com.unitx.signal_core.contract.config.SignalConfig
+import com.unitx.signal_core.theme.SignalThemeResolver
 import com.unitx.signal_core.handler.DialogHandler
 import com.unitx.signal_core.handler.ToastHandler
-import com.unitx.signal_core.common.helper.SignalAnimator
-import com.unitx.signal_core.common.helper.SignalDismissScheduler
+import com.unitx.signal_core.helper.SignalAnimator
+import com.unitx.signal_core.helper.SignalDismissScheduler
 import com.unitx.signal_core.view.DialogViewManager
 import com.unitx.signal_core.handler.SnackHandler
 import com.unitx.signal_core.view.SnackViewManager

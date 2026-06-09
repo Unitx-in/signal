@@ -1,7 +1,7 @@
-package com.unitx.signal_core.common.config.base
+package com.unitx.signal_core.contract.config.base
 
-import com.unitx.signal_core.common.position.BannerPosition
-import com.unitx.signal_core.common.type.SignalType
+import com.unitx.signal_core.contract.position.BannerPosition
+import com.unitx.signal_core.contract.type.SignalType
 
 class BannerConfig {
     var type: SignalType = SignalType.Info

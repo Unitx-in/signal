@@ -1,12 +1,12 @@
-package com.unitx.signal_core.common.helper
+package com.unitx.signal_core.helper
 
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import androidx.core.view.doOnLayout
-import com.unitx.signal_core.common.position.SnackPosition
+import com.unitx.signal_core.contract.position.SnackPosition
 
-object SignalAnimator {
+internal object SignalAnimator {
 
     fun fadeIn(container: View) {
         container.visibility = View.VISIBLE
