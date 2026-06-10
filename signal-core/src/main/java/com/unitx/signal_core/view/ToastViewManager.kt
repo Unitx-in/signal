@@ -121,6 +121,7 @@ internal class ToastViewManager(
         val b = binding ?: return
 
         b.toastText.text = message
+        b.toastContainer.contentDescription = config.accessibilityText ?: message
 
         val icon: Drawable? = config.iconRes?.let {
             ContextCompat.getDrawable(b.root.context, it)?.apply {

@@ -110,6 +110,7 @@ internal class DialogViewManager(
         val b = binding ?: return
 
         b.dialogTitle.text = config.title
+        b.dialogCard.contentDescription = config.accessibilityText ?: "${config.title}. ${config.message}"
         b.dialogMessage.text = config.message
         b.dialogClose.setOnClickListener { onDismiss() }
         b.dialogIcon.setImageResource(config.icon ?: config.type.icon)

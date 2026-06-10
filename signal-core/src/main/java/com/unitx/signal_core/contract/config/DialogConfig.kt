@@ -24,6 +24,7 @@ class DialogConfig {
 
     var onShown: (() -> Unit)? = null
     var onDismissed: (() -> Unit)? = null
+    var accessibilityText: String? = null
 
     fun positive(label: String, block: () -> Unit) { positive = label to block }
     fun negative(label: String, block: () -> Unit = {}) { negative = label to block }
@@ -46,5 +47,6 @@ class DialogConfig {
         it.dismissOnNegative = dismissOnNegative
         it.onShown = onShown
         it.onDismissed = onDismissed
+        it.accessibilityText = accessibilityText
     }
 }

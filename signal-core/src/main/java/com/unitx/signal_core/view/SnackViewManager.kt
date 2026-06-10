@@ -100,7 +100,8 @@ internal class SnackViewManager(
         val b = binding ?: return
 
         b.snackText.text = config.message
-        b.snackIcon.setImageResource(config.type?.icon ?: SnackType.Companion.default.icon)
+        b.snackContainer.contentDescription = config.accessibilityText ?: config.message
+        b.snackIcon.setImageResource(config.type.icon)
 
         config.action?.let { (label, block) ->
             b.snackActionCustom.visibility = View.VISIBLE

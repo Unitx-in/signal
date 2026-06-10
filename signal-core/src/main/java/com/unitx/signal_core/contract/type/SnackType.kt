@@ -11,8 +11,4 @@ enum class SnackType(@DrawableRes val icon: Int, @ColorRes val iconBackLight: In
     Info(R.drawable.ic_signal_info, R.color.signalLightBlue, R.color.signalBlue),
     Success(R.drawable.ic_signal_success, R.color.signalLightGreen, R.color.signalGreen)
     ;
-
-    companion object {
-        val default = Info
-    }
 }

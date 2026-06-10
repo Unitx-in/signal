@@ -16,6 +16,7 @@ class SnackConfig {
 
     var onShown: (() -> Unit)? = null
     var onDismissed: (() -> Unit)? = null
+    var accessibilityText: String? = null
 
     internal var action: Pair<String, () -> Unit>? = null
     fun action(label: String, block: () -> Unit) { action = label to block }
@@ -33,5 +34,6 @@ class SnackConfig {
         it.tag = tag
         it.onShown = onShown
         it.onDismissed = onDismissed
+        it.accessibilityText = accessibilityText
     }
 }

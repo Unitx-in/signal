@@ -18,6 +18,7 @@ class ToastConfig {
     var iconPosition: IconPosition = IconPosition.Start
     var onShown: (() -> Unit)? = null
     var onDismissed: (() -> Unit)? = null
+    var accessibilityText: String? = null
 
     internal fun copy(): ToastConfig = ToastConfig().also {
         it.duration = duration
@@ -31,5 +32,6 @@ class ToastConfig {
         it.bottomOffset = bottomOffset
         it.onShown = onShown
         it.onDismissed = onDismissed
+        it.accessibilityText = accessibilityText
     }
 }
