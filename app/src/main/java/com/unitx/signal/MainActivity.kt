@@ -197,6 +197,7 @@ fun ToastScreen() {
 
         Button(onClick = {
             Signal.toast("Low storage warning") {
+                tag = "lowStorage"
                 type = ToastType.Warning
                 position = ToastPosition.Top
             }

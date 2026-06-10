@@ -20,6 +20,8 @@ internal class ToastHandler(
     private var currentConfig: ToastConfig = globalConfig.copy()
     private val destroyListener: (Activity) -> Unit = { release() }
 
+    private var currentTag: String? = null
+
     init {
         activityProvider.addOnDestroyListener(destroyListener)
     }
@@ -31,7 +33,10 @@ internal class ToastHandler(
 
     fun show(message: String, block: ToastConfig.() -> Unit) {
         val config = globalConfig.copy().apply(block)
-        currentConfig = config
+
+        if (config.tag != null && config.tag == currentTag) return
+
+        currentTag = config.tag
 
         queue.enqueue(
             show = { display(message, config) },
@@ -45,10 +50,14 @@ internal class ToastHandler(
         if (!attached) return
         val container = viewManager.container ?: return
         animator.fadeIn(container)
+        if (config.dismissOnTap) {
+            container.setOnClickListener { dismiss() }
+        }
         scheduler.schedule(config.duration) { dismiss() }
     }
 
     fun dismiss() {
+        currentTag = null
         scheduler.cancel()
         val container = viewManager.container ?: run { queue.next(); return }
         animator.fadeOut(container) {
