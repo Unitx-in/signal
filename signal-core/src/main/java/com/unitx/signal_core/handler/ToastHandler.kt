@@ -4,6 +4,7 @@ import android.app.Activity
 import com.unitx.signal_core.contract.config.ToastConfig
 import com.unitx.signal_core.helper.SignalAnimator
 import com.unitx.signal_core.helper.SignalDismissScheduler
+import com.unitx.signal_core.helper.ensureMainThread
 import com.unitx.signal_core.provider.ActivityProvider
 import com.unitx.signal_core.queue.SignalQueue
 import com.unitx.signal_core.view.ToastViewManager
@@ -32,6 +33,7 @@ internal class ToastHandler(
     fun show(message: String) = show(message) {}
 
     fun show(message: String, block: ToastConfig.() -> Unit) {
+        ensureMainThread()
         val config = globalConfig.copy().apply(block)
 
         if (config.tag != null && config.tag == currentTag) return
@@ -46,10 +48,12 @@ internal class ToastHandler(
     }
 
     private fun display(message: String, config: ToastConfig) {
+        currentConfig = config
         val attached = viewManager.attach(config, message)
         if (!attached) return
         val container = viewManager.container ?: return
         animator.fadeIn(container)
+        config.onShown?.invoke()
         if (config.dismissOnTap) {
             container.setOnClickListener { dismiss() }
         }
@@ -61,6 +65,7 @@ internal class ToastHandler(
         scheduler.cancel()
         val container = viewManager.container ?: run { queue.next(); return }
         animator.fadeOut(container) {
+            currentConfig.onDismissed?.invoke()
             queue.next()
         }
     }

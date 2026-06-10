@@ -14,6 +14,9 @@ class SnackConfig {
     var type: SnackType = SnackType.Info
     var showCancelAction: Boolean = true
 
+    var onShown: (() -> Unit)? = null
+    var onDismissed: (() -> Unit)? = null
+
     internal var action: Pair<String, () -> Unit>? = null
     fun action(label: String, block: () -> Unit) { action = label to block }
 
@@ -28,5 +31,7 @@ class SnackConfig {
         it.showCancelAction = showCancelAction
         it.action = action
         it.tag = tag
+        it.onShown = onShown
+        it.onDismissed = onDismissed
     }
 }

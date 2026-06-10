@@ -12,7 +12,7 @@ import com.unitx.signal_core.handler.SnackHandler
 import com.unitx.signal_core.view.SnackViewManager
 import com.unitx.signal_core.view.ToastViewManager
 import com.unitx.signal_core.provider.ActivityProvider
-import com.unitx.signal_core.contract.type.QueueType
+import com.unitx.signal_core.queue.QueueStrategy
 import com.unitx.signal_core.queue.SignalQueue
 
 internal class SignalCore (
@@ -48,9 +48,9 @@ internal class SignalCore (
         scheduler = SignalDismissScheduler()
     )
 
-    private fun getRequiredQueue() = when (globalConfig.queueType) {
-        QueueType.Independent -> SignalQueue()
-        QueueType.GlobalSequential -> sharedQueue
+    private fun getRequiredQueue() = when (globalConfig.queueStrategy) {
+        QueueStrategy.Independent -> SignalQueue()
+        QueueStrategy.GlobalSequential -> sharedQueue
     }
 
 }

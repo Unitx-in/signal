@@ -16,6 +16,8 @@ class ToastConfig {
     @DrawableRes
     var iconRes: Int? = null
     var iconPosition: IconPosition = IconPosition.Start
+    var onShown: (() -> Unit)? = null
+    var onDismissed: (() -> Unit)? = null
 
     internal fun copy(): ToastConfig = ToastConfig().also {
         it.duration = duration
@@ -27,5 +29,7 @@ class ToastConfig {
         it.tag = tag
         it.topOffset = topOffset
         it.bottomOffset = bottomOffset
+        it.onShown = onShown
+        it.onDismissed = onDismissed
     }
 }

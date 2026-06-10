@@ -6,6 +6,7 @@ import androidx.activity.OnBackPressedCallback
 import com.unitx.signal_core.contract.config.SnackConfig
 import com.unitx.signal_core.helper.SignalAnimator
 import com.unitx.signal_core.helper.SignalDismissScheduler
+import com.unitx.signal_core.helper.ensureMainThread
 import com.unitx.signal_core.provider.ActivityProvider
 import com.unitx.signal_core.queue.SignalQueue
 import com.unitx.signal_core.view.SnackViewManager
@@ -36,6 +37,7 @@ internal class SnackHandler(
     fun show(message: String) = show(message) {}
 
     fun show(message: String, block: SnackConfig.() -> Unit) {
+        ensureMainThread()
         val config = globalConfig.copy().apply(block)
         config.message = message
 
@@ -49,9 +51,9 @@ internal class SnackHandler(
         )
     }
 
-    private fun display(localConfig: SnackConfig) {
-        currentConfig = localConfig
-        val attached = viewManager.attach(localConfig, onDismiss = { dismiss() })
+    private fun display(config: SnackConfig) {
+        currentConfig = config
+        val attached = viewManager.attach(config, onDismiss = { dismiss() })
         if (!attached) return
 
         if (currentConfig.dismissOnBackPress) {
@@ -65,8 +67,9 @@ internal class SnackHandler(
         }
 
         val container = viewManager.container ?: return
-        animator.slideIn(container, localConfig.position)
-        scheduler.schedule(localConfig.duration) { dismiss() }
+        animator.slideIn(container, config.position)
+        config.onShown?.invoke()
+        scheduler.schedule(config.duration) { dismiss() }
     }
 
     fun dismiss() {
@@ -76,6 +79,7 @@ internal class SnackHandler(
         scheduler.cancel()
         val container = viewManager.container ?: run { queue.next(); return }
         animator.slideOut(container, currentConfig.position) {
+            currentConfig.onDismissed?.invoke()
             queue.next()
         }
     }

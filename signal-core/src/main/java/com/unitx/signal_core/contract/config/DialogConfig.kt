@@ -22,6 +22,9 @@ class DialogConfig {
     var dismissOnNegative: Boolean = true
     var dismissOnNeutral: Boolean = true
 
+    var onShown: (() -> Unit)? = null
+    var onDismissed: (() -> Unit)? = null
+
     fun positive(label: String, block: () -> Unit) { positive = label to block }
     fun negative(label: String, block: () -> Unit = {}) { negative = label to block }
     fun neutral(label: String, block: () -> Unit = {}) { neutral = label to block }
@@ -41,5 +44,7 @@ class DialogConfig {
         it.neutral = neutral
         it.dismissOnPositive = dismissOnPositive
         it.dismissOnNegative = dismissOnNegative
+        it.onShown = onShown
+        it.onDismissed = onDismissed
     }
 }

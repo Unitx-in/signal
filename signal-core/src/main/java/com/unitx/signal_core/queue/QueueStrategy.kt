@@ -1,6 +1,6 @@
-package com.unitx.signal_core.contract.type
+package com.unitx.signal_core.queue
 
-enum class QueueType {
+enum class QueueStrategy {
     /**
      * Each signal type (Toast, Snack, Dialog) manages its own independent queue.
      * A toast inside a dialog's action will show immediately without waiting for the dialog to dismiss.

@@ -6,6 +6,7 @@ import androidx.activity.OnBackPressedCallback
 import com.unitx.signal_core.contract.config.DialogConfig
 import com.unitx.signal_core.helper.SignalAnimator
 import com.unitx.signal_core.helper.SignalDismissScheduler
+import com.unitx.signal_core.helper.ensureMainThread
 import com.unitx.signal_core.provider.ActivityProvider
 import com.unitx.signal_core.queue.SignalQueue
 import com.unitx.signal_core.view.DialogViewManager
@@ -31,6 +32,7 @@ internal class DialogHandler(
         get() = viewManager.isShowing
 
     fun show(block: DialogConfig.() -> Unit) {
+        ensureMainThread()
         val config = globalConfig.copy().apply(block)
 
         queue.enqueue(
@@ -47,6 +49,7 @@ internal class DialogHandler(
 
         val card = viewManager.container ?: return
         animator.scaleIn(card)
+        config.onShown?.invoke()
 
         if (config.autoDismiss) {
             scheduler.schedule(config.autoDismissDuration) { dismiss() }
@@ -69,6 +72,7 @@ internal class DialogHandler(
         val card = viewManager.container ?: run { queue.next(); return }
         animator.scaleOut(card) {
             viewManager.release {
+                currentConfig.onDismissed?.invoke()
                 queue.next()
             }
         }
