@@ -4,6 +4,7 @@ import com.unitx.signal_core.contract.position.SnackPosition
 import com.unitx.signal_core.contract.type.SnackType
 
 class SnackConfig {
+    var tag: String? = null
     var message: String = ""
     var duration: Long = 2500L
     var dismissOnBackPress: Boolean = false
@@ -26,5 +27,6 @@ class SnackConfig {
         it.type = type
         it.showCancelAction = showCancelAction
         it.action = action
+        it.tag = tag
     }
 }

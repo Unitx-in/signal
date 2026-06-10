@@ -24,6 +24,8 @@ internal class SnackHandler(
 
     private var backPressCallback: OnBackPressedCallback? = null
 
+    private var currentTag: String? = null
+
     init {
         activityProvider.addOnDestroyListener(destroyListener)
     }
@@ -36,6 +38,9 @@ internal class SnackHandler(
     fun show(message: String, block: SnackConfig.() -> Unit) {
         val config = globalConfig.copy().apply(block)
         config.message = message
+
+        if (config.tag != null && config.tag == currentTag) return
+        currentTag = config.tag
 
         queue.enqueue(
             show = { display(config) },
@@ -65,6 +70,7 @@ internal class SnackHandler(
     }
 
     fun dismiss() {
+        currentTag = null
         backPressCallback?.remove()
         backPressCallback = null
         scheduler.cancel()

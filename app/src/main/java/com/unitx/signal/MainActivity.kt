@@ -160,6 +160,7 @@ fun SnackScreen() {
             Signal.snack("File uploaded") {
                 type = SnackType.Error
                 showCancelAction = false
+                tag = "fileUploaded"
                 action("Cancel") { Log.i("Snackbar", "View Action Pressed") }
             }
         }) { Text("Error Snack") }
