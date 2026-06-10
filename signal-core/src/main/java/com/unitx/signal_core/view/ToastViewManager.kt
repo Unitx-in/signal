@@ -52,14 +52,14 @@ internal class ToastViewManager(
             )
         }
 
-        applyPosition(config.position)
+        applyPosition(config.position, config.topOffset, config.bottomOffset)
         bind(message, config)
         applyTheme(activity, config)
 
         return true
     }
 
-    private fun applyPosition(position: ToastPosition) {
+    private fun applyPosition(position: ToastPosition, topOffset: Int, bottomOffset: Int) {
         val root = binding?.root ?: return
         val layoutParams = root.layoutParams as FrameLayout.LayoutParams
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL or when (position) {
@@ -75,8 +75,8 @@ internal class ToastViewManager(
             params.topMargin = 0
             params.bottomMargin = 0
             when (position) {
-                ToastPosition.Bottom -> params.bottomMargin = systemBars.bottom + dpToPx(view.context, 24)
-                ToastPosition.Top -> params.topMargin = systemBars.top + dpToPx(view.context, 24)
+                ToastPosition.Bottom -> params.bottomMargin = systemBars.bottom + dpToPx(view.context, 24) + bottomOffset
+                ToastPosition.Top -> params.topMargin = systemBars.top + dpToPx(view.context, 24) + topOffset
                 ToastPosition.Center -> {}
             }
             view.layoutParams = params

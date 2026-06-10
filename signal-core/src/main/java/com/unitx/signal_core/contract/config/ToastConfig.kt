@@ -11,6 +11,8 @@ class ToastConfig {
     var position: ToastPosition = ToastPosition.Bottom
     var type: ToastType = ToastType.Info
     var dismissOnTap: Boolean = true
+    var topOffset: Int = 0
+    var bottomOffset: Int = 0
     @DrawableRes
     var iconRes: Int? = null
     var iconPosition: IconPosition = IconPosition.Start
@@ -23,5 +25,7 @@ class ToastConfig {
         it.iconPosition = iconPosition
         it.dismissOnTap = dismissOnTap
         it.tag = tag
+        it.topOffset = topOffset
+        it.bottomOffset = bottomOffset
     }
 }
