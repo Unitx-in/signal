@@ -1,5 +1,6 @@
 package com.unitx.signal_core.contract.config
 
+import com.unitx.signal_core.contract.model.SignalAction
 import com.unitx.signal_core.contract.position.SnackPosition
 import com.unitx.signal_core.contract.type.SnackType
 
@@ -20,8 +21,13 @@ class SnackConfig {
 
     var persistent: Boolean = false
 
-    internal var action: Pair<String, () -> Unit>? = null
-    fun action(label: String, block: () -> Unit) { action = label to block }
+    internal var action: SignalAction? = null
+    fun action(label: String, onClick: () -> Unit) {
+        action = SignalAction(
+            label = label,
+            onClick = onClick
+        )
+    }
 
     internal fun copy(): SnackConfig = SnackConfig().also {
         it.message = message

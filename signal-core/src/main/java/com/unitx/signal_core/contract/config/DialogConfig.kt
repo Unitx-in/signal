@@ -1,18 +1,20 @@
 package com.unitx.signal_core.contract.config
 
 import androidx.annotation.DrawableRes
+import com.unitx.signal_core.contract.model.SignalAction
 import com.unitx.signal_core.contract.type.DialogType
 
 class DialogConfig {
 
-    internal var positive: Pair<String, () -> Unit>? = null
-    internal var negative: Pair<String, () -> Unit>? = null
-    internal var neutral: Pair<String, () -> Unit>? = null
+    internal var positive: SignalAction? = null
+    internal var negative: SignalAction? = null
+    internal var neutral: SignalAction? = null
 
     var title: String = ""
     var message: String = ""
     var header: String = ""
-    @DrawableRes var icon: Int? = null
+    @DrawableRes
+    var icon: Int? = null
     var type: DialogType = DialogType.Default
     var cancelable: Boolean = false
     var horizontalMargin: Int = 24
@@ -26,9 +28,26 @@ class DialogConfig {
     var onDismissed: (() -> Unit)? = null
     var accessibilityText: String? = null
 
-    fun positive(label: String, block: () -> Unit) { positive = label to block }
-    fun negative(label: String, block: () -> Unit = {}) { negative = label to block }
-    fun neutral(label: String, block: () -> Unit = {}) { neutral = label to block }
+    fun positive(label: String, onClick: () -> Unit) {
+        positive = SignalAction(
+            label = label,
+            onClick = onClick
+        )
+    }
+
+    fun negative(label: String, onClick: () -> Unit = {}) {
+        negative = SignalAction(
+            label = label,
+            onClick = onClick
+        )
+    }
+
+    fun neutral(label: String, onClick: () -> Unit = {}) {
+        neutral = SignalAction(
+            label = label,
+            onClick = onClick
+        )
+    }
 
     internal fun copy(): DialogConfig = DialogConfig().also {
         it.title = title

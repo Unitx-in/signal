@@ -102,11 +102,11 @@ internal class SnackViewManager(
         b.snackContainer.contentDescription = config.accessibilityText ?: config.message
         b.snackIcon.setImageResource(config.type.icon)
 
-        config.action?.let { (label, block) ->
+        config.action?.let { (label, onClick) ->
             b.snackActionCustom.visibility = View.VISIBLE
             b.snackActionCustom.text = label
             b.snackActionCustom.setOnClickListener {
-                block()
+                onClick()
                 onDismiss()
             }
         } ?: run {

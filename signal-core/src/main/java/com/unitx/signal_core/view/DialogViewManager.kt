@@ -122,33 +122,33 @@ internal class DialogViewManager(
         }
 
 
-        config.positive?.let { (label, block) ->
+        config.positive?.let { (label, onClick) ->
             b.dialogPrimaryBtn.visibility = View.VISIBLE
             b.dialogPrimaryBtn.text = label
             b.dialogPrimaryBtn.setOnClickListener {
-                block()
+                onClick()
                 if (config.dismissOnPositive) onDismiss()
             }
         } ?: run {
             b.dialogPrimaryBtn.visibility = View.GONE
         }
 
-        config.negative?.let { (label, block) ->
+        config.negative?.let { (label, onClick) ->
             b.dialogSecondaryBtn.visibility = View.VISIBLE
             b.dialogSecondaryBtn.text = label
             b.dialogSecondaryBtn.setOnClickListener {
-                block()
+                onClick()
                 if (config.dismissOnNegative) onDismiss()
             }
         } ?: run {
             b.dialogSecondaryBtn.visibility = View.GONE
         }
 
-        config.neutral?.let { (label , block) ->
+        config.neutral?.let { (label , onClick) ->
             b.dialogNeutralText.visibility = View.VISIBLE
             b.dialogNeutralText.text = label
             b.dialogNeutralText.setOnClickListener {
-                block()
+                onClick()
                 if (config.dismissOnNeutral) onDismiss()
             }
         } ?: run {
