@@ -18,6 +18,8 @@ class SnackConfig {
     var onDismissed: (() -> Unit)? = null
     var accessibilityText: String? = null
 
+    var persistent: Boolean = false
+
     internal var action: Pair<String, () -> Unit>? = null
     fun action(label: String, block: () -> Unit) { action = label to block }
 
@@ -35,5 +37,6 @@ class SnackConfig {
         it.onShown = onShown
         it.onDismissed = onDismissed
         it.accessibilityText = accessibilityText
+        it.persistent = persistent
     }
 }

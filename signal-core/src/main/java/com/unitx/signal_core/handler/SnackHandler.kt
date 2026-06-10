@@ -69,7 +69,9 @@ internal class SnackHandler(
         val container = viewManager.container ?: return
         animator.slideIn(container, config.position)
         config.onShown?.invoke()
-        scheduler.schedule(config.duration) { dismiss() }
+        if (!config.persistent) {
+            scheduler.schedule(config.duration) { dismiss() }
+        }
     }
 
     fun dismiss() {

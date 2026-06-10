@@ -1,6 +1,5 @@
 package com.unitx.signal_core.view
 
-import android.R
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.PorterDuff
@@ -91,7 +90,7 @@ internal class SnackViewManager(
         }
 
         val iconBackgroundColor = if (isNight) type.iconBackDark else type.iconBackLight
-        if (isNight) b.snackIcon.imageTintList = ContextCompat.getColorStateList(b.root.context, R.color.white)
+        if (isNight) b.snackIcon.imageTintList = ContextCompat.getColorStateList(b.root.context, android.R.color.white)
         else b.snackIcon.clearColorFilter()
         b.snackIcon.backgroundTintList = ContextCompat.getColorStateList(b.root.context, iconBackgroundColor)
     }
@@ -115,7 +114,8 @@ internal class SnackViewManager(
             b.snackActionCustom.setOnClickListener(null)
         }
 
-        b.snackActionCancel.visibility = if (config.showCancelAction) View.VISIBLE else View.GONE
+        val showCancel = config.persistent || config.showCancelAction
+        b.snackActionCancel.visibility = if (showCancel) View.VISIBLE else View.GONE
         b.snackActionCancel.setOnClickListener { onDismiss() }
     }
 
