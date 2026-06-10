@@ -12,39 +12,45 @@ import com.unitx.signal_core.handler.SnackHandler
 import com.unitx.signal_core.view.SnackViewManager
 import com.unitx.signal_core.view.ToastViewManager
 import com.unitx.signal_core.provider.ActivityProvider
+import com.unitx.signal_core.contract.type.QueueType
 import com.unitx.signal_core.queue.SignalQueue
 
-class SignalCore internal constructor(
-    app: Application,
-    config: SignalConfig
+internal class SignalCore (
+    app: Application, private val globalConfig: SignalConfig
 ) {
 
     private val activityProvider = ActivityProvider(app)
-    private val queue = SignalQueue()
-    private val themeResolver = SignalThemeResolver(config.theme)
+    private val sharedQueue = SignalQueue()
+    private val themeResolver = SignalThemeResolver(globalConfig.theme)
 
     internal val toastHandler = ToastHandler(
         activityProvider = activityProvider,
-        globalConfig = config.toastConfig,
-        queue = queue,
+        globalConfig = globalConfig.toastConfig,
+        queue = getRequiredQueue(),
         viewManager = ToastViewManager(activityProvider, themeResolver),
         animator = SignalAnimator,
-        scheduler = SignalDismissScheduler
+        scheduler = SignalDismissScheduler()
     )
     internal val snackHandler = SnackHandler(
         activityProvider = activityProvider,
-        globalConfig = config.snackConfig,
-        queue = queue,
+        globalConfig = globalConfig.snackConfig,
+        queue = getRequiredQueue(),
         viewManager = SnackViewManager(activityProvider, themeResolver),
         animator = SignalAnimator,
-        scheduler = SignalDismissScheduler
+        scheduler = SignalDismissScheduler()
     )
     internal val dialogHandler = DialogHandler(
         activityProvider = activityProvider,
-        globalConfig = config.dialogConfig,
-        queue = queue,
+        globalConfig = globalConfig.dialogConfig,
+        queue = getRequiredQueue(),
         viewManager = DialogViewManager(activityProvider, themeResolver),
         animator = SignalAnimator,
-        scheduler = SignalDismissScheduler
+        scheduler = SignalDismissScheduler()
     )
+
+    private fun getRequiredQueue() = when (globalConfig.queueType) {
+        QueueType.Independent -> SignalQueue()
+        QueueType.GlobalSequential -> sharedQueue
+    }
+
 }

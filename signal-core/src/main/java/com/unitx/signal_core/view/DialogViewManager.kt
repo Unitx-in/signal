@@ -8,9 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import com.unitx.signal_core.R
-import com.unitx.signal_core.contract.config.base.DialogConfig
+import com.unitx.signal_core.contract.config.DialogConfig
 import com.unitx.signal_core.theme.SignalThemeResolver
 import com.unitx.signal_core.databinding.SignalDialogBinding
 import com.unitx.signal_core.provider.ActivityProvider
@@ -82,35 +83,27 @@ internal class DialogViewManager(
 
     private fun applyTheme(context: Context, config: DialogConfig) {
         val b = binding ?: return
-
         val scheme = themeResolver.resolve(context)
         val type = config.type
 
-        val headerColor = scheme.dialogSecondaryColor ?: ContextCompat.getColor(context, type.secondaryColor)
-        val headingColor = scheme.dialogPrimaryColor ?: ContextCompat.getColor(context, type.primaryColor)
+        fun color(@ColorRes res: Int) = ContextCompat.getColor(context, res)
+        val primary = scheme.dialogPrimaryColor ?: color(type.primaryColor)
+        val secondary = scheme.dialogSecondaryColor ?: color(type.secondaryColor)
+        val textColor = scheme.dialogTextColor ?: color(R.color.signalBlack)
+        val primaryBtnTextColor = scheme.dialogPrimaryButtonTextColor ?: color(android.R.color.white)
 
-        val titleColor = scheme.dialogTextColor ?: ContextCompat.getColor(context, R.color.signalBlack)
-        val messageColor = scheme.dialogTextColor ?: ContextCompat.getColor(context, R.color.signalBlack)
-        val iconColor = scheme.dialogPrimaryColor ?: ContextCompat.getColor(context, type.primaryColor)
-
-        val bgColor = scheme.dialogBackground ?: ContextCompat.getColor(context, android.R.color.white)
-        val closeButtonColor = scheme.dialogPrimaryColor ?: ContextCompat.getColor(context, type.primaryColor)
-
-        val primaryBtnBackColor = scheme.dialogPrimaryColor ?: ContextCompat.getColor(context, type.primaryColor)
-        val primaryBtnTextColor = scheme.dialogPrimaryButtonTextColor ?: ContextCompat.getColor(context, android.R.color.white)
-        val secondaryBtnTextColor = scheme.dialogPrimaryColor ?: ContextCompat.getColor(context, type.primaryColor)
-
-        b.dialogCard.setCardBackgroundColor(bgColor)
-        b.dialogHeaderBg.setBackgroundColor(headerColor)
-        b.dialogHeaderLabel.setTextColor(headingColor)
-        b.dialogClose.imageTintList = ColorStateList.valueOf(closeButtonColor)
-        b.dialogIcon.imageTintList = ColorStateList.valueOf(iconColor)
-        b.dialogTitle.setTextColor(titleColor)
-        b.dialogMessage.setTextColor(messageColor)
-        (b.dialogPrimaryBtn.background as? GradientDrawable)?.setColor(primaryBtnBackColor)
+        b.dialogCard.setCardBackgroundColor(scheme.dialogBackground ?: color(android.R.color.white))
+        b.dialogHeaderBg.setBackgroundColor(secondary)
+        b.dialogHeaderLabel.setTextColor(primary)
+        b.dialogClose.imageTintList = ColorStateList.valueOf(primary)
+        b.dialogIcon.imageTintList = ColorStateList.valueOf(primary)
+        b.dialogTitle.setTextColor(textColor)
+        b.dialogMessage.setTextColor(textColor)
+        (b.dialogPrimaryBtn.background as? GradientDrawable)?.setColor(primary)
         b.dialogPrimaryBtn.setTextColor(primaryBtnTextColor)
-        (b.dialogSecondaryBtn.background as? GradientDrawable)?.setStroke(1, secondaryBtnTextColor)
-        b.dialogSecondaryBtn.setTextColor(secondaryBtnTextColor)
+        (b.dialogSecondaryBtn.background as? GradientDrawable)?.setStroke(1, primary)
+        b.dialogSecondaryBtn.setTextColor(primary)
+        b.dialogNeutralText.setTextColor(primary)
     }
 
     private fun bind(config: DialogConfig, onDismiss: () -> Unit) {
@@ -131,7 +124,10 @@ internal class DialogViewManager(
         config.positive?.let { (label, block) ->
             b.dialogPrimaryBtn.visibility = View.VISIBLE
             b.dialogPrimaryBtn.text = label
-            b.dialogPrimaryBtn.setOnClickListener { block(); onDismiss() }
+            b.dialogPrimaryBtn.setOnClickListener {
+                block()
+                if (config.dismissOnPositive) onDismiss()
+            }
         } ?: run {
             b.dialogPrimaryBtn.visibility = View.GONE
         }
@@ -139,9 +135,23 @@ internal class DialogViewManager(
         config.negative?.let { (label, block) ->
             b.dialogSecondaryBtn.visibility = View.VISIBLE
             b.dialogSecondaryBtn.text = label
-            b.dialogSecondaryBtn.setOnClickListener { block(); onDismiss() }
+            b.dialogSecondaryBtn.setOnClickListener {
+                block()
+                if (config.dismissOnNegative) onDismiss()
+            }
         } ?: run {
             b.dialogSecondaryBtn.visibility = View.GONE
+        }
+
+        config.neutral?.let { (label , block) ->
+            b.dialogNeutralText.visibility = View.VISIBLE
+            b.dialogNeutralText.text = label
+            b.dialogNeutralText.setOnClickListener {
+                block()
+                if (config.dismissOnNeutral) onDismiss()
+            }
+        } ?: run {
+            b.dialogNeutralText.visibility = View.GONE
         }
     }
 

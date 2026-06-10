@@ -3,7 +3,7 @@ package com.unitx.signal_core.helper
 import android.os.Handler
 import android.os.Looper
 
-internal object SignalDismissScheduler {
+internal class SignalDismissScheduler {
 
     private val mainHandler = Handler(Looper.getMainLooper())
     private var dismissRunnable: Runnable? = null

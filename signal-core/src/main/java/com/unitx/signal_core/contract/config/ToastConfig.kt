@@ -1,4 +1,4 @@
-package com.unitx.signal_core.contract.config.base
+package com.unitx.signal_core.contract.config
 
 import androidx.annotation.DrawableRes
 import com.unitx.signal_core.contract.position.IconPosition

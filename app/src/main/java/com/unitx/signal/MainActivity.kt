@@ -69,7 +69,13 @@ fun DialogScreen() {
                 title = "Successful purchase!"
                 message = "Your order has been placed and will arrive in 3-5 business days."
                 type = DialogType.Positive
-                positive("Got it") { Log.i("Dialog", "Confirmed") }
+                dismissOnPositive = false
+                positive("Got it") {
+                    Signal.toast("Working") {
+                        type = ToastType.Success
+                        position = ToastPosition.Bottom
+                    }
+                }
             }
         }) { Text("Success Dialog") }
 
@@ -80,6 +86,7 @@ fun DialogScreen() {
                 type = DialogType.Error
                 positive("Delete") { Log.i("Dialog", "Deleted") }
                 negative("Cancel")
+                neutral("Know more") { Log.i("Dialog", "Neutral") }
             }
         }) { Text("Error Dialog with Actions") }
 
@@ -89,8 +96,12 @@ fun DialogScreen() {
                 message = "You are running low on storage. Consider clearing some space."
                 type = DialogType.Action
                 cancelable = true
+                dismissOnNegative = false
+                dismissOnPositive = false
                 positive("Clear now") { Log.i("Dialog", "Clear pressed") }
-                negative("Dismiss")
+                negative("Dismiss") {
+                    Signal.dismissDialog()
+                }
             }
         }) { Text("Warning cancelable") }
 

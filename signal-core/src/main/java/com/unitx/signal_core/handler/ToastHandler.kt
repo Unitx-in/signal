@@ -1,7 +1,7 @@
 package com.unitx.signal_core.handler
 
 import android.app.Activity
-import com.unitx.signal_core.contract.config.base.ToastConfig
+import com.unitx.signal_core.contract.config.ToastConfig
 import com.unitx.signal_core.helper.SignalAnimator
 import com.unitx.signal_core.helper.SignalDismissScheduler
 import com.unitx.signal_core.provider.ActivityProvider

@@ -1,10 +1,10 @@
 package com.unitx.signal_core.main
 
 import android.app.Application
-import com.unitx.signal_core.contract.config.base.DialogConfig
+import com.unitx.signal_core.contract.config.DialogConfig
 import com.unitx.signal_core.contract.config.SignalConfig
-import com.unitx.signal_core.contract.config.base.SnackConfig
-import com.unitx.signal_core.contract.config.base.ToastConfig
+import com.unitx.signal_core.contract.config.SnackConfig
+import com.unitx.signal_core.contract.config.ToastConfig
 import com.unitx.signal_core.core.SignalCore
 
 object Signal {
@@ -26,4 +26,8 @@ object Signal {
     }
 
     fun dialog(block: DialogConfig.() -> Unit) = core.dialogHandler.show(block)
+
+    fun dismissDialog() {
+        core.dialogHandler.dismiss()
+    }
 }

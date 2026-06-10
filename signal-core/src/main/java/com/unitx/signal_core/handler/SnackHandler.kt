@@ -3,7 +3,7 @@ package com.unitx.signal_core.handler
 import android.app.Activity
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
-import com.unitx.signal_core.contract.config.base.SnackConfig
+import com.unitx.signal_core.contract.config.SnackConfig
 import com.unitx.signal_core.helper.SignalAnimator
 import com.unitx.signal_core.helper.SignalDismissScheduler
 import com.unitx.signal_core.provider.ActivityProvider

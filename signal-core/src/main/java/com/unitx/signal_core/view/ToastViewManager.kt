@@ -13,7 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.unitx.signal_core.R
-import com.unitx.signal_core.contract.config.base.ToastConfig
+import com.unitx.signal_core.contract.config.ToastConfig
 import com.unitx.signal_core.theme.SignalThemeResolver
 import com.unitx.signal_core.contract.position.IconPosition
 import com.unitx.signal_core.contract.position.ToastPosition

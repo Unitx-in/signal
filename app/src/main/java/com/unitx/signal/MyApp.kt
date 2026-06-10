@@ -5,11 +5,13 @@ import android.graphics.Color
 import com.unitx.signal_core.contract.position.SnackPosition
 import com.unitx.signal_core.main.Signal
 import com.unitx.signal_core.contract.position.ToastPosition
+import com.unitx.signal_core.contract.type.QueueType
 
 class MyApp : Application() {
     override fun onCreate() {
         super.onCreate()
         Signal.createCore(this) {
+            setQueueType(QueueType.Independent)
             theme {
                 light {
                     snackBackground = Color.WHITE
@@ -28,7 +30,6 @@ class MyApp : Application() {
             toast {
                 position = ToastPosition.Bottom
             }
-
         }
     }
 }
