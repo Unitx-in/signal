@@ -14,6 +14,9 @@ import com.unitx.signal_core.R
 import com.unitx.signal_core.contract.config.DialogConfig
 import com.unitx.signal_core.theme.SignalThemeResolver
 import com.unitx.signal_core.databinding.SignalDialogBinding
+import com.unitx.signal_core.helper.DimOverlay
+import com.unitx.signal_core.helper.dpToPx
+import com.unitx.signal_core.helper.rootViewGroup
 import com.unitx.signal_core.provider.ActivityProvider
 
 internal class DialogViewManager(
@@ -22,7 +25,7 @@ internal class DialogViewManager(
 ) {
 
     private var binding: SignalDialogBinding? = null
-    private var dimOverlay: View? = null
+    private val dim = DimOverlay()
 
     val container: View?
         get() = binding?.dialogCard
@@ -32,36 +35,13 @@ internal class DialogViewManager(
 
     fun attach(config: DialogConfig, onDismiss: () -> Unit): Boolean {
         val activity = activityProvider.current() ?: return false
-        val rootView = activity.window.decorView.rootView as? ViewGroup ?: return false
+        val rootView = activity.rootViewGroup() ?: return false
 
-        inflateDim(activity, rootView, config.cancelable, onDismiss)
+        dim.attach(activity, rootView, config.cancelable, onDismiss)
         inflateDialog(activity, rootView, config.horizontalMargin)
-
         applyTheme(activity, config)
         bind(config, onDismiss)
         return true
-    }
-
-    private fun inflateDim(
-        context: Context,
-        rootView: ViewGroup,
-        cancelable: Boolean,
-        onDismiss: () -> Unit
-    ) {
-        if (dimOverlay != null) return
-        dimOverlay = View(context).apply {
-            setBackgroundColor(0x99000000.toInt())
-            alpha = 0f
-            isClickable = true
-            isFocusable = true
-            animate().alpha(1f).setDuration(220).start()
-            layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
-            )
-            if (cancelable) setOnClickListener { onDismiss() }
-        }
-        rootView.addView(dimOverlay)
     }
 
     private fun inflateDialog(context: Context, rootView: ViewGroup, horizontalMargin: Int) {
@@ -74,7 +54,7 @@ internal class DialogViewManager(
                 FrameLayout.LayoutParams.WRAP_CONTENT
             ).apply {
                 gravity = Gravity.CENTER
-                val margin = (horizontalMargin * context.resources.displayMetrics.density).toInt()
+                val margin = context.dpToPx(horizontalMargin)
                 leftMargin = margin
                 rightMargin = margin
             }
@@ -115,12 +95,11 @@ internal class DialogViewManager(
         b.dialogClose.setOnClickListener { onDismiss() }
         b.dialogIcon.setImageResource(config.icon ?: config.type.icon)
 
-        config.header.takeIf { it.isNotBlank() }?.let { h->
+        config.header.takeIf { it.isNotBlank() }?.let { h ->
             b.dialogHeaderLabel.text = h
         } ?: run {
             b.dialogHeaderLabel.text = ContextCompat.getString(b.root.context, config.type.header)
         }
-
 
         config.positive?.let { (label, onClick) ->
             b.dialogPrimaryBtn.visibility = View.VISIBLE
@@ -129,9 +108,7 @@ internal class DialogViewManager(
                 onClick()
                 if (config.dismissOnPositive) onDismiss()
             }
-        } ?: run {
-            b.dialogPrimaryBtn.visibility = View.GONE
-        }
+        } ?: run { b.dialogPrimaryBtn.visibility = View.GONE }
 
         config.negative?.let { (label, onClick) ->
             b.dialogSecondaryBtn.visibility = View.VISIBLE
@@ -140,30 +117,24 @@ internal class DialogViewManager(
                 onClick()
                 if (config.dismissOnNegative) onDismiss()
             }
-        } ?: run {
-            b.dialogSecondaryBtn.visibility = View.GONE
-        }
+        } ?: run { b.dialogSecondaryBtn.visibility = View.GONE }
 
-        config.neutral?.let { (label , onClick) ->
+        config.neutral?.let { (label, onClick) ->
             b.dialogNeutralText.visibility = View.VISIBLE
             b.dialogNeutralText.text = label
             b.dialogNeutralText.setOnClickListener {
                 onClick()
                 if (config.dismissOnNeutral) onDismiss()
             }
-        } ?: run {
-            b.dialogNeutralText.visibility = View.GONE
-        }
+        } ?: run { b.dialogNeutralText.visibility = View.GONE }
     }
 
     fun release(onReleased: () -> Unit = {}) {
-        val rootView = activityProvider.current()?.window?.decorView?.rootView as? ViewGroup
-        dimOverlay?.animate()?.alpha(0f)?.setDuration(180)?.withEndAction {
+        val rootView = activityProvider.current()?.rootViewGroup()
+        dim.release(rootView) {
             binding?.root?.let { rootView?.removeView(it) }
-            dimOverlay?.let { rootView?.removeView(it) }
             binding = null
-            dimOverlay = null
             onReleased()
-        }?.start()
+        }
     }
 }

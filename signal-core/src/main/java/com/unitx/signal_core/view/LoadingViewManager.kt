@@ -12,6 +12,9 @@ import androidx.core.widget.ImageViewCompat
 import com.unitx.signal_core.contract.config.LoadingConfig
 import com.unitx.signal_core.contract.type.LoadingType
 import com.unitx.signal_core.databinding.SignalLoadingBinding
+import com.unitx.signal_core.helper.DimOverlay
+import com.unitx.signal_core.helper.dpToPx
+import com.unitx.signal_core.helper.rootViewGroup
 import com.unitx.signal_core.provider.ActivityProvider
 import com.unitx.signal_core.theme.SignalThemeResolver
 
@@ -21,7 +24,7 @@ internal class LoadingViewManager(
 ) {
 
     private var binding: SignalLoadingBinding? = null
-    private var dimOverlay: View? = null
+    private val dim = DimOverlay()
 
     val container: View?
         get() = binding?.root
@@ -31,36 +34,13 @@ internal class LoadingViewManager(
 
     fun attach(config: LoadingConfig, onDismiss: () -> Unit): Boolean {
         val activity = activityProvider.current() ?: return false
-        val rootView = activity.window.decorView.rootView as? ViewGroup ?: return false
+        val rootView = activity.rootViewGroup() ?: return false
 
-        inflateDim(activity, rootView, config.cancelable, onDismiss)
+        dim.attach(activity, rootView, config.cancelable, onDismiss)
         inflateLoading(activity, rootView, config.horizontalMargin)
-
         applyTheme(activity)
         bind(config)
         return true
-    }
-
-    private fun inflateDim(
-        context: Context,
-        rootView: ViewGroup,
-        cancelable: Boolean,
-        onDismiss: () -> Unit
-    ) {
-        if (dimOverlay != null) return
-        dimOverlay = View(context).apply {
-            setBackgroundColor(0x99000000.toInt())
-            alpha = 0f
-            isClickable = true
-            isFocusable = true
-            animate().alpha(1f).setDuration(220).start()
-            layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
-            )
-            if (cancelable) setOnClickListener { onDismiss() }
-        }
-        rootView.addView(dimOverlay)
     }
 
     private fun inflateLoading(context: Context, rootView: ViewGroup, horizontalMargin: Int) {
@@ -73,7 +53,7 @@ internal class LoadingViewManager(
                 FrameLayout.LayoutParams.WRAP_CONTENT
             ).apply {
                 gravity = Gravity.CENTER
-                val margin = (horizontalMargin * context.resources.displayMetrics.density).toInt()
+                val margin = context.dpToPx(horizontalMargin)
                 leftMargin = margin
                 rightMargin = margin
             }
@@ -142,13 +122,11 @@ internal class LoadingViewManager(
     }
 
     fun release(onReleased: () -> Unit = {}) {
-        val rootView = activityProvider.current()?.window?.decorView?.rootView as? ViewGroup
-        dimOverlay?.animate()?.alpha(0f)?.setDuration(180)?.withEndAction {
+        val rootView = activityProvider.current()?.rootViewGroup()
+        dim.release(rootView) {
             binding?.root?.let { rootView?.removeView(it) }
-            dimOverlay?.let { rootView?.removeView(it) }
             binding = null
-            dimOverlay = null
             onReleased()
-        }?.start()
+        }
     }
 }

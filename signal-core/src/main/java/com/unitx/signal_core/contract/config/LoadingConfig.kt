@@ -8,6 +8,8 @@ class LoadingConfig {
     var title: String = "Please wait a moment."
     var subtitle: String? = null
 
+    var simpleLoading: Boolean = false
+
     // Progress
     var type: LoadingType = LoadingType.Indefinite
     var progress: Int = 0                          // 0-100, used when type = Determinate
@@ -41,5 +43,6 @@ class LoadingConfig {
         it.horizontalMargin = horizontalMargin
         it.animationAttr = animationAttr
         it.accessibilityText = accessibilityText
+        it.simpleLoading = simpleLoading
     }
 }

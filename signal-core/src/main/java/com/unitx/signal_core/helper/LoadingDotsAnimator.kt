@@ -13,8 +13,8 @@ internal class LoadingDotsAnimator(
     private val dots: List<View>, private val config: LoadingAnimationAttr
 ) {
 
-    var activeColor: Int? = null
-    var inactiveColor: Int? = null
+    private var activeColor: Int? = null
+    private var inactiveColor: Int? = null
 
     private var running = false
 

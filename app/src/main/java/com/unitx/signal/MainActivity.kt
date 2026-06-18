@@ -247,10 +247,12 @@ fun LoadingScreen() {
 
         Button(onClick = {
             Signal.loading {
-                title = "Uploading files"
+                title = "Downloading files"
+                subtitle = "This may take a few seconds."
                 type = LoadingType.Determinate
                 progress = 0
-                progressMessage = "Starting upload..."
+                progressMessage = "Starting download..."
+                icon = com.unitx.signal_core.R.drawable.ic_download
             }
             // simulate progress
             var p = 0
@@ -258,8 +260,8 @@ fun LoadingScreen() {
             fun tick() {
                 if (p >= 100) { Signal.dismissLoading(); return }
                 p += 10
-                Signal.updateProgress(p, if (p == 100) "Upload complete!" else "Uploading files...")
-                handler.postDelayed(::tick, 500)
+                Signal.updateProgress(p, if (p == 100) "Download complete!" else "Downloading files...")
+                handler.postDelayed(::tick, 2000)
             }
             handler.postDelayed(::tick, 500)
         }) { Text("Determinate Loading") }

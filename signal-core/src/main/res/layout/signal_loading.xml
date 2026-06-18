@@ -21,8 +21,8 @@
 
     <ImageView
         android:id="@+id/cardIcon"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_gravity="center"
         android:src="@drawable/ic_signal_error"
         android:contentDescription="@string/loading_icon_desc"

@@ -7,6 +7,7 @@ import com.unitx.signal_core.contract.type.ToastType
 
 class ToastConfig {
     var tag: String? = null
+    var message: String = ""
     var duration: Long = 2000L
     var position: ToastPosition = ToastPosition.Bottom
     var type: ToastType = ToastType.Info
@@ -33,5 +34,6 @@ class ToastConfig {
         it.onShown = onShown
         it.onDismissed = onDismissed
         it.accessibilityText = accessibilityText
+        it.message = message
     }
 }

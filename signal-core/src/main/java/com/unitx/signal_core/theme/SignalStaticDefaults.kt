@@ -15,7 +15,7 @@ internal object SignalStaticDefaults {
         loadingTextColor= Color.BLACK,
         loadingAnimationActiveColor = Color.BLACK,
         loadingAnimationInactiveColor = Color.GRAY,
-        loadingIconColor = Color.WHITE,
+        loadingIconColor = Color.BLACK,
 
         bannerBackground = Color.WHITE,
         bannerTextColor = Color.BLACK,

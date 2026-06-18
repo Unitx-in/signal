@@ -35,21 +35,22 @@ internal class ToastHandler(
     fun show(message: String, block: ToastConfig.() -> Unit) {
         ensureMainThread()
         val config = globalConfig.copy().apply(block)
+        config.message = message
 
         if (config.tag != null && config.tag == currentTag) return
 
         currentTag = config.tag
 
         queue.enqueue(
-            show = { display(message, config) },
+            show = { display(config) },
             dismiss = { dismiss() },
             isShowing = { isShowing }
         )
     }
 
-    private fun display(message: String, config: ToastConfig) {
+    private fun display(config: ToastConfig) {
         currentConfig = config
-        val attached = viewManager.attach(config, message)
+        val attached = viewManager.attach(config) { dismiss() }
         if (!attached) return
         val container = viewManager.container ?: return
         animator.fadeIn(container)
