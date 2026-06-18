@@ -53,7 +53,7 @@ internal class SignalCore (
     internal val loadingHandler = LoadingHandler(
         activityProvider = activityProvider,
         globalConfig = globalConfig.loadingConfig,
-        viewManager = LoadingViewManager(activityProvider),
+        viewManager = LoadingViewManager(activityProvider, themeResolver),
         animator = SignalAnimator
     )
 

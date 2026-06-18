@@ -13,12 +13,16 @@ class SignalColorSchemeBuilder {
     @ColorInt var toastStrokeColor: Int? = null
     @ColorInt var toastIconColor: Int? = null
 
-    @ColorInt val dialogBackground: Int? = null
-    @ColorInt val dialogPrimaryColor: Int? = null
-    @ColorInt val dialogSecondaryColor: Int? = null
-    @ColorInt val dialogTextColor: Int? = null
-    @ColorInt val dialogPrimaryButtonTextColor : Int? = null
-
+    @ColorInt var dialogBackground: Int? = null
+    @ColorInt var dialogPrimaryColor: Int? = null
+    @ColorInt var dialogSecondaryColor: Int? = null
+    @ColorInt var dialogTextColor: Int? = null
+    @ColorInt var dialogPrimaryButtonTextColor : Int? = null
+    @ColorInt var loadingBackground: Triple<Int, Int, Int>? = null
+    @ColorInt var loadingTextColor: Int? = null
+    @ColorInt var loadingAnimationActiveColor : Int? = null
+    @ColorInt var loadingAnimationInactiveColor : Int? = null
+    @ColorInt var loadingIconColor : Int? = null
     @ColorInt var bannerBackground: Int? = null
     @ColorInt var bannerTextColor: Int? = null
 
@@ -38,5 +42,10 @@ class SignalColorSchemeBuilder {
         bannerTextColor = bannerTextColor,
         toastStrokeColor = toastStrokeColor,
         toastIconColor = toastIconColor,
+        loadingBackgroundGradient = loadingBackground,
+        loadingTextColor = loadingTextColor,
+        loadingAnimationActiveColor = loadingAnimationActiveColor,
+        loadingAnimationInactiveColor = loadingAnimationInactiveColor,
+        loadingIconColor = loadingIconColor,
     )
 }

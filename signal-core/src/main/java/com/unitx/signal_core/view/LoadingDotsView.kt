@@ -46,6 +46,12 @@ internal class LoadingDotsView @JvmOverloads constructor(
         createAnimator()
     }
 
+    fun applyColors(activeColor: Int, inactiveColor: Int) {
+        if (::animator.isInitialized) {
+            animator.updateColors(activeColor, inactiveColor)
+        }
+    }
+
     private fun createAnimator() {
 
         animator = LoadingDotsAnimator(

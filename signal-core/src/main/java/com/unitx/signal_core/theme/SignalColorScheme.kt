@@ -22,6 +22,12 @@ data class SignalColorScheme(
     @ColorInt val dialogTextColor: Int? = null,
     @ColorInt val dialogPrimaryButtonTextColor : Int? = null,
 
+    @ColorInt val loadingBackgroundGradient: Triple<Int, Int, Int>? = null,
+    @ColorInt val loadingTextColor: Int? = null,
+    @ColorInt val loadingAnimationActiveColor : Int? = null,
+    @ColorInt val loadingAnimationInactiveColor : Int? = null,
+    @ColorInt val loadingIconColor : Int? = null,
+
     @ColorInt val bannerBackground: Int? = null,
     @ColorInt val bannerTextColor: Int? = null,
 )

@@ -29,7 +29,7 @@ internal class LoadingHandler(
 
     fun show(block: LoadingConfig.() -> Unit = {}) {
         ensureMainThread()
-        if (isShowing) return          // loading doesn't queue — only one at a time
+        if (isShowing) return
         val config = globalConfig.copy().apply(block)
         display(config)
     }

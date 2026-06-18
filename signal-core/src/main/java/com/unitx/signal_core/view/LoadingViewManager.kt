@@ -1,18 +1,23 @@
 package com.unitx.signal_core.view
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.drawable.GradientDrawable
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.core.widget.ImageViewCompat
 import com.unitx.signal_core.contract.config.LoadingConfig
 import com.unitx.signal_core.contract.type.LoadingType
 import com.unitx.signal_core.databinding.SignalLoadingBinding
 import com.unitx.signal_core.provider.ActivityProvider
+import com.unitx.signal_core.theme.SignalThemeResolver
 
 internal class LoadingViewManager(
-    private val activityProvider: ActivityProvider
+    private val activityProvider: ActivityProvider,
+    private val themeResolver: SignalThemeResolver
 ) {
 
     private var binding: SignalLoadingBinding? = null
@@ -31,6 +36,7 @@ internal class LoadingViewManager(
         inflateDim(activity, rootView, config.cancelable, onDismiss)
         inflateLoading(activity, rootView, config.horizontalMargin)
 
+        applyTheme(activity)
         bind(config)
         return true
     }
@@ -79,9 +85,6 @@ internal class LoadingViewManager(
 
         b.tvTitle.text = config.title
         b.root.contentDescription = config.accessibilityText ?: config.title
-        b.loadingDots.apply {
-            animationConfig = config.animationAttr
-        }
 
         config.icon?.let {
             b.cardIcon.visibility = View.VISIBLE
@@ -91,6 +94,31 @@ internal class LoadingViewManager(
         }
 
         updateProgress(config)
+    }
+
+    private fun applyTheme(context: Context) {
+        val b = binding ?: return
+        val scheme = themeResolver.resolve(context)
+
+        scheme.loadingBackgroundGradient?.let { (start, center, end) ->
+            (b.root.background?.mutate() as? GradientDrawable)?.colors =
+                intArrayOf(start, center, end)
+        }
+
+        scheme.loadingTextColor?.let { color ->
+            b.tvTitle.setTextColor(color)
+            b.tvSubtitle.setTextColor(color)
+        }
+
+        scheme.loadingIconColor?.let { color ->
+            ImageViewCompat.setImageTintList(b.cardIcon, ColorStateList.valueOf(color))
+        }
+
+        val activeColor = scheme.loadingAnimationActiveColor
+        val inactiveColor = scheme.loadingAnimationInactiveColor
+        if (activeColor != null && inactiveColor != null) {
+            b.loadingDots.applyColors(activeColor, inactiveColor)
+        }
     }
 
     fun updateProgress(config: LoadingConfig) {

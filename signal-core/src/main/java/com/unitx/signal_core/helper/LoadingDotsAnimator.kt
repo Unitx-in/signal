@@ -11,8 +11,8 @@ import com.unitx.signal_core.contract.model.LoadingAnimationAttr
 
 internal class LoadingDotsAnimator(
     private val dots: List<View>,
-    private val activeColor: Int,
-    private val inactiveColor: Int,
+    private var activeColor: Int,
+    private var inactiveColor: Int,
     private val config: LoadingAnimationAttr
 ) {
 
@@ -54,6 +54,15 @@ internal class LoadingDotsAnimator(
             it.scaleY = config.inactiveScale
             it.alpha = config.inactiveAlpha
             tint(it.background, inactiveColor)
+        }
+    }
+
+    fun updateColors(activeColor: Int, inactiveColor: Int) {
+        this.activeColor = activeColor
+        this.inactiveColor = inactiveColor
+
+        if (!running) {
+            dots.forEach { tint(it.background, inactiveColor) }
         }
     }
 

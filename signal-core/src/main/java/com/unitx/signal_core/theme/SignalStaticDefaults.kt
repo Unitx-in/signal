@@ -11,6 +11,11 @@ internal object SignalStaticDefaults {
         snackCancelIconTint = Color.BLACK,
         dialogBackground = Color.WHITE,
         dialogPrimaryButtonTextColor = Color.WHITE,
+        loadingBackgroundGradient= Triple("#E8F3FA".toColorInt(), "#F0F7FF".toColorInt(), "#F8FBFF".toColorInt()),
+        loadingTextColor= Color.BLACK,
+        loadingAnimationActiveColor = Color.BLACK,
+        loadingAnimationInactiveColor = Color.GRAY,
+        loadingIconColor = Color.WHITE,
 
         bannerBackground = Color.WHITE,
         bannerTextColor = Color.BLACK,
@@ -23,6 +28,11 @@ internal object SignalStaticDefaults {
         snackCancelIconTint = Color.WHITE,
         dialogBackground = Color.WHITE,
         dialogPrimaryButtonTextColor = Color.WHITE,
+        loadingBackgroundGradient = Triple("#1E1E1E".toColorInt(), "#2C2C2C".toColorInt(), "#1E1E1E".toColorInt()),
+        loadingTextColor = Color.WHITE,
+        loadingAnimationActiveColor = Color.WHITE,
+        loadingAnimationInactiveColor = "#5A5A5A".toColorInt(),
+        loadingIconColor = Color.WHITE,
 
         bannerBackground = "#1E1E1E".toColorInt(),
         bannerTextColor = Color.WHITE,
@@ -41,6 +51,13 @@ internal object SignalStaticDefaults {
 
             bannerBackground = scheme.bannerBackground ?: defaults.bannerBackground,
             bannerTextColor = scheme.bannerTextColor ?: defaults.bannerTextColor,
+
+            loadingBackgroundGradient = scheme.loadingBackgroundGradient ?: defaults.loadingBackgroundGradient,
+            loadingTextColor = scheme.loadingTextColor ?: defaults.loadingTextColor,
+            loadingAnimationActiveColor = scheme.loadingAnimationActiveColor ?: defaults.loadingAnimationActiveColor,
+            loadingAnimationInactiveColor = scheme.loadingAnimationInactiveColor ?: defaults.loadingAnimationInactiveColor,
+            loadingIconColor = scheme.loadingIconColor ?: defaults.loadingIconColor,
+
 
             // Needs to be null if not defined in the global theme cofig
             snackIconBackground = scheme.snackIconBackground,
