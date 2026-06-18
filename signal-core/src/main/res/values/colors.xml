@@ -11,4 +11,5 @@
     <color name="signalYellow">#737427</color>
     <color name="signalBlack">#1d1d1d</color>
     <color name="signalDivider">#c1c1c1</color>
+    <color name="signalGray">#BDBDBD</color>
 </resources>

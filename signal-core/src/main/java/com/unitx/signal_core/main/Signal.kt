@@ -2,6 +2,7 @@ package com.unitx.signal_core.main
 
 import android.app.Application
 import com.unitx.signal_core.contract.config.DialogConfig
+import com.unitx.signal_core.contract.config.LoadingConfig
 import com.unitx.signal_core.contract.config.SignalConfig
 import com.unitx.signal_core.contract.config.SnackConfig
 import com.unitx.signal_core.contract.config.ToastConfig
@@ -30,4 +31,11 @@ object Signal {
     fun dismissDialog() {
         core.dialogHandler.dismiss()
     }
+
+    fun loading(block: LoadingConfig.() -> Unit = {}) = core.loadingHandler.show(block)
+
+    fun updateProgress(progress: Int, message: String? = null) =
+        core.loadingHandler.updateProgress(progress, message)
+
+    fun dismissLoading() = core.loadingHandler.dismiss()
 }

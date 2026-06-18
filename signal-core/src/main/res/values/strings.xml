@@ -7,5 +7,8 @@
     <string name="dialog_error_header">Error dialog</string>
     <string name="dialog_default_header">Default dialog</string>
     <string name="dialog_action_header">Action dialog</string>
+    <string name="loading_icon_desc">Loading Icon</string>
+    <string name="please_wait_a_moment">Please wait a moment</string>
+    <string name="processing_and_analyzing">Processing and analysing</string>
 
 </resources>

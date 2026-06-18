@@ -4,6 +4,7 @@ import android.app.Application
 import com.unitx.signal_core.contract.config.SignalConfig
 import com.unitx.signal_core.theme.SignalThemeResolver
 import com.unitx.signal_core.handler.DialogHandler
+import com.unitx.signal_core.handler.LoadingHandler
 import com.unitx.signal_core.handler.ToastHandler
 import com.unitx.signal_core.helper.SignalAnimator
 import com.unitx.signal_core.helper.SignalDismissScheduler
@@ -14,6 +15,7 @@ import com.unitx.signal_core.view.ToastViewManager
 import com.unitx.signal_core.provider.ActivityProvider
 import com.unitx.signal_core.queue.QueueStrategy
 import com.unitx.signal_core.queue.SignalQueue
+import com.unitx.signal_core.view.LoadingViewManager
 
 internal class SignalCore (
     app: Application, private val globalConfig: SignalConfig
@@ -46,6 +48,13 @@ internal class SignalCore (
         viewManager = DialogViewManager(activityProvider, themeResolver),
         animator = SignalAnimator,
         scheduler = SignalDismissScheduler()
+    )
+
+    internal val loadingHandler = LoadingHandler(
+        activityProvider = activityProvider,
+        globalConfig = globalConfig.loadingConfig,
+        viewManager = LoadingViewManager(activityProvider),
+        animator = SignalAnimator
     )
 
     private fun getRequiredQueue() = when (globalConfig.queueStrategy) {

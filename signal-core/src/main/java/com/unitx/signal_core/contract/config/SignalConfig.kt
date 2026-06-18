@@ -7,6 +7,8 @@ class SignalConfig {
     internal val snackConfig = SnackConfig()
     internal val toastConfig = ToastConfig()
     internal val dialogConfig = DialogConfig()
+    internal val loadingConfig = LoadingConfig()
+
     internal val theme = SignalTheme()
     internal var queueStrategy: QueueStrategy = QueueStrategy.default
 
@@ -15,4 +17,5 @@ class SignalConfig {
     fun dialog(block: DialogConfig.() -> Unit) { dialogConfig.apply(block) }
     fun theme(block: SignalTheme.() -> Unit) { theme.apply(block) }
     fun setQueueStrategy(strategy: QueueStrategy) { queueStrategy = strategy }
+    fun loading(block: LoadingConfig.() -> Unit) { loadingConfig.apply(block) }
 }

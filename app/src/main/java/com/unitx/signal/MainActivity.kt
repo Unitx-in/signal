@@ -31,9 +31,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.unitx.signal_core.contract.type.LoadingType
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -228,6 +228,73 @@ fun ToastScreen() {
     }
 }
 
+
+@Composable
+fun LoadingScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(onClick = {
+            Signal.loading {
+                title = "Please wait a moment."
+                subtitle = "We are processing your request."
+            }
+        }) { Text("Indefinite Loading") }
+
+        Button(onClick = {
+            Signal.loading {
+                title = "Uploading files"
+                type = LoadingType.Determinate
+                progress = 0
+                progressMessage = "Starting upload..."
+            }
+            // simulate progress
+            var p = 0
+            val handler = android.os.Handler(android.os.Looper.getMainLooper())
+            fun tick() {
+                if (p >= 100) { Signal.dismissLoading(); return }
+                p += 10
+                Signal.updateProgress(p, if (p == 100) "Upload complete!" else "Uploading files...")
+                handler.postDelayed(::tick, 500)
+            }
+            handler.postDelayed(::tick, 500)
+        }) { Text("Determinate Loading") }
+
+        Button(onClick = {
+            Signal.loading {
+                title = "Analyzing data"
+                subtitle = "This may take a few seconds."
+                cancelable = true
+                onCancelled = { Log.i("Loading", "User cancelled") }
+            }
+        }) { Text("Cancelable Loading") }
+
+        Button(onClick = {
+            Signal.loading {
+                title = "Please wait"
+                dismissOnBackPress = true
+                onDismissed = { Log.i("Loading", "Dismissed") }
+            }
+        }) { Text("Dismiss on Back Press") }
+
+        Button(onClick = {
+            Signal.loading {
+                title = "Processing payment"
+                subtitle = "Do not close the app."
+                icon = com.unitx.signal_core.R.drawable.ic_signal_success
+            }
+        }) { Text("Loading with Icon") }
+
+        Button(onClick = {
+            Signal.dismissLoading()
+        }) { Text("Dismiss Loading") }
+    }
+}
+
 @Composable
 fun SignalTestScreen() {
     var selected by remember { mutableIntStateOf(0) }
@@ -240,7 +307,7 @@ fun SignalTestScreen() {
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            listOf("Toast", "Snack", "Dialog").forEachIndexed { index, label ->
+            listOf("Toast", "Snack", "Dialog", "Loading").forEachIndexed { index, label ->
                 Button(
                     onClick = { selected = index },
                     modifier = Modifier.weight(1f),
@@ -254,7 +321,7 @@ fun SignalTestScreen() {
                         else
                             MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                ) { Text(label) }
+                ) { Text(label, maxLines = 1) }
             }
         }
 
@@ -262,6 +329,7 @@ fun SignalTestScreen() {
             0 -> ToastScreen()
             1 -> SnackScreen()
             2 -> DialogScreen()
+            3 -> LoadingScreen()
         }
     }
 }
