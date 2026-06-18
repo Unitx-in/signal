@@ -10,11 +10,11 @@ import androidx.core.graphics.drawable.DrawableCompat
 import com.unitx.signal_core.contract.model.LoadingAnimationAttr
 
 internal class LoadingDotsAnimator(
-    private val dots: List<View>,
-    private var activeColor: Int,
-    private var inactiveColor: Int,
-    private val config: LoadingAnimationAttr
+    private val dots: List<View>, private val config: LoadingAnimationAttr
 ) {
+
+    var activeColor: Int? = null
+    var inactiveColor: Int? = null
 
     private var running = false
 
@@ -25,14 +25,12 @@ internal class LoadingDotsAnimator(
 
             dots.forEachIndexed { index, dot ->
                 animateDot(
-                    dot = dot,
-                    delay = index * config.dotStartDelay
+                    dot = dot, delay = index * config.dotStartDelay
                 )
             }
 
             dots.firstOrNull()?.postDelayed(
-                this,
-                config.animationLoopDelay
+                this, config.animationLoopDelay
             )
         }
     }
@@ -67,32 +65,19 @@ internal class LoadingDotsAnimator(
     }
 
     private fun animateDot(
-        dot: View,
-        delay: Long
+        dot: View, delay: Long
     ) {
 
         val scaleX = ObjectAnimator.ofFloat(
-            dot,
-            View.SCALE_X,
-            config.inactiveScale,
-            config.activeScale,
-            config.inactiveScale
+            dot, View.SCALE_X, config.inactiveScale, config.activeScale, config.inactiveScale
         )
 
         val scaleY = ObjectAnimator.ofFloat(
-            dot,
-            View.SCALE_Y,
-            config.inactiveScale,
-            config.activeScale,
-            config.inactiveScale
+            dot, View.SCALE_Y, config.inactiveScale, config.activeScale, config.inactiveScale
         )
 
         val alpha = ObjectAnimator.ofFloat(
-            dot,
-            View.ALPHA,
-            config.inactiveAlpha,
-            config.activeAlpha,
-            config.inactiveAlpha
+            dot, View.ALPHA, config.inactiveAlpha, config.activeAlpha, config.inactiveAlpha
         )
 
         ValueAnimator.ofFloat(0f, 1f).apply {
@@ -100,11 +85,8 @@ internal class LoadingDotsAnimator(
             startDelay = delay
 
             addUpdateListener { animator ->
-                val color =
-                    if (animator.animatedFraction < 0.5f)
-                        activeColor
-                    else
-                        inactiveColor
+                val color = if (animator.animatedFraction < 0.5f) activeColor
+                else inactiveColor
 
                 tint(dot.background, color)
             }
@@ -122,10 +104,9 @@ internal class LoadingDotsAnimator(
     }
 
     private fun tint(
-        drawable: Drawable?,
-        color: Int
+        drawable: Drawable?, color: Int?
     ) {
-        drawable ?: return
+        if (drawable == null || color == null) return
         DrawableCompat.setTint(drawable.mutate(), color)
     }
 }
