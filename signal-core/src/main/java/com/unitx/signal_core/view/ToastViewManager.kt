@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.ColorInt
 import androidx.appcompat.view.ContextThemeWrapper
@@ -17,7 +16,7 @@ import com.unitx.signal_core.contract.position.IconPosition
 import com.unitx.signal_core.contract.position.ToastPosition
 import com.unitx.signal_core.databinding.SignalToastBinding
 import com.unitx.signal_core.helper.applyInsetPosition
-import com.unitx.signal_core.helper.dpToPx
+import com.unitx.signal_core.helper.dp
 import com.unitx.signal_core.helper.rootViewGroup
 import com.unitx.signal_core.provider.ActivityProvider
 
@@ -82,7 +81,7 @@ internal class ToastViewManager(
             ?: ContextCompat.getColor(context, type.foregroundColor)
 
         b.toastContainer.setCardBackgroundColor(backgroundColor)
-        b.toastContainer.strokeWidth = context.dpToPx(2)
+        b.toastContainer.strokeWidth = context.dp(2)
         b.toastContainer.strokeColor = strokeColor
         b.toastText.setTextColor(textColor)
         b.toastText.compoundDrawables.forEach { it?.setTint(iconColor) }
@@ -96,7 +95,7 @@ internal class ToastViewManager(
 
         val icon: Drawable? = config.iconRes?.let {
             ContextCompat.getDrawable(b.root.context, it)?.apply {
-                val size = b.root.context.dpToPx(18)
+                val size = b.root.context.dp(18)
                 setBounds(0, 0, size, size)
             }
         }
@@ -107,7 +106,7 @@ internal class ToastViewManager(
             if (config.iconPosition == IconPosition.End) icon else null,
             if (config.iconPosition == IconPosition.Bottom) icon else null
         )
-        b.toastText.compoundDrawablePadding = if (icon != null) b.root.context.dpToPx(8) else 0
+        b.toastText.compoundDrawablePadding = if (icon != null) b.root.context.dp(8) else 0
     }
 
     fun release() {

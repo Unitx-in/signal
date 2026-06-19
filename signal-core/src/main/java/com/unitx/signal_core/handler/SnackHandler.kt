@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import com.unitx.signal_core.contract.config.SnackConfig
+import com.unitx.signal_core.helper.BackPressHandler
 import com.unitx.signal_core.helper.SignalAnimator
 import com.unitx.signal_core.helper.SignalDismissScheduler
 import com.unitx.signal_core.helper.ensureMainThread
@@ -23,7 +24,7 @@ internal class SnackHandler(
     private var currentConfig: SnackConfig = globalConfig.copy()
     private val destroyListener: (Activity) -> Unit = { release() }
 
-    private var backPressCallback: OnBackPressedCallback? = null
+    private val backPressHandler: BackPressHandler = BackPressHandler(activityProvider)
 
     private var currentTag: String? = null
 
@@ -57,13 +58,7 @@ internal class SnackHandler(
         if (!attached) return
 
         if (currentConfig.dismissOnBackPress) {
-            val activity = activityProvider.current() as? ComponentActivity
-            activity?.let {
-                backPressCallback = object : OnBackPressedCallback(true) {
-                    override fun handleOnBackPressed() { dismiss() }
-                }
-                it.onBackPressedDispatcher.addCallback(it, backPressCallback!!)
-            }
+            backPressHandler.register { dismiss() }
         }
 
         val container = viewManager.container ?: return
@@ -76,8 +71,7 @@ internal class SnackHandler(
 
     fun dismiss() {
         currentTag = null
-        backPressCallback?.remove()
-        backPressCallback = null
+        backPressHandler.unregister()
         scheduler.cancel()
         val container = viewManager.container ?: run { queue.next(); return }
         animator.slideOut(container, currentConfig.position) {
@@ -87,8 +81,7 @@ internal class SnackHandler(
     }
 
     private fun release() {
-        backPressCallback?.remove()
-        backPressCallback = null
+        backPressHandler.unregister()
         activityProvider.removeOnDestroyListener(destroyListener)
         scheduler.cancel()
         viewManager.release()

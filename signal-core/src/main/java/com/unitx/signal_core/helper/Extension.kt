@@ -14,5 +14,5 @@ internal fun ensureMainThread() {
 internal fun Activity.rootViewGroup(): ViewGroup? =
     window.decorView.rootView as? ViewGroup
 
-internal fun Context.dpToPx(dp: Int): Int =
+internal fun Context.dp(dp: Int): Int =
     (dp * resources.displayMetrics.density).toInt()

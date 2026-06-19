@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import com.unitx.signal_core.contract.config.DialogConfig
+import com.unitx.signal_core.helper.BackPressHandler
 import com.unitx.signal_core.helper.SignalAnimator
 import com.unitx.signal_core.helper.SignalDismissScheduler
 import com.unitx.signal_core.helper.ensureMainThread
@@ -21,7 +22,7 @@ internal class DialogHandler(
 ) {
 
     private var currentConfig: DialogConfig = DialogConfig()
-    private var backPressCallback: OnBackPressedCallback? = null
+    private val backPressHandler: BackPressHandler = BackPressHandler(activityProvider)
     private val destroyListener: (Activity) -> Unit = { release() }
 
     init {
@@ -56,17 +57,12 @@ internal class DialogHandler(
         }
 
         if (config.cancelable) {
-            val activity = activityProvider.current() as? ComponentActivity ?: return
-            backPressCallback = object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() { dismiss() }
-            }
-            activity.onBackPressedDispatcher.addCallback(activity, backPressCallback!!)
+            backPressHandler.register { dismiss() }
         }
     }
 
     fun dismiss() {
-        backPressCallback?.remove()
-        backPressCallback = null
+        backPressHandler.unregister()
         scheduler.cancel()
 
         val card = viewManager.container ?: run { queue.next(); return }
@@ -80,8 +76,7 @@ internal class DialogHandler(
 
     private fun release() {
         activityProvider.removeOnDestroyListener(destroyListener)
-        backPressCallback?.remove()
-        backPressCallback = null
+        backPressHandler.unregister()
         scheduler.cancel()
         viewManager.release()
         queue.clear()

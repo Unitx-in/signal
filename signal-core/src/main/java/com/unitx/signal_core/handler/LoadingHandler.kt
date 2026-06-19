@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import com.unitx.signal_core.contract.config.LoadingConfig
+import com.unitx.signal_core.helper.BackPressHandler
 import com.unitx.signal_core.helper.SignalAnimator
 import com.unitx.signal_core.helper.ensureMainThread
 import com.unitx.signal_core.provider.ActivityProvider
@@ -17,7 +18,8 @@ internal class LoadingHandler(
 ) {
 
     private var currentConfig: LoadingConfig = LoadingConfig()
-    private var backPressCallback: OnBackPressedCallback? = null
+
+    private val backPressHandler: BackPressHandler = BackPressHandler(activityProvider)
     private val destroyListener: (Activity) -> Unit = { release() }
 
     init {
@@ -43,8 +45,7 @@ internal class LoadingHandler(
     }
 
     fun dismiss() {
-        backPressCallback?.remove()
-        backPressCallback = null
+        backPressHandler.unregister()
 
         val container = viewManager.container ?: return
         animator.scaleOut(container) {
@@ -67,18 +68,13 @@ internal class LoadingHandler(
         config.onShown?.invoke()
 
         if (config.dismissOnBackPress) {
-            val activity = activityProvider.current() as? ComponentActivity ?: return
-            backPressCallback = object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() { dismiss() }
-            }
-            activity.onBackPressedDispatcher.addCallback(activity, backPressCallback!!)
+            backPressHandler.register { dismiss() }
         }
     }
 
     private fun release() {
         activityProvider.removeOnDestroyListener(destroyListener)
-        backPressCallback?.remove()
-        backPressCallback = null
+        backPressHandler.unregister()
         viewManager.release()
     }
 }

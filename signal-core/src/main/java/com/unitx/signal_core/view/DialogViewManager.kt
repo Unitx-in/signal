@@ -15,7 +15,7 @@ import com.unitx.signal_core.contract.config.DialogConfig
 import com.unitx.signal_core.theme.SignalThemeResolver
 import com.unitx.signal_core.databinding.SignalDialogBinding
 import com.unitx.signal_core.helper.DimOverlay
-import com.unitx.signal_core.helper.dpToPx
+import com.unitx.signal_core.helper.dp
 import com.unitx.signal_core.helper.rootViewGroup
 import com.unitx.signal_core.provider.ActivityProvider
 
@@ -54,7 +54,7 @@ internal class DialogViewManager(
                 FrameLayout.LayoutParams.WRAP_CONTENT
             ).apply {
                 gravity = Gravity.CENTER
-                val margin = context.dpToPx(horizontalMargin)
+                val margin = context.dp(horizontalMargin)
                 leftMargin = margin
                 rightMargin = margin
             }
