@@ -65,6 +65,7 @@ internal class LoadingViewManager(
 
         b.tvTitle.text = config.title
         b.root.contentDescription = config.accessibilityText ?: config.title
+        b.loadingDots.animationConfig = config.animationAttr
 
         config.icon?.let {
             b.cardIcon.visibility = View.VISIBLE

@@ -7,16 +7,12 @@ import com.unitx.signal_core.contract.type.LoadingType
 class LoadingConfig {
     var title: String = "Please wait a moment."
     var subtitle: String? = null
-
     var simpleLoading: Boolean = false
-
-    // Progress
     var type: LoadingType = LoadingType.Indefinite
     var progress: Int = 0                          // 0-100, used when type = Determinate
     var progressMessage: String? = null            // appended to progress: "10% · Uploading files"
 
-    // Icon
-    @DrawableRes var icon: Int? = null             // shown in center of lottie ring
+    @DrawableRes var icon: Int? = null
 
     var horizontalMargin: Int = 12
     var cancelable: Boolean = false
@@ -25,7 +21,6 @@ class LoadingConfig {
     var onDismissed: (() -> Unit)? = null
     var onCancelled: (() -> Unit)? = null
     var accessibilityText: String? = null
-
     var animationAttr: LoadingAnimationAttr = LoadingAnimationAttr()
 
     internal fun copy(): LoadingConfig = LoadingConfig().also {

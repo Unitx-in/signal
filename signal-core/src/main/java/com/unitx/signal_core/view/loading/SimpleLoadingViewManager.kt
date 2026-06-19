@@ -36,6 +36,7 @@ internal class SimpleLoadingViewManager(
         inflate(activity, rootView)
         applyTheme(activity)
         binding?.root?.contentDescription = config.accessibilityText ?: "Loading"
+        binding?.loadingDots?.animationConfig = config.animationAttr
         return true
     }
 
