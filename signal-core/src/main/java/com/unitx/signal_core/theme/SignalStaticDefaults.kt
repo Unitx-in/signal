@@ -16,6 +16,8 @@ internal object SignalStaticDefaults {
         loadingAnimationActiveColor = Color.BLACK,
         loadingAnimationInactiveColor = Color.GRAY,
         loadingIconColor = Color.BLACK,
+        loadingSimpleAnimationActiveColor = Color.WHITE,
+        loadingSimpleAnimationInactiveColor = "#757575".toColorInt(),
 
         bannerBackground = Color.WHITE,
         bannerTextColor = Color.BLACK,
@@ -33,6 +35,8 @@ internal object SignalStaticDefaults {
         loadingAnimationActiveColor = Color.WHITE,
         loadingAnimationInactiveColor = "#5A5A5A".toColorInt(),
         loadingIconColor = Color.WHITE,
+        loadingSimpleAnimationActiveColor = Color.WHITE,
+        loadingSimpleAnimationInactiveColor = "#757575".toColorInt(),
 
         bannerBackground = "#1E1E1E".toColorInt(),
         bannerTextColor = Color.WHITE,
@@ -57,9 +61,10 @@ internal object SignalStaticDefaults {
             loadingAnimationActiveColor = scheme.loadingAnimationActiveColor ?: defaults.loadingAnimationActiveColor,
             loadingAnimationInactiveColor = scheme.loadingAnimationInactiveColor ?: defaults.loadingAnimationInactiveColor,
             loadingIconColor = scheme.loadingIconColor ?: defaults.loadingIconColor,
+            loadingSimpleAnimationActiveColor = scheme.loadingSimpleAnimationActiveColor ?: defaults.loadingSimpleAnimationActiveColor,
+            loadingSimpleAnimationInactiveColor = scheme.loadingSimpleAnimationInactiveColor ?: defaults.loadingSimpleAnimationInactiveColor,
 
-
-            // Needs to be null if not defined in the global theme cofig
+            // Needs to be null if not defined in the global theme config as they are provided by config
             snackIconBackground = scheme.snackIconBackground,
             toastBackground = scheme.toastBackground,
             toastTextColor = scheme.toastTextColor,
@@ -67,7 +72,8 @@ internal object SignalStaticDefaults {
             toastIconColor = scheme.toastIconColor,
             dialogPrimaryColor = scheme.dialogPrimaryColor,
             dialogSecondaryColor = scheme.dialogSecondaryColor,
-            dialogTextColor = scheme.dialogTextColor
+            dialogTextColor = scheme.dialogTextColor,
+
         )
     }
 }

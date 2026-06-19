@@ -26,6 +26,8 @@ data class SignalColorScheme(
     @ColorInt val loadingTextColor: Int? = null,
     @ColorInt val loadingAnimationActiveColor : Int? = null,
     @ColorInt val loadingAnimationInactiveColor : Int? = null,
+    @ColorInt val loadingSimpleAnimationActiveColor : Int? = null,
+    @ColorInt val loadingSimpleAnimationInactiveColor : Int? = null,
     @ColorInt val loadingIconColor : Int? = null,
 
     @ColorInt val bannerBackground: Int? = null,

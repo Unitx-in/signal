@@ -1,4 +1,4 @@
-package com.unitx.signal_core.view
+package com.unitx.signal_core.view.loading
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -21,18 +21,18 @@ import com.unitx.signal_core.theme.SignalThemeResolver
 internal class LoadingViewManager(
     private val activityProvider: ActivityProvider,
     private val themeResolver: SignalThemeResolver
-) {
+): ILoadingViewManager {
 
     private var binding: SignalLoadingBinding? = null
     private val dim = DimOverlay()
 
-    val container: View?
+    override val container: View?
         get() = binding?.root
 
-    val isShowing: Boolean
+    override val isShowing: Boolean
         get() = binding?.root?.visibility == View.VISIBLE
 
-    fun attach(config: LoadingConfig, onDismiss: () -> Unit): Boolean {
+    override fun attach(config: LoadingConfig, onDismiss: () -> Unit): Boolean {
         val activity = activityProvider.current() ?: return false
         val rootView = activity.rootViewGroup() ?: return false
 
@@ -101,7 +101,7 @@ internal class LoadingViewManager(
         }
     }
 
-    fun updateProgress(config: LoadingConfig) {
+    override fun updateProgress(config: LoadingConfig) {
         val b = binding ?: return
 
         when (config.type) {
@@ -121,7 +121,7 @@ internal class LoadingViewManager(
         }
     }
 
-    fun release(onReleased: () -> Unit = {}) {
+    override fun release(onReleased: () -> Unit) {
         val rootView = activityProvider.current()?.rootViewGroup()
         dim.release(rootView) {
             binding?.root?.let { rootView?.removeView(it) }

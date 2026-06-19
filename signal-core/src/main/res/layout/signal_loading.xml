@@ -9,7 +9,7 @@
     android:layout_gravity="center"
     android:background="@drawable/loading_background">
 
-    <com.unitx.signal_core.view.LoadingDotsView
+    <com.unitx.signal_core.view.loading.LoadingDotsView
         android:id="@+id/loadingDots"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

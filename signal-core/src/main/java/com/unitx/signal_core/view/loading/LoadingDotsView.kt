@@ -1,4 +1,4 @@
-package com.unitx.signal_core.view
+package com.unitx.signal_core.view.loading
 
 import android.content.Context
 import android.util.AttributeSet

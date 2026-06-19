@@ -10,14 +10,15 @@ import com.unitx.signal_core.helper.SignalAnimator
 import com.unitx.signal_core.helper.SignalDismissScheduler
 import com.unitx.signal_core.view.DialogViewManager
 import com.unitx.signal_core.handler.SnackHandler
+import com.unitx.signal_core.view.loading.LoadingViewManager
+import com.unitx.signal_core.view.loading.SimpleLoadingViewManager
 import com.unitx.signal_core.view.SnackViewManager
 import com.unitx.signal_core.view.ToastViewManager
 import com.unitx.signal_core.provider.ActivityProvider
 import com.unitx.signal_core.queue.QueueStrategy
 import com.unitx.signal_core.queue.SignalQueue
-import com.unitx.signal_core.view.LoadingViewManager
 
-internal class SignalCore (
+internal class SignalCore(
     app: Application, private val globalConfig: SignalConfig
 ) {
 
@@ -33,6 +34,7 @@ internal class SignalCore (
         animator = SignalAnimator,
         scheduler = SignalDismissScheduler()
     )
+
     internal val snackHandler = SnackHandler(
         activityProvider = activityProvider,
         globalConfig = globalConfig.snackConfig,
@@ -41,6 +43,7 @@ internal class SignalCore (
         animator = SignalAnimator,
         scheduler = SignalDismissScheduler()
     )
+
     internal val dialogHandler = DialogHandler(
         activityProvider = activityProvider,
         globalConfig = globalConfig.dialogConfig,
@@ -53,7 +56,8 @@ internal class SignalCore (
     internal val loadingHandler = LoadingHandler(
         activityProvider = activityProvider,
         globalConfig = globalConfig.loadingConfig,
-        viewManager = LoadingViewManager(activityProvider, themeResolver),
+        advancedViewManager = LoadingViewManager(activityProvider, themeResolver),
+        simpleViewManager = SimpleLoadingViewManager(activityProvider, themeResolver),
         animator = SignalAnimator
     )
 
@@ -61,5 +65,4 @@ internal class SignalCore (
         QueueStrategy.Independent -> SignalQueue()
         QueueStrategy.GlobalSequential -> sharedQueue
     }
-
 }

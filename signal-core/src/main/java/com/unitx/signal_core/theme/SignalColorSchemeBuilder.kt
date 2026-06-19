@@ -22,6 +22,9 @@ class SignalColorSchemeBuilder {
     @ColorInt var loadingTextColor: Int? = null
     @ColorInt var loadingAnimationActiveColor : Int? = null
     @ColorInt var loadingAnimationInactiveColor : Int? = null
+
+    @ColorInt var loadingSimpleAnimationActiveColor : Int? = null
+    @ColorInt var loadingSimpleAnimationInactiveColor : Int? = null
     @ColorInt var loadingIconColor : Int? = null
     @ColorInt var bannerBackground: Int? = null
     @ColorInt var bannerTextColor: Int? = null
@@ -47,5 +50,7 @@ class SignalColorSchemeBuilder {
         loadingAnimationActiveColor = loadingAnimationActiveColor,
         loadingAnimationInactiveColor = loadingAnimationInactiveColor,
         loadingIconColor = loadingIconColor,
+        loadingSimpleAnimationActiveColor = loadingSimpleAnimationActiveColor,
+        loadingSimpleAnimationInactiveColor = loadingSimpleAnimationInactiveColor
     )
 }

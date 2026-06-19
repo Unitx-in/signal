@@ -221,7 +221,7 @@ fun ToastScreen() {
         }) { Text("Toast with Icon") }
 
         Button(onClick = {
-            Signal.toast("First")
+            Signal.toast("Firstf")
             Signal.toast("Second") { type = ToastType.Success }
             Signal.toast("Third") { type = ToastType.Error }
         }) { Text("Rapid Toasts") }
@@ -292,8 +292,8 @@ fun LoadingScreen() {
         }) { Text("Loading with Icon") }
 
         Button(onClick = {
-            Signal.dismissLoading()
-        }) { Text("Dismiss Loading") }
+            Signal.loading { simpleLoading = true; dismissOnBackPress = true }
+        }) { Text("Simple Loading") }
     }
 }
 
