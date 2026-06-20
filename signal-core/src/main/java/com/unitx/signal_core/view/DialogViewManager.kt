@@ -12,7 +12,7 @@ import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import com.unitx.signal_core.R
 import com.unitx.signal_core.contract.config.DialogConfig
-import com.unitx.signal_core.theme.SignalThemeResolver
+import com.unitx.signal_core.theme.ThemeResolver
 import com.unitx.signal_core.databinding.SignalDialogBinding
 import com.unitx.signal_core.helper.DimOverlay
 import com.unitx.signal_core.helper.dp
@@ -21,7 +21,7 @@ import com.unitx.signal_core.provider.ActivityProvider
 
 internal class DialogViewManager(
     private val activityProvider: ActivityProvider,
-    private val themeResolver: SignalThemeResolver
+    private val themeResolver: ThemeResolver
 ) {
 
     private var binding: SignalDialogBinding? = null

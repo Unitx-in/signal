@@ -1,7 +1,6 @@
 package com.unitx.signal_core.view.loading
 
 import android.content.Context
-import android.graphics.Color
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -12,11 +11,11 @@ import com.unitx.signal_core.databinding.SignalLoadingSimpleBinding
 import com.unitx.signal_core.helper.DimOverlay
 import com.unitx.signal_core.helper.rootViewGroup
 import com.unitx.signal_core.provider.ActivityProvider
-import com.unitx.signal_core.theme.SignalThemeResolver
+import com.unitx.signal_core.theme.ThemeResolver
 
 internal class SimpleLoadingViewManager(
     private val activityProvider: ActivityProvider,
-    private val themeResolver: SignalThemeResolver
+    private val themeResolver: ThemeResolver
 ) : ILoadingViewManager {
 
     private var binding: SignalLoadingSimpleBinding? = null

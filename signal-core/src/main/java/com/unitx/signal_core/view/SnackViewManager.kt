@@ -6,12 +6,11 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.unitx.signal_core.contract.config.SnackConfig
 import com.unitx.signal_core.contract.position.EdgePosition
-import com.unitx.signal_core.theme.SignalThemeResolver
+import com.unitx.signal_core.theme.ThemeResolver
 import com.unitx.signal_core.contract.position.SnackPosition
 import com.unitx.signal_core.contract.type.SnackType
 import com.unitx.signal_core.databinding.SignalSnackBinding
@@ -21,7 +20,7 @@ import com.unitx.signal_core.provider.ActivityProvider
 
 internal class SnackViewManager(
     private val activityProvider: ActivityProvider,
-    private val themeResolver: SignalThemeResolver
+    private val themeResolver: ThemeResolver
 ) {
 
     private var binding: SignalSnackBinding? = null

@@ -16,11 +16,11 @@ import com.unitx.signal_core.helper.DimOverlay
 import com.unitx.signal_core.helper.dp
 import com.unitx.signal_core.helper.rootViewGroup
 import com.unitx.signal_core.provider.ActivityProvider
-import com.unitx.signal_core.theme.SignalThemeResolver
+import com.unitx.signal_core.theme.ThemeResolver
 
 internal class LoadingViewManager(
     private val activityProvider: ActivityProvider,
-    private val themeResolver: SignalThemeResolver
+    private val themeResolver: ThemeResolver
 ): ILoadingViewManager {
 
     private var binding: SignalLoadingBinding? = null

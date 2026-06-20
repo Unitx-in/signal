@@ -2,7 +2,7 @@ package com.unitx.signal_core.core
 
 import android.app.Application
 import com.unitx.signal_core.contract.config.SignalConfig
-import com.unitx.signal_core.theme.SignalThemeResolver
+import com.unitx.signal_core.theme.ThemeResolver
 import com.unitx.signal_core.handler.DialogHandler
 import com.unitx.signal_core.handler.LoadingHandler
 import com.unitx.signal_core.handler.ToastHandler
@@ -24,7 +24,7 @@ internal class SignalCore(
 
     private val activityProvider = ActivityProvider(app)
     private val sharedQueue = SignalQueue()
-    private val themeResolver = SignalThemeResolver(globalConfig.theme)
+    private val themeResolver = ThemeResolver(globalConfig.theme)
 
     internal val toastHandler = ToastHandler(
         activityProvider = activityProvider,

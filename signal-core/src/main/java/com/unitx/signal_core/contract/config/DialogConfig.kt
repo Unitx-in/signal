@@ -4,49 +4,85 @@ import androidx.annotation.DrawableRes
 import com.unitx.signal_core.contract.model.SignalAction
 import com.unitx.signal_core.contract.type.DialogType
 
+/**
+ * Configuration for a dialog signal.
+ *
+ * Usage:
+ * ```
+ * Signal.dialog {
+ *     title = "Delete file?"
+ *     message = "This action cannot be undone."
+ *     type = DialogType.Warning
+ *     positive("Delete") { deleteFile() }
+ *     negative("Cancel")
+ * }
+ * ```
+ */
 class DialogConfig {
 
     internal var positive: SignalAction? = null
     internal var negative: SignalAction? = null
     internal var neutral: SignalAction? = null
 
+    /** Main heading of the dialog. */
     var title: String = ""
+
+    /** Body text shown below the title. */
     var message: String = ""
+
+    /** Optional label shown in the colored header strip. Defaults to the [type] label if blank. */
     var header: String = ""
+
+    /** Optional icon shown in the header. Defaults to the [type] icon if null. */
     @DrawableRes
     var icon: Int? = null
+
+    /** Visual style of the dialog — affects colors and default icon/header. Default: [DialogType.Default]. */
     var type: DialogType = DialogType.Default
+
+    /** If true, tapping outside the dialog dismisses it. Default: false. */
     var cancelable: Boolean = false
+
+    /** Horizontal margin from screen edges in dp. Default: 24. */
     var horizontalMargin: Int = 24
+
+    /** If true, dialog auto-dismisses after [autoDismissDuration] ms. Default: false. */
     var autoDismiss: Boolean = false
+
+    /** Duration in ms before auto-dismiss. Default: 4000. */
     var autoDismissDuration: Long = 4000L
+
+    /** If true, dialog dismisses when the positive button is tapped. Default: true. */
     var dismissOnPositive: Boolean = true
+
+    /** If true, dialog dismisses when the negative button is tapped. Default: true. */
     var dismissOnNegative: Boolean = true
+
+    /** If true, dialog dismisses when the neutral text is tapped. Default: true. */
     var dismissOnNeutral: Boolean = true
 
+    /** Called when the dialog becomes visible. */
     var onShown: (() -> Unit)? = null
+
+    /** Called when the dialog is dismissed for any reason. */
     var onDismissed: (() -> Unit)? = null
+
+    /** Overrides the default accessibility description. */
     var accessibilityText: String? = null
 
+    /** Adds a primary (filled) button. */
     fun positive(label: String, onClick: () -> Unit) {
-        positive = SignalAction(
-            label = label,
-            onClick = onClick
-        )
+        positive = SignalAction(label = label, onClick = onClick)
     }
 
+    /** Adds a secondary (outlined) button. */
     fun negative(label: String, onClick: () -> Unit = {}) {
-        negative = SignalAction(
-            label = label,
-            onClick = onClick
-        )
+        negative = SignalAction(label = label, onClick = onClick)
     }
 
+    /** Adds a text-only neutral action below the buttons. */
     fun neutral(label: String, onClick: () -> Unit = {}) {
-        neutral = SignalAction(
-            label = label,
-            onClick = onClick
-        )
+        neutral = SignalAction(label = label, onClick = onClick)
     }
 
     internal fun copy(): DialogConfig = DialogConfig().also {

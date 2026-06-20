@@ -3,8 +3,8 @@ package com.unitx.signal_core.theme
 import android.graphics.Color
 import androidx.core.graphics.toColorInt
 
-internal object SignalStaticDefaults {
-    val light = SignalColorScheme(
+internal object ThemeStaticDefaults {
+    val light = ColorScheme(
         snackBackground = Color.WHITE,
         snackTextColor = Color.BLACK,
         snackActionTextColor = Color.BLACK,
@@ -18,12 +18,9 @@ internal object SignalStaticDefaults {
         loadingIconColor = Color.BLACK,
         loadingSimpleAnimationActiveColor = Color.WHITE,
         loadingSimpleAnimationInactiveColor = "#757575".toColorInt(),
-
-        bannerBackground = Color.WHITE,
-        bannerTextColor = Color.BLACK,
     )
 
-    val dark = SignalColorScheme(
+    val dark = ColorScheme(
         snackBackground = "#1E1E1E".toColorInt(),
         snackTextColor = Color.WHITE,
         snackActionTextColor = Color.WHITE,
@@ -37,14 +34,11 @@ internal object SignalStaticDefaults {
         loadingIconColor = Color.WHITE,
         loadingSimpleAnimationActiveColor = Color.WHITE,
         loadingSimpleAnimationInactiveColor = "#757575".toColorInt(),
-
-        bannerBackground = "#1E1E1E".toColorInt(),
-        bannerTextColor = Color.WHITE,
     )
 
-    fun resolve(scheme: SignalColorScheme, isNight: Boolean): SignalColorScheme {
+    fun resolve(scheme: ColorScheme, isNight: Boolean): ColorScheme {
         val defaults = if (isNight) dark else light
-        return SignalColorScheme(
+        return ColorScheme(
             snackBackground = scheme.snackBackground ?: defaults.snackBackground,
             snackTextColor = scheme.snackTextColor ?: defaults.snackTextColor,
             snackActionTextColor = scheme.snackActionTextColor ?: defaults.snackActionTextColor,
@@ -52,9 +46,6 @@ internal object SignalStaticDefaults {
 
             dialogBackground = scheme.dialogBackground ?: defaults.dialogBackground,
             dialogPrimaryButtonTextColor = scheme.dialogPrimaryButtonTextColor ?: defaults.dialogPrimaryButtonTextColor,
-
-            bannerBackground = scheme.bannerBackground ?: defaults.bannerBackground,
-            bannerTextColor = scheme.bannerTextColor ?: defaults.bannerTextColor,
 
             loadingBackgroundGradient = scheme.loadingBackgroundGradient ?: defaults.loadingBackgroundGradient,
             loadingTextColor = scheme.loadingTextColor ?: defaults.loadingTextColor,

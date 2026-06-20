@@ -1,5 +1,9 @@
 package com.unitx.signal_core.queue
 
+/**
+ * Controls how toasts, snackbars, and dialogs are queued when multiple signals are triggered.
+ * Configured via [SignalConfig.setQueueStrategy].
+ */
 enum class QueueStrategy {
     /**
      * Each signal type (Toast, Snack, Dialog) manages its own independent queue.
@@ -13,7 +17,7 @@ enum class QueueStrategy {
      */
     GlobalSequential;
 
-    companion object{
+    companion object {
         val default = Independent
     }
 }

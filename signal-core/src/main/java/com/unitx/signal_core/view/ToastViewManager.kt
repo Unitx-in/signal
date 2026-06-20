@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import com.unitx.signal_core.R
 import com.unitx.signal_core.contract.config.ToastConfig
 import com.unitx.signal_core.contract.position.EdgePosition
-import com.unitx.signal_core.theme.SignalThemeResolver
+import com.unitx.signal_core.theme.ThemeResolver
 import com.unitx.signal_core.contract.position.IconPosition
 import com.unitx.signal_core.contract.position.ToastPosition
 import com.unitx.signal_core.databinding.SignalToastBinding
@@ -22,7 +22,7 @@ import com.unitx.signal_core.provider.ActivityProvider
 
 internal class ToastViewManager(
     private val activityProvider: ActivityProvider,
-    private val themeResolver: SignalThemeResolver
+    private val themeResolver: ThemeResolver
 ) {
 
     private var binding: SignalToastBinding? = null
