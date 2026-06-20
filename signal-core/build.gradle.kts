@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.library)
+    id("maven-publish")
 }
 
 android {
@@ -31,8 +32,28 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+
     viewBinding{
         enable = true
+    }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                from(components["release"])
+                groupId = "com.github.Unitx-in"
+                artifactId = "signal"
+                version = "0.0.1"
+            }
+        }
     }
 }
 
