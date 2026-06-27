@@ -34,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.unitx.signal_core.contract.type.DialogSelectionType
 import com.unitx.signal_core.contract.type.LoadingType
 
 class MainActivity : ComponentActivity() {
@@ -145,8 +146,6 @@ fun DialogScreen() {
             }
         }) { Text("Test Queue") }
 
-//        DialogTextInput()
-
         Button(onClick = {
             Signal.dialog {
                 title = "Terms & Conditions"
@@ -158,98 +157,127 @@ fun DialogScreen() {
         }) { Text("Scrollable Message") }
     }
 }
-
 @Composable
-fun DialogTextInput(){
-    Button(onClick = {
-        Signal.dialog {
-            title = "Rename File"
-            message = "Enter a new name for the file."
-            type = DialogType.Default
-            input {
-                hint = "File name"
-                prefill = "document_final"
-                maxLength = 40
-                showCounter = true
-                validator = { it.isNotBlank() }
-                validationError = "Name cannot be empty"
-                onInput = { Log.i("Dialog", "Renamed to: $it") }
+fun DialogSelectionTest() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(onClick = {
+            Signal.dialog {
+                title = "Login"
+                message = "Enter your credentials."
+                type = DialogType.Default
+                input { hint = "Username"; onInput = { Log.i("Dialog", "User: $it") } }
+                input {
+                    hint = "Password"
+                    password = true
+                    validator = { it.length >= 6 }
+                    validationError = "Min 6 characters"
+                    onInput = { Log.i("Dialog", "Pass set") }
+                }
+                positive("Login") {}
+                negative("Cancel")
             }
-            positive("Rename") {}
-            negative("Cancel")
-        }
-    }) { Text("Input — Single Line") }
+        }) { Text("Multi Input — Login") }
 
-    Button(onClick = {
-        Signal.dialog {
-            title = "Add Note"
-            message = "Describe the issue in detail."
-            type = DialogType.Action
-            input {
-                hint = "Write your note..."
-                multiLine = true
-                maxLength = 200
-                showCounter = true
-                onInput = { Log.i("Dialog", "Note: $it") }
+        Button(onClick = {
+            Signal.dialog {
+                title = "Set Range"
+                message = "Enter min and max values."
+                type = DialogType.Action
+                input {
+                    hint = "Min"
+                    inputType = InputType.TYPE_CLASS_NUMBER
+                    maxLength = 5
+                    onInput = { Log.i("Dialog", "Min: $it") }
+                }
+                input {
+                    hint = "Max"
+                    inputType = InputType.TYPE_CLASS_NUMBER
+                    maxLength = 5
+                    onInput = { Log.i("Dialog", "Max: $it") }
+                }
+                positive("Apply") {}
+                negative("Cancel")
             }
-            positive("Save") {}
-            negative("Cancel")
-        }
-    }) { Text("Input — Multi Line") }
+        }) { Text("Multi Input — Range") }
 
-    Button(onClick = {
-        Signal.dialog {
-            title = "Change Password"
-            message = "Enter your new password."
-            type = DialogType.Default
-            input {
-                hint = "Password"
-                password = true
-                validator = { it.length >= 8 }
-                validationError = "Must be at least 8 characters"
-                onInput = { Log.i("Dialog", "Password set") }
+        // Radio / Single selection
+        Button(onClick = {
+            Signal.dialog {
+                title = "Sort By"
+                type = DialogType.Default
+                selection {
+                    mode = DialogSelectionType.SINGLE
+                    options("Name", "Date Modified", "Size", "Type")
+                    preSelected = setOf("Name")
+                    onSelected = { Log.i("Dialog", "Sort: ${it.first()}") }
+                }
+                positive("Apply") {}
+                negative("Cancel")
             }
-            positive("Confirm") {}
-            negative("Cancel")
-        }
-    }) { Text("Input — Password") }
+        }) { Text("Selection — Radio (Single)") }
 
-    Button(onClick = {
-        Signal.dialog {
-            title = "Set Limit"
-            message = "Enter a numeric value between 1–999."
-            type = DialogType.Action
-            input {
-                hint = "Amount"
-                inputType = InputType.TYPE_CLASS_NUMBER
-                maxLength = 3
-                validator = { it.isNotEmpty() && it.toIntOrNull() != null }
-                validationError = "Enter a valid number"
-                onInput = { Log.i("Dialog", "Limit: $it") }
+        // Multi-select checkboxes
+        Button(onClick = {
+            Signal.dialog {
+                title = "Notify Me About"
+                type = DialogType.Default
+                selection {
+                    mode = DialogSelectionType.MULTI
+                    options("App Updates", "Offers", "News", "Security Alerts")
+                    preSelected = setOf("App Updates", "Security Alerts")
+                    onSelected = { Log.i("Dialog", "Selected: ${it.joinToString()}") }
+                }
+                positive("Save") {}
+                negative("Cancel")
             }
-            positive("Set") {}
-            negative("Cancel")
-        }
-    }) { Text("Input — Numeric") }
+        }) { Text("Selection — Checkboxes (Multi)") }
 
-    Button(onClick = {
-        Signal.dialog {
-            title = "Leave a Reason"
-            message = "Tell us why you're leaving."
-            type = DialogType.Error
-            input {
-                hint = "Reason"
-                multiLine = true
-                maxLength = 150
-                showCounter = true
-                validator = { it.trim().length >= 10 }
-                validationError = "Please write at least 10 characters"
-                onInput = { Log.i("Dialog", "Reason: $it") }
+        // Chip selection
+        Button(onClick = {
+            Signal.dialog {
+                title = "Filter By Tags"
+                type = DialogType.Default
+                selection {
+                    mode = DialogSelectionType.CHIP
+                    options("Android", "iOS", "Web", "Backend", "Design")
+                    preSelected = setOf("Android")
+                    onSelected = { Log.i("Dialog", "Tags: ${it.joinToString()}") }
+                }
+                positive("Filter") {}
+                negative("Clear")
             }
-            positive("Submit") {}
-            negative("Skip")
-        }
-    }) { Text("Input — Validated Multi Line") }
+        }) { Text("Selection — Chips") }
+
+        // Mixed: input + no selection (edge case)
+        Button(onClick = {
+            Signal.dialog {
+                title = "Create Label"
+                message = "Name your label and pick a category."
+                type = DialogType.Positive
+                input {
+                    hint = "Label name"
+                    maxLength = 30
+                    showCounter = true
+                    validator = { it.isNotBlank() }
+                    validationError = "Name required"
+                    onInput = { Log.i("Dialog", "Label: $it") }
+                }
+                selection {
+                    mode = DialogSelectionType.CHIP
+                    options("Work", "Personal", "Urgent", "Later")
+                    onSelected = { Log.i("Dialog", "Category: ${it.joinToString()}") }
+                }
+                positive("Create") {}
+                negative("Cancel")
+            }
+        }) { Text("Mixed — Input + Chips") }
+    }
 }
 
 @Composable
@@ -439,7 +467,7 @@ fun SignalTestScreen() {
         when (selected) {
             0 -> ToastScreen()
             1 -> SnackScreen()
-            2 -> DialogScreen()
+            2 -> DialogSelectionTest()
             3 -> LoadingScreen()
         }
     }

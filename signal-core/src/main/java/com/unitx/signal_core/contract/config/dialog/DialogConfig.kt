@@ -1,7 +1,7 @@
-package com.unitx.signal_core.contract.config
+package com.unitx.signal_core.contract.config.dialog
 
 import androidx.annotation.DrawableRes
-import com.unitx.signal_core.contract.model.SignalAction
+import com.unitx.signal_core.contract.config.dialog.DialogSelectionConfig
 import com.unitx.signal_core.contract.type.DialogType
 
 /**
@@ -24,8 +24,8 @@ class DialogConfig {
     internal var negative: Pair<String, DialogScope.() -> Unit>? = null
     internal var neutral: Pair<String, DialogScope.() -> Unit>? = null
 
-    // add field
-    internal var input: DialogInputConfig? = null
+    internal var inputs: List<DialogInputConfig> = emptyList()
+    internal var selection: DialogSelectionConfig? = null
 
     /** Main heading of the dialog. */
     var title: String = ""
@@ -88,9 +88,12 @@ class DialogConfig {
         neutral = label to onClick
     }
 
-    /** Adds a text input field to the dialog. */
     fun input(block: DialogInputConfig.() -> Unit) {
-        input = DialogInputConfig().apply(block)
+        inputs = inputs + DialogInputConfig().apply(block)
+    }
+
+    fun selection(block: DialogSelectionConfig.() -> Unit) {
+        selection = DialogSelectionConfig().apply(block)
     }
 
     internal fun copy(): DialogConfig = DialogConfig().also {
@@ -111,6 +114,7 @@ class DialogConfig {
         it.onShown = onShown
         it.onDismissed = onDismissed
         it.accessibilityText = accessibilityText
-        it.input = input
+        it.inputs = inputs
+        it.selection = selection
     }
 }

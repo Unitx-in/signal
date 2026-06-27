@@ -1,5 +1,6 @@
 package com.unitx.signal_core.contract.config
 
+import com.unitx.signal_core.contract.config.dialog.DialogConfig
 import com.unitx.signal_core.queue.QueueStrategy
 import com.unitx.signal_core.theme.ThemeConfig
 

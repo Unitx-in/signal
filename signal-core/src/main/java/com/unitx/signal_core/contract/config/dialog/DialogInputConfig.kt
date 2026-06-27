@@ -1,4 +1,4 @@
-package com.unitx.signal_core.contract.config
+package com.unitx.signal_core.contract.config.dialog
 
 import android.text.InputType
 

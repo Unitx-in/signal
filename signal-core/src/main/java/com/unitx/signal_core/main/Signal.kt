@@ -1,7 +1,7 @@
 package com.unitx.signal_core.main
 
 import android.app.Application
-import com.unitx.signal_core.contract.config.DialogConfig
+import com.unitx.signal_core.contract.config.dialog.DialogConfig
 import com.unitx.signal_core.contract.config.LoadingConfig
 import com.unitx.signal_core.contract.config.SignalConfig
 import com.unitx.signal_core.contract.config.SnackConfig

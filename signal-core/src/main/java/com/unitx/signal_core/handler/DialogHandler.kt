@@ -1,16 +1,14 @@
 package com.unitx.signal_core.handler
 
 import android.app.Activity
-import androidx.activity.ComponentActivity
-import androidx.activity.OnBackPressedCallback
-import com.unitx.signal_core.contract.config.DialogConfig
+import com.unitx.signal_core.contract.config.dialog.DialogConfig
 import com.unitx.signal_core.helper.BackPressHandler
 import com.unitx.signal_core.helper.SignalAnimator
 import com.unitx.signal_core.helper.SignalDismissScheduler
 import com.unitx.signal_core.helper.ensureMainThread
 import com.unitx.signal_core.provider.ActivityProvider
 import com.unitx.signal_core.queue.SignalQueue
-import com.unitx.signal_core.view.DialogViewManager
+import com.unitx.signal_core.view.dialog.DialogViewManager
 
 internal class DialogHandler(
     private val activityProvider: ActivityProvider,

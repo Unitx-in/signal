@@ -8,7 +8,7 @@ import com.unitx.signal_core.handler.LoadingHandler
 import com.unitx.signal_core.handler.ToastHandler
 import com.unitx.signal_core.helper.SignalAnimator
 import com.unitx.signal_core.helper.SignalDismissScheduler
-import com.unitx.signal_core.view.DialogViewManager
+import com.unitx.signal_core.view.dialog.DialogViewManager
 import com.unitx.signal_core.handler.SnackHandler
 import com.unitx.signal_core.view.loading.LoadingViewManager
 import com.unitx.signal_core.view.loading.SimpleLoadingViewManager
