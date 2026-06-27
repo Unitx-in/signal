@@ -75,6 +75,9 @@ fun DialogScreen() {
                     Signal.toast("Working") {
                         type = ToastType.Success
                         position = ToastPosition.Bottom
+                        onDismissed =  {
+                            Signal.dismissDialog()
+                        }
                     }
                 }
             }
@@ -142,96 +145,111 @@ fun DialogScreen() {
             }
         }) { Text("Test Queue") }
 
+//        DialogTextInput()
+
         Button(onClick = {
             Signal.dialog {
-                title = "Rename File"
-                message = "Enter a new name for the file."
+                title = "Terms & Conditions"
+                message = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
                 type = DialogType.Default
-                input {
-                    hint = "File name"
-                    prefill = "document_final"
-                    maxLength = 40
-                    showCounter = true
-                    validator = { it.isNotBlank() }
-                    validationError = "Name cannot be empty"
-                    onInput = { Log.i("Dialog", "Renamed to: $it") }
-                }
-                positive("Rename") {}
-                negative("Cancel")
+                positive("Accept") { Log.i("Dialog", "Accepted") }
+                negative("Decline")
             }
-        }) { Text("Input — Single Line") }
-
-        Button(onClick = {
-            Signal.dialog {
-                title = "Add Note"
-                message = "Describe the issue in detail."
-                type = DialogType.Action
-                input {
-                    hint = "Write your note..."
-                    multiLine = true
-                    maxLength = 200
-                    showCounter = true
-                    onInput = { Log.i("Dialog", "Note: $it") }
-                }
-                positive("Save") {}
-                negative("Cancel")
-            }
-        }) { Text("Input — Multi Line") }
-
-        Button(onClick = {
-            Signal.dialog {
-                title = "Change Password"
-                message = "Enter your new password."
-                type = DialogType.Default
-                input {
-                    hint = "Password"
-                    password = true
-                    validator = { it.length >= 8 }
-                    validationError = "Must be at least 8 characters"
-                    onInput = { Log.i("Dialog", "Password set") }
-                }
-                positive("Confirm") {}
-                negative("Cancel")
-            }
-        }) { Text("Input — Password") }
-
-        Button(onClick = {
-            Signal.dialog {
-                title = "Set Limit"
-                message = "Enter a numeric value between 1–999."
-                type = DialogType.Action
-                input {
-                    hint = "Amount"
-                    inputType = InputType.TYPE_CLASS_NUMBER
-                    maxLength = 3
-                    validator = { it.isNotEmpty() && it.toIntOrNull() != null }
-                    validationError = "Enter a valid number"
-                    onInput = { Log.i("Dialog", "Limit: $it") }
-                }
-                positive("Set") {}
-                negative("Cancel")
-            }
-        }) { Text("Input — Numeric") }
-
-        Button(onClick = {
-            Signal.dialog {
-                title = "Leave a Reason"
-                message = "Tell us why you're leaving."
-                type = DialogType.Error
-                input {
-                    hint = "Reason"
-                    multiLine = true
-                    maxLength = 150
-                    showCounter = true
-                    validator = { it.trim().length >= 10 }
-                    validationError = "Please write at least 10 characters"
-                    onInput = { Log.i("Dialog", "Reason: $it") }
-                }
-                positive("Submit") {}
-                negative("Skip")
-            }
-        }) { Text("Input — Validated Multi Line") }
+        }) { Text("Scrollable Message") }
     }
+}
+
+@Composable
+fun DialogTextInput(){
+    Button(onClick = {
+        Signal.dialog {
+            title = "Rename File"
+            message = "Enter a new name for the file."
+            type = DialogType.Default
+            input {
+                hint = "File name"
+                prefill = "document_final"
+                maxLength = 40
+                showCounter = true
+                validator = { it.isNotBlank() }
+                validationError = "Name cannot be empty"
+                onInput = { Log.i("Dialog", "Renamed to: $it") }
+            }
+            positive("Rename") {}
+            negative("Cancel")
+        }
+    }) { Text("Input — Single Line") }
+
+    Button(onClick = {
+        Signal.dialog {
+            title = "Add Note"
+            message = "Describe the issue in detail."
+            type = DialogType.Action
+            input {
+                hint = "Write your note..."
+                multiLine = true
+                maxLength = 200
+                showCounter = true
+                onInput = { Log.i("Dialog", "Note: $it") }
+            }
+            positive("Save") {}
+            negative("Cancel")
+        }
+    }) { Text("Input — Multi Line") }
+
+    Button(onClick = {
+        Signal.dialog {
+            title = "Change Password"
+            message = "Enter your new password."
+            type = DialogType.Default
+            input {
+                hint = "Password"
+                password = true
+                validator = { it.length >= 8 }
+                validationError = "Must be at least 8 characters"
+                onInput = { Log.i("Dialog", "Password set") }
+            }
+            positive("Confirm") {}
+            negative("Cancel")
+        }
+    }) { Text("Input — Password") }
+
+    Button(onClick = {
+        Signal.dialog {
+            title = "Set Limit"
+            message = "Enter a numeric value between 1–999."
+            type = DialogType.Action
+            input {
+                hint = "Amount"
+                inputType = InputType.TYPE_CLASS_NUMBER
+                maxLength = 3
+                validator = { it.isNotEmpty() && it.toIntOrNull() != null }
+                validationError = "Enter a valid number"
+                onInput = { Log.i("Dialog", "Limit: $it") }
+            }
+            positive("Set") {}
+            negative("Cancel")
+        }
+    }) { Text("Input — Numeric") }
+
+    Button(onClick = {
+        Signal.dialog {
+            title = "Leave a Reason"
+            message = "Tell us why you're leaving."
+            type = DialogType.Error
+            input {
+                hint = "Reason"
+                multiLine = true
+                maxLength = 150
+                showCounter = true
+                validator = { it.trim().length >= 10 }
+                validationError = "Please write at least 10 characters"
+                onInput = { Log.i("Dialog", "Reason: $it") }
+            }
+            positive("Submit") {}
+            negative("Skip")
+        }
+    }) { Text("Input — Validated Multi Line") }
 }
 
 @Composable

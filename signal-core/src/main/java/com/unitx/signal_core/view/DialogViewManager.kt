@@ -7,6 +7,7 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
 import android.text.TextWatcher
+import android.text.method.ScrollingMovementMethod
 import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -107,6 +108,7 @@ internal class DialogViewManager(
         b.dialogTitle.text = config.title
         b.dialogCard.contentDescription = config.accessibilityText ?: "${config.title}. ${config.message}"
         b.dialogMessage.text = config.message
+        b.dialogMessage.movementMethod = ScrollingMovementMethod.getInstance()
         b.dialogClose.setOnClickListener { onDismiss() }
         b.dialogIcon.setImageResource(config.icon ?: config.type.icon)
 
