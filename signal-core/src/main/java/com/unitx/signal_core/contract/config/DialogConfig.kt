@@ -24,6 +24,9 @@ class DialogConfig {
     internal var negative: SignalAction? = null
     internal var neutral: SignalAction? = null
 
+    // add field
+    internal var input: DialogInputConfig? = null
+
     /** Main heading of the dialog. */
     var title: String = ""
 
@@ -85,6 +88,11 @@ class DialogConfig {
         neutral = SignalAction(label = label, onClick = onClick)
     }
 
+    /** Adds a text input field to the dialog. */
+    fun input(block: DialogInputConfig.() -> Unit) {
+        input = DialogInputConfig().apply(block)
+    }
+
     internal fun copy(): DialogConfig = DialogConfig().also {
         it.title = title
         it.message = message
@@ -103,5 +111,6 @@ class DialogConfig {
         it.onShown = onShown
         it.onDismissed = onDismissed
         it.accessibilityText = accessibilityText
+        it.input = input
     }
 }

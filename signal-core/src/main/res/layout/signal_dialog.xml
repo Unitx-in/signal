@@ -116,6 +116,32 @@
             app:layout_constraintStart_toStartOf="@+id/dialogMessage"
              />
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dialogInputLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="12dp"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:counterEnabled="false"
+            app:passwordToggleEnabled="false"
+            app:layout_constraintTop_toBottomOf="@id/dialogNeutralText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/dialogInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/lora_reg"
+                android:textSize="13sp"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
         <!-- Divider -->
         <View
             android:id="@+id/dialogDivider"
@@ -124,7 +150,7 @@
             android:background="@color/signalDivider"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/dialogNeutralText"
+            app:layout_constraintTop_toBottomOf="@id/dialogInputLayout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
