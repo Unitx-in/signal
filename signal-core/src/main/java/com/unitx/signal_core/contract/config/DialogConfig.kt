@@ -20,9 +20,9 @@ import com.unitx.signal_core.contract.type.DialogType
  */
 class DialogConfig {
 
-    internal var positive: SignalAction? = null
-    internal var negative: SignalAction? = null
-    internal var neutral: SignalAction? = null
+    internal var positive: Pair<String, DialogScope.() -> Unit>? = null
+    internal var negative: Pair<String, DialogScope.() -> Unit>? = null
+    internal var neutral: Pair<String, DialogScope.() -> Unit>? = null
 
     // add field
     internal var input: DialogInputConfig? = null
@@ -74,18 +74,18 @@ class DialogConfig {
     var accessibilityText: String? = null
 
     /** Adds a primary (filled) button. */
-    fun positive(label: String, onClick: () -> Unit) {
-        positive = SignalAction(label = label, onClick = onClick)
+    fun positive(label: String, onClick: DialogScope.() -> Unit = {}) {
+        positive = label to onClick
     }
 
     /** Adds a secondary (outlined) button. */
-    fun negative(label: String, onClick: () -> Unit = {}) {
-        negative = SignalAction(label = label, onClick = onClick)
+    fun negative(label: String, onClick: DialogScope.() -> Unit = {}) {
+        negative = label to onClick
     }
 
     /** Adds a text-only neutral action below the buttons. */
-    fun neutral(label: String, onClick: () -> Unit = {}) {
-        neutral = SignalAction(label = label, onClick = onClick)
+    fun neutral(label: String, onClick: DialogScope.() -> Unit = {}) {
+        neutral = label to onClick
     }
 
     /** Adds a text input field to the dialog. */

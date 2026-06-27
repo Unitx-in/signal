@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.textfield.TextInputLayout
 import com.unitx.signal_core.R
 import com.unitx.signal_core.contract.config.DialogConfig
+import com.unitx.signal_core.contract.config.DialogScope
 import com.unitx.signal_core.theme.ThemeResolver
 import com.unitx.signal_core.databinding.SignalDialogBinding
 import com.unitx.signal_core.helper.DimOverlay
@@ -122,8 +123,9 @@ internal class DialogViewManager(
             b.dialogPrimaryBtn.visibility = View.VISIBLE
             b.dialogPrimaryBtn.text = label
             b.dialogPrimaryBtn.setOnClickListener {
-                onClick()
-                if (config.dismissOnPositive) onDismiss()
+                val scope = DialogScope()
+                scope.onClick()
+                if (config.dismissOnPositive && scope.shouldDismiss) onDismiss()
             }
         } ?: run { b.dialogPrimaryBtn.visibility = View.GONE }
 
@@ -131,8 +133,9 @@ internal class DialogViewManager(
             b.dialogSecondaryBtn.visibility = View.VISIBLE
             b.dialogSecondaryBtn.text = label
             b.dialogSecondaryBtn.setOnClickListener {
-                onClick()
-                if (config.dismissOnNegative) onDismiss()
+                val scope = DialogScope()
+                scope.onClick()
+                if (config.dismissOnNegative && scope.shouldDismiss) onDismiss()
             }
         } ?: run { b.dialogSecondaryBtn.visibility = View.GONE }
 
@@ -140,8 +143,9 @@ internal class DialogViewManager(
             b.dialogNeutralText.visibility = View.VISIBLE
             b.dialogNeutralText.text = label
             b.dialogNeutralText.setOnClickListener {
-                onClick()
-                if (config.dismissOnNeutral) onDismiss()
+                val scope = DialogScope()
+                scope.onClick()
+                if (config.dismissOnNeutral && scope.shouldDismiss) onDismiss()
             }
         } ?: run { b.dialogNeutralText.visibility = View.GONE }
 
