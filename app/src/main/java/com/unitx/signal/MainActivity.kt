@@ -34,7 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.unitx.signal_core.contract.type.DialogSelectionType
+import com.unitx.signal_core.contract.type.DialogSelectionMode
 import com.unitx.signal_core.contract.type.LoadingType
 
 class MainActivity : ComponentActivity() {
@@ -213,7 +213,7 @@ fun DialogSelectionTest() {
                 title = "Sort By"
                 type = DialogType.Default
                 selection {
-                    mode = DialogSelectionType.SINGLE
+                    mode = DialogSelectionMode.SINGLE
                     options("Name", "Date Modified", "Size", "Type")
                     preSelected = setOf("Name")
                     onSelected = { Log.i("Dialog", "Sort: ${it.first()}") }
@@ -229,7 +229,7 @@ fun DialogSelectionTest() {
                 title = "Notify Me About"
                 type = DialogType.Default
                 selection {
-                    mode = DialogSelectionType.MULTI
+                    mode = DialogSelectionMode.MULTI
                     options("App Updates", "Offers", "News", "Security Alerts")
                     preSelected = setOf("App Updates", "Security Alerts")
                     onSelected = { Log.i("Dialog", "Selected: ${it.joinToString()}") }
@@ -245,7 +245,7 @@ fun DialogSelectionTest() {
                 title = "Filter By Tags"
                 type = DialogType.Default
                 selection {
-                    mode = DialogSelectionType.CHIP
+                    mode = DialogSelectionMode.CHIP
                     options("Android", "iOS", "Web", "Backend", "Design")
                     preSelected = setOf("Android")
                     onSelected = { Log.i("Dialog", "Tags: ${it.joinToString()}") }
@@ -270,7 +270,7 @@ fun DialogSelectionTest() {
                     onInput = { Log.i("Dialog", "Label: $it") }
                 }
                 selection {
-                    mode = DialogSelectionType.CHIP
+                    mode = DialogSelectionMode.CHIP
                     options("Work", "Personal", "Urgent", "Later")
                     onSelected = { Log.i("Dialog", "Category: ${it.joinToString()}") }
                 }

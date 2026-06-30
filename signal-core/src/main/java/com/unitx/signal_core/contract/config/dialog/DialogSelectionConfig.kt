@@ -1,7 +1,7 @@
 package com.unitx.signal_core.contract.config.dialog
 
 import com.unitx.signal_core.contract.model.DialogSelectionOption
-import com.unitx.signal_core.contract.type.DialogSelectionType
+import com.unitx.signal_core.contract.type.DialogSelectionMode
 
 /**
  * Optional selection list configuration for a dialog — renders as radio buttons,
@@ -24,7 +24,7 @@ import com.unitx.signal_core.contract.type.DialogSelectionType
 class DialogSelectionConfig {
 
     /** Selection UI style: SINGLE (radio), MULTI (checkbox), or CHIP. */
-    var mode: DialogSelectionType = DialogSelectionType.SINGLE
+    var mode: DialogSelectionMode = DialogSelectionMode.SINGLE
 
     /** Options to display. */
     var options: List<DialogSelectionOption> = emptyList()

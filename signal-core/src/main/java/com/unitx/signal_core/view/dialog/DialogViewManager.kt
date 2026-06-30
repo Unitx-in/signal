@@ -17,7 +17,7 @@ import com.google.android.material.R
 import com.google.android.material.textfield.TextInputLayout
 import com.unitx.signal_core.contract.config.dialog.DialogConfig
 import com.unitx.signal_core.contract.config.dialog.DialogScope
-import com.unitx.signal_core.contract.type.DialogSelectionType
+import com.unitx.signal_core.contract.type.DialogSelectionMode
 import com.unitx.signal_core.databinding.SignalDialogBinding
 import com.unitx.signal_core.helper.DimOverlay
 import com.unitx.signal_core.helper.dp
@@ -168,13 +168,13 @@ internal class DialogViewManager(
             return
         }
         when (selConfig.mode) {
-            DialogSelectionType.CHIP ->
+            DialogSelectionMode.CHIP ->
                 DialogChipBinder(activityProvider, primaryColor, secondaryColor)
                     .bind(config, b, onDismiss)
-            DialogSelectionType.SINGLE ->
+            DialogSelectionMode.SINGLE ->
                 DialogRadioBinder(activityProvider, primaryColor, contentTextColor)
                     .bind(config, b, onDismiss)
-            DialogSelectionType.MULTI ->
+            DialogSelectionMode.MULTI ->
                 DialogCheckboxBinder(activityProvider, primaryColor, contentTextColor)
                     .bind(config, b, onDismiss)
         }

@@ -349,7 +349,7 @@ Add a radio (single), checkbox (multi), or chip selection list with `selection {
 Signal.dialog {
     title = "Sort by"
     selection {
-        mode = DialogSelectionType.SINGLE
+        mode = DialogSelectionMode.SINGLE
         options("Name", "Date", "Size")
         preSelected = setOf("Name")
         onSelected = { selected -> applySort(selected.first()) }
@@ -363,7 +363,7 @@ Signal.dialog {
 Signal.dialog {
     title = "Notify me about"
     selection {
-        mode = DialogSelectionType.MULTI
+        mode = DialogSelectionMode.MULTI
         options("Updates", "Offers", "News")
         preSelected = setOf("Updates")
         onSelected = { selected -> savePreferences(selected) }
@@ -376,7 +376,7 @@ Signal.dialog {
 Signal.dialog {
     title = "Filter by tags"
     selection {
-        mode = DialogSelectionType.CHIP
+        mode = DialogSelectionMode.CHIP
         options("Android", "iOS", "Web", "Backend")
         onSelected = { selected -> applyFilters(selected) }
     }
