@@ -5,8 +5,10 @@ import android.text.InputType
 /**
  * Optional text input configuration for a dialog.
  *
+ * A dialog can have multiple inputs — call [DialogConfig.input] more than once
+ * to stack fields (e.g. username + password).
+ *
  * Usage:
- * ```
  * Signal.dialog {
  *     title = "Rename file"
  *     input {

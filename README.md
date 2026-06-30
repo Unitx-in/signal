@@ -9,7 +9,7 @@ A lightweight Android UI feedback library for displaying **toasts**, **snackbars
 
 - **One API for everything** — toasts, snackbars, dialogs, and loading overlays all follow the same pattern
 - **Up and running in minutes** — initialize once in your `Application`, then call `Signal.toast()` anywhere
-- **A dialog in under a minute** — title, message, buttons, type, auto-dismiss — all in one readable block
+- **A dialog in under a minute** — title, message, buttons, type, auto-dismiss, text input, and selection lists — all in one readable block
 - **Loading that actually behaves** — indefinite, determinate with live progress updates, cancelable, back-press aware, simple or advanced — all covered
 - **Beautiful out of the box** — every signal type ships with four semantic styles (Info, Success, Warning, Error) and smooth animations
 - **Fully customizable** — override colors per signal type, per light/dark mode, down to individual elements like button text or icon tint
@@ -243,7 +243,7 @@ Signal.dialog {
 | `type`                | `DialogType` | `Default` | `Default`, `Positive`, `Action`, `Error`               |
 | `header`              | `String`     | `""`      | Header strip label — defaults to `type` label if blank |
 | `icon`                | `Int?`       | `null`    | Custom header icon — defaults to `type` icon if null   |
-| `cancelable`          | `Boolean`    | `false`   | Dismiss on outside tap                                 |
+| `cancelable`          | `Boolean`    | `false`   | Dismiss on outside tap or back press                   |
 | `horizontalMargin`    | `Int`        | `24`      | Margin from screen edges in dp                         |
 | `autoDismiss`         | `Boolean`    | `false`   | Auto-dismiss after `autoDismissDuration`               |
 | `autoDismissDuration` | `Long`       | `4000`    | Duration in ms before auto-dismiss                     |
@@ -254,6 +254,9 @@ Signal.dialog {
 | `onDismissed`         | `() -> Unit` | `null`    | Called when dialog is dismissed                        |
 | `accessibilityText`   | `String?`    | `null`    | Overrides the default accessibility description        |
 
+> **Back press:** non-cancelable dialogs consume the back press and stay open. Cancelable dialogs
+> dismiss on back press, same as on outside tap.
+
 ### Button functions
 
 | Function              | Description                    |
@@ -261,6 +264,134 @@ Signal.dialog {
 | `positive(label) { }` | Primary filled button          |
 | `negative(label) { }` | Secondary outlined button      |
 | `neutral(label) { }`  | Text-only action below buttons |
+
+### Button behavior — `DialogScope`
+
+Each button callback runs with `DialogScope` as its receiver. By default, tapping a button dismisses
+the dialog (governed by `dismissOnPositive` / `dismissOnNegative` / `dismissOnNeutral`). Call `prevent()`
+to keep the dialog open — useful for validation or async work — then call `dismiss()` once ready.
+
+```kotlin
+Signal.dialog {
+    title = "Submit form"
+    positive("Submit") {
+        prevent()
+        viewModel.submit { success ->
+            if (success) dismiss()
+        }
+    }
+    negative("Cancel")
+}
+```
+
+### Text input
+
+Add one or more input fields to a dialog with `input { }`. Call it multiple times to stack fields
+(e.g. username + password).
+
+```kotlin
+Signal.dialog {
+    title = "Rename file"
+    input {
+        hint = "File name"
+        prefill = currentName
+        maxLength = 50
+        showCounter = true
+        validator = { it.isNotBlank() }
+        validationError = "Name cannot be empty"
+        onInput = { newName -> renameFile(newName) }
+    }
+    positive("Rename") {}
+    negative("Cancel")
+}
+```
+
+Multiple fields:
+
+```kotlin
+Signal.dialog {
+    title = "Login"
+    input { hint = "Username"; onInput = { username = it } }
+    input {
+        hint = "Password"
+        password = true
+        validator = { it.length >= 6 }
+        validationError = "Min 6 characters"
+        onInput = { password = it }
+    }
+    positive("Login") {}
+}
+```
+
+The positive button is automatically disabled until all `validator` checks pass. `onInput` fires with
+the field's current value when positive is tapped.
+
+#### DialogInputConfig options
+
+| Property          | Type                  | Default           | Description                                         |
+|-------------------|-----------------------|-------------------|-----------------------------------------------------|
+| `hint`            | `String`              | `""`              | Hint text shown inside the field                    |
+| `prefill`         | `String`              | `""`              | Pre-filled value                                    |
+| `inputType`       | `Int`                 | `TYPE_CLASS_TEXT` | Android `InputType` flags                           |
+| `maxLength`       | `Int?`                | `null`            | Max character length                                |
+| `showCounter`     | `Boolean`             | `false`           | Shows character counter — requires `maxLength`      |
+| `password`        | `Boolean`             | `false`           | Masks input with a visibility toggle                |
+| `multiLine`       | `Boolean`             | `false`           | Expands the field to multi-line                     |
+| `validator`       | `(String) -> Boolean` | `null`            | Disables positive button until this returns `true`  |
+| `validationError` | `String`              | `""`              | Error shown below the field when validation fails   |
+| `onInput`         | `(String) -> Unit`    | `null`            | Called with the field value when positive is tapped |
+
+### Selection
+
+Add a radio (single), checkbox (multi), or chip selection list with `selection { }`.
+
+```kotlin
+Signal.dialog {
+    title = "Sort by"
+    selection {
+        mode = DialogSelectionType.SINGLE
+        options("Name", "Date", "Size")
+        preSelected = setOf("Name")
+        onSelected = { selected -> applySort(selected.first()) }
+    }
+    positive("Apply") {}
+    negative("Cancel")
+}
+```
+
+```kotlin
+Signal.dialog {
+    title = "Notify me about"
+    selection {
+        mode = DialogSelectionType.MULTI
+        options("Updates", "Offers", "News")
+        preSelected = setOf("Updates")
+        onSelected = { selected -> savePreferences(selected) }
+    }
+    positive("Save") {}
+}
+```
+
+```kotlin
+Signal.dialog {
+    title = "Filter by tags"
+    selection {
+        mode = DialogSelectionType.CHIP
+        options("Android", "iOS", "Web", "Backend")
+        onSelected = { selected -> applyFilters(selected) }
+    }
+    positive("Filter") {}
+}
+```
+
+#### DialogSelectionConfig options
+
+| Property      | Type                          | Default      | Description                                                         |
+|---------------|-------------------------------|--------------|---------------------------------------------------------------------|
+| `mode`        | `DialogSelectionType`         | `SINGLE`     | `SINGLE` (radio), `MULTI` (checkbox), or `CHIP`                     |
+| `options`     | `List<DialogSelectionOption>` | `[]`         | Selectable options — use `options(vararg labels)` for plain strings |
+| `preSelected` | `Set<String>`                 | `emptySet()` | Option values selected by default                                   |
+| `onSelected`  | `(Set<String>) -> Unit`       | `null`       | Called with selected values when positive is tapped                 |
 
 ---
 

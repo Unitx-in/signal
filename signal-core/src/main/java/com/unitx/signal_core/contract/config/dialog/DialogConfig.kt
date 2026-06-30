@@ -88,14 +88,15 @@ class DialogConfig {
         neutral = label to onClick
     }
 
+    /** Adds a text input field to the dialog. Call multiple times to stack fields. */
     fun input(block: DialogInputConfig.() -> Unit) {
         inputs = inputs + DialogInputConfig().apply(block)
     }
 
+    /** Adds a selection list (radio/checkbox/chip) to the dialog. */
     fun selection(block: DialogSelectionConfig.() -> Unit) {
         selection = DialogSelectionConfig().apply(block)
     }
-
     internal fun copy(): DialogConfig = DialogConfig().also {
         it.title = title
         it.message = message
