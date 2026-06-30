@@ -3,7 +3,6 @@ package com.unitx.signal_core.view.dialog
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.os.Build
 import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
@@ -96,18 +95,10 @@ internal class DialogInputBinder(
                     minLines = 3; maxLines = 6
                     gravity = Gravity.TOP or Gravity.START
                 }
-                inputConfig.maxLength?.let { filters = arrayOf(InputFilter.LengthFilter(it)) }
+                if (inputConfig.maxLength != null) filters = arrayOf(InputFilter.LengthFilter(inputConfig.maxLength!!))
                 if (inputConfig.prefill.isNotEmpty()) {
                     setText(inputConfig.prefill)
                     setSelection(inputConfig.prefill.length)
-                }
-                if (Build.VERSION.SDK_INT >= 29) {
-                    post {
-                        textCursorDrawable?.setTint(primaryColor)
-                        textSelectHandle?.setTint(primaryColor)
-                        textSelectHandleLeft?.setTint(primaryColor)
-                        textSelectHandleRight?.setTint(primaryColor)
-                    }
                 }
             }
 
