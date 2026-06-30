@@ -171,6 +171,7 @@ fun DialogSelectionTest() {
                 title = "Login"
                 message = "Enter your credentials."
                 type = DialogType.Default
+                cancelable = true
                 input { hint = "Username"; onInput = { Log.i("Dialog", "User: $it") } }
                 input {
                     hint = "Password"

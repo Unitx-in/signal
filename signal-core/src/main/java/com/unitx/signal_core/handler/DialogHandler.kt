@@ -54,8 +54,10 @@ internal class DialogHandler(
             scheduler.schedule(config.autoDismissDuration) { dismiss() }
         }
 
-        if (config.cancelable) {
-            backPressHandler.register { dismiss() }
+        // Always register so back press never reaches the host.
+        // Cancelable dialogs dismiss on back; non-cancelable swallow it.
+        backPressHandler.register {
+            if (config.cancelable) dismiss()
         }
     }
 
