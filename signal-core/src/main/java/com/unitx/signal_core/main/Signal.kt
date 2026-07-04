@@ -45,6 +45,20 @@ object Signal {
     private lateinit var core: SignalCore
 
     /**
+     * Safe accessor for [core]. Throws a descriptive [IllegalStateException] if
+     * [createCore] hasn't been called yet, instead of letting the raw
+     * [UninitializedPropertyAccessException] leak out with no guidance.
+     */
+    private val safeCore: SignalCore
+        get() {
+            check(::core.isInitialized) {
+                "Signal has not been initialized. Call Signal.createCore(application) " +
+                        "in your Application.onCreate() before calling any other Signal function."
+            }
+            return core
+        }
+
+    /**
      * Initializes the Signal library. Must be called once before using any other Signal functions,
      * typically in [Application.onCreate].
      *
@@ -57,44 +71,47 @@ object Signal {
         core = SignalCore(app, config)
     }
 
+    /** Returns whether [createCore] has already been called. */
+    fun isInitialized(): Boolean = ::core.isInitialized
+
     /** Shows a toast with the given [message] using global default configuration. */
-    fun toast(message: String) = core.toastHandler.show(message)
+    fun toast(message: String) = safeCore.toastHandler.show(message)
 
     /**
      * Shows a toast with the given [message] and a custom [block]. See [ToastConfig] for options.
      */
     fun toast(message: String, block: ToastConfig.() -> Unit) =
-        core.toastHandler.show(message, block)
+        safeCore.toastHandler.show(message, block)
 
     /** Shows a snackbar with the given [message] using global default configuration. */
-    fun snack(message: String) = core.snackHandler.show(message)
+    fun snack(message: String) = safeCore.snackHandler.show(message)
 
     /**
      * Shows a snackbar with the given [message] and a custom [block]. See [SnackConfig] for options.
      */
     fun snack(message: String, block: SnackConfig.() -> Unit) {
-        return core.snackHandler.show(message, block)
+        return safeCore.snackHandler.show(message, block)
     }
 
     /**
      * Shows a dialog configured via [block]. Dialogs are queued — if one is already visible,
      * the new one waits until the current dialog is dismissed. See [DialogConfig] for options.
      */
-    fun dialog(block: DialogConfig.() -> Unit) = core.dialogHandler.show(block)
+    fun dialog(block: DialogConfig.() -> Unit) = safeCore.dialogHandler.show(block)
 
     /**
      * Programmatically dismisses the currently visible dialog, if any.
      * Triggers [DialogConfig.onDismissed] and advances the dialog queue.
      */
     fun dismissDialog() {
-        core.dialogHandler.dismiss()
+        safeCore.dialogHandler.dismiss()
     }
 
     /**
      * Shows a loading overlay configured via [block]. Only one overlay can be shown at a time —
      * calling this while one is already visible has no effect. See [LoadingConfig] for options.
      */
-    fun loading(block: LoadingConfig.() -> Unit = {}) = core.loadingHandler.show(block)
+    fun loading(block: LoadingConfig.() -> Unit = {}) = safeCore.loadingHandler.show(block)
 
     /**
      * Updates the progress and optional [message] on a visible determinate loading overlay.
@@ -103,11 +120,11 @@ object Signal {
      * @param message Optional label shown alongside the percentage, e.g. `"42% · Uploading files"`.
      */
     fun updateProgress(progress: Int, message: String? = null) =
-        core.loadingHandler.updateProgress(progress, message)
+        safeCore.loadingHandler.updateProgress(progress, message)
 
     /**
      * Dismisses the currently visible loading overlay, if any.
      * Triggers [LoadingConfig.onDismissed].
      */
-    fun dismissLoading() = core.loadingHandler.dismiss()
+    fun dismissLoading() = safeCore.loadingHandler.dismiss()
 }

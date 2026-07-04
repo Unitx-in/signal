@@ -48,9 +48,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(innerPadding)
-                    ) {
-                        SignalTestScreen()
-                    }
+                    ) { SignalTestScreen() }
                 }
             }
         }
@@ -76,9 +74,7 @@ fun DialogScreen() {
                     Signal.toast("Working") {
                         type = ToastType.Success
                         position = ToastPosition.Bottom
-                        onDismissed =  {
-                            Signal.dismissDialog()
-                        }
+                        onDismissed =  { Signal.dismissDialog() }
                     }
                 }
             }
@@ -104,9 +100,7 @@ fun DialogScreen() {
                 dismissOnNegative = false
                 dismissOnPositive = false
                 positive("Clear now") { Log.i("Dialog", "Clear pressed") }
-                negative("Dismiss") {
-                    Signal.dismissDialog()
-                }
+                negative("Dismiss") { Signal.dismissDialog() }
             }
         }) { Text("Warning cancelable") }
 
@@ -227,12 +221,13 @@ fun DialogSelectionTest() {
         Button(onClick = {
             Signal.dialog {
                 title = "Notify Me About"
+                message = "I am sleepy. I need to sleep for some hours but I can't sleep in the middle of a work day."
                 type = DialogType.Default
                 selection {
                     mode = DialogSelectionMode.MULTI
                     options("App Updates", "Offers", "News", "Security Alerts")
                     preSelected = setOf("App Updates", "Security Alerts")
-                    onSelected = { Log.i("Dialog", "Selected: ${it.joinToString()}") }
+                    onSelected = { Log.i("Dialog", "Selected: ${ it.joinToString() }") }
                 }
                 positive("Save") {}
                 negative("Cancel")
