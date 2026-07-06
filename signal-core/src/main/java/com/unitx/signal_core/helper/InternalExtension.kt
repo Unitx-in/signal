@@ -2,6 +2,7 @@ package com.unitx.signal_core.helper
 
 import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.os.Looper
 import android.view.ViewGroup
 
@@ -16,3 +17,4 @@ internal fun Activity.rootViewGroup(): ViewGroup? =
 
 internal fun Context.dp(dp: Int): Int =
     (dp * resources.displayMetrics.density).toInt()
+
