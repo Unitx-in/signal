@@ -26,6 +26,7 @@ class DialogConfig {
 
     internal var inputs: List<DialogInputConfig> = emptyList()
     internal var selection: DialogSelectionConfig? = null
+    internal var secondaryButtonStrokeWidth: Int = 2
 
     /** Main heading of the dialog. */
     var title: String = ""
@@ -79,7 +80,8 @@ class DialogConfig {
     }
 
     /** Adds a secondary (outlined) button. */
-    fun negative(label: String, onClick: DialogScope.() -> Unit = {}) {
+    fun negative(label: String, strokeWidth: Int = 2, onClick: DialogScope.() -> Unit = {}) {
+        secondaryButtonStrokeWidth = strokeWidth
         negative = label to onClick
     }
 
@@ -117,5 +119,6 @@ class DialogConfig {
         it.accessibilityText = accessibilityText
         it.inputs = inputs
         it.selection = selection
+        it.secondaryButtonStrokeWidth = secondaryButtonStrokeWidth
     }
 }

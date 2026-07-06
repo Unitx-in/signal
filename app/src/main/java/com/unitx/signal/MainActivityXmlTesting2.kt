@@ -6,6 +6,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.unitx.signal_core.contract.type.DialogType
 import com.unitx.signal_core.main.Signal
 
 class MainActivityXmlTesting2 : AppCompatActivity() {
@@ -26,7 +27,9 @@ class MainActivityXmlTesting2 : AppCompatActivity() {
             title = "Update Required"
             message = "Does this dialog stay open, or does it vanish when Testing1 is destroyed?"
             cancelable = false
+            type = DialogType.Error
             positive("OK")
+            negative("Cancel")
             onShown = { Log.d("SignalRepro", "Dialog: onShown") }
             onDismissed = { Log.d("SignalRepro", "Dialog: onDismissed") }
         }

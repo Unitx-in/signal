@@ -3,6 +3,7 @@ package com.unitx.signal_core.view.dialog
 import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.text.method.ScrollingMovementMethod
 import android.view.ContextThemeWrapper
@@ -13,6 +14,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import com.google.android.material.R
 import com.google.android.material.textfield.TextInputLayout
@@ -97,9 +99,11 @@ internal class DialogViewManager(
         b.dialogIcon.imageTintList = ColorStateList.valueOf(primary)
         b.dialogTitle.setTextColor(textColor)
         b.dialogMessage.setTextColor(textColor)
-        (b.dialogPrimaryBtn.background as? GradientDrawable)?.setColor(primary)
+        b.dialogPrimaryBtn.backgroundTintList = ColorStateList.valueOf(primary)
         b.dialogPrimaryBtn.setTextColor(primaryBtnTextColor)
-        (b.dialogSecondaryBtn.background as? GradientDrawable)?.setStroke(1, primary)
+        b.dialogSecondaryBtn.backgroundTintList = null
+        (b.dialogSecondaryBtn.background.mutate() as GradientDrawable)
+            .setStroke(context.dp(config.secondaryButtonStrokeWidth), primary)
         b.dialogSecondaryBtn.setTextColor(primary)
         b.dialogNeutralText.setTextColor(primary)
         primaryColor = primary
