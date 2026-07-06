@@ -1,18 +1,23 @@
 package com.unitx.signal_core.helper
 
+import android.app.Activity
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
-import com.unitx.signal_core.activity.ActivityProvider
 
-internal class BackPressHandler(private val activityProvider: ActivityProvider) {
+internal class BackPressHandler {
     private var callback: OnBackPressedCallback? = null
 
-    fun register(onBack: () -> Unit) {
-        val activity = activityProvider.current() as? ComponentActivity ?: return
+    /**
+     * Registers [onBack] to run when the system back button/gesture is triggered while
+     * [activity] is in the foreground. No-ops silently if [activity] isn't a
+     * [ComponentActivity] (required for [androidx.activity.OnBackPressedDispatcher]).
+     */
+    fun register(activity: Activity, onBack: () -> Unit) {
+        val componentActivity = activity as? ComponentActivity ?: return
         callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() { onBack() }
         }
-        activity.onBackPressedDispatcher.addCallback(activity, callback!!)
+        componentActivity.onBackPressedDispatcher.addCallback(componentActivity, callback!!)
     }
 
     fun unregister() {

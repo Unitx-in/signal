@@ -1,5 +1,6 @@
 package com.unitx.signal_core.view.loading
 
+import android.app.Activity
 import android.content.Context
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -19,6 +20,7 @@ internal class SimpleLoadingViewManager(
 ) : ILoadingViewManager {
 
     private var binding: SignalLoadingSimpleBinding? = null
+    private var attachedActivity: Activity? = null
     private val dim = DimOverlay()
 
     override val container: View?
@@ -27,9 +29,9 @@ internal class SimpleLoadingViewManager(
     override val isShowing: Boolean
         get() = binding?.loadingDots?.visibility == View.VISIBLE
 
-    override fun attach(config: LoadingConfig, onDismiss: () -> Unit): Boolean {
-        val activity = activityProvider.current() ?: return false
+    override fun attach(activity: Activity, config: LoadingConfig, onDismiss: () -> Unit): Boolean {
         val rootView = activity.rootViewGroup() ?: return false
+        attachedActivity = activity
 
         dim.attach(activity, rootView, config.cancelable, onDismiss)
         inflate(activity, rootView)
@@ -60,10 +62,11 @@ internal class SimpleLoadingViewManager(
     }
 
     override fun release(onReleased: () -> Unit) {
-        val rootView = activityProvider.current()?.rootViewGroup()
+        val rootView = attachedActivity?.rootViewGroup()
         dim.release(rootView) {
             binding?.root?.let { rootView?.removeView(it) }
             binding = null
+            attachedActivity = null
             onReleased()
         }
     }

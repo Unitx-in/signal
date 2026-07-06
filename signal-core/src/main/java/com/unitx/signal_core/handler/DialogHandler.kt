@@ -1,5 +1,6 @@
 package com.unitx.signal_core.handler
 
+import android.app.Activity
 import com.unitx.signal_core.contract.config.dialog.DialogConfig
 import com.unitx.signal_core.helper.BackPressHandler
 import com.unitx.signal_core.helper.SignalAnimator
@@ -21,33 +22,27 @@ internal class DialogHandler(
 
     private var currentConfig: DialogConfig = DialogConfig()
     private var binding: ActivityBinding? = null
-    private val backPressHandler: BackPressHandler = BackPressHandler(activityProvider)
+    private val backPressHandler: BackPressHandler = BackPressHandler()
 
     val isShowing: Boolean
         get() = viewManager.isShowing
 
-    fun show(block: DialogConfig.() -> Unit) {
+    fun show(activity: Activity, block: DialogConfig.() -> Unit) {
         ensureMainThread()
         val config = globalConfig.copy().apply(block)
 
         queue.enqueue(
-            show = { display(config) },
+            show = { display(activity, config) },
             dismiss = { dismiss() },
             isShowing = { isShowing }
         )
     }
 
-    private fun display(config: DialogConfig) {
-        val newBinding = activityProvider.bindToCurrentActivity { onOwningActivityDestroyed() }
-            ?: run {
-                queue.next() // no foreground activity to attach to — skip this dialog, advance queue
-                return
-            }
-
+    private fun display(activity: Activity, config: DialogConfig) {
         currentConfig = config
-        binding = newBinding
+        binding = activityProvider.bindTo(activity) { onOwningActivityDestroyed() }
 
-        val attached = viewManager.attach(config, onDismiss = { dismiss() })
+        val attached = viewManager.attach(activity, config, onDismiss = { dismiss() })
         if (!attached) {
             clearBinding()
             queue.next()
@@ -62,7 +57,7 @@ internal class DialogHandler(
             scheduler.schedule(config.autoDismissDuration) { dismiss() }
         }
 
-        backPressHandler.register {
+        backPressHandler.register(activity) {
             if (config.cancelable) dismiss()
         }
     }
@@ -81,7 +76,6 @@ internal class DialogHandler(
         }
     }
 
-    /** Called only when the specific activity we attached to is destroyed. */
     private fun onOwningActivityDestroyed() {
         clearBinding()
         backPressHandler.unregister()

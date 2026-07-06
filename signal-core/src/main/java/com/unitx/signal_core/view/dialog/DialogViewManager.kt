@@ -1,5 +1,6 @@
 package com.unitx.signal_core.view.dialog
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable
@@ -31,6 +32,7 @@ internal class DialogViewManager(
 ) {
 
     private var binding: SignalDialogBinding? = null
+    private var attachedActivity: Activity? = null
     private val dim = DimOverlay()
 
     private var primaryColor: Int = 0
@@ -44,14 +46,14 @@ internal class DialogViewManager(
     val isShowing: Boolean
         get() = binding?.dialogCard?.visibility == View.VISIBLE
 
-    fun attach(config: DialogConfig, onDismiss: () -> Unit): Boolean {
-        val activity = activityProvider.current() ?: return false
+    fun attach(activity: Activity, config: DialogConfig, onDismiss: () -> Unit): Boolean {
         val rootView = activity.rootViewGroup() ?: return false
+        attachedActivity = activity
 
         dim.attach(activity, rootView, config.cancelable, onDismiss)
         inflateDialog(activity, rootView, config.horizontalMargin)
         applyTheme(activity, config)
-        bind(config, onDismiss)
+        bind(activity, config, onDismiss)
         return true
     }
 
@@ -106,7 +108,7 @@ internal class DialogViewManager(
         secondaryColor = secondary
     }
 
-    private fun bind(config: DialogConfig, onDismiss: () -> Unit) {
+    private fun bind(activity: Activity, config: DialogConfig, onDismiss: () -> Unit) {
         val b = binding ?: return
 
         b.dialogTitle.text = config.title
@@ -153,32 +155,33 @@ internal class DialogViewManager(
             }
         } ?: run { b.dialogNeutralText.visibility = View.GONE }
 
-        bindInputs(config, b, onDismiss)
-        bindSelection(config, b, onDismiss)
+        bindInputs(activity, config, b, onDismiss)
+        bindSelection(activity, config, b, onDismiss)
     }
 
-    private fun bindInputs(config: DialogConfig, b: SignalDialogBinding, onDismiss: () -> Unit) {
-        DialogInputBinder(activityProvider, primaryColor, dividerColor)
-            .bind(config, b, onDismiss)
+    private fun bindInputs(activity: Activity, config: DialogConfig, b: SignalDialogBinding, onDismiss: () -> Unit) {
+        DialogInputBinder(primaryColor, dividerColor)
+            .bind(activity, config, b, onDismiss)
     }
 
-    private fun bindSelection(config: DialogConfig, b: SignalDialogBinding, onDismiss: () -> Unit) {
+    private fun bindSelection(activity: Activity, config: DialogConfig, b: SignalDialogBinding, onDismiss: () -> Unit) {
         val selConfig = config.selection ?: run {
             b.dialogSelectionContainer.visibility = View.GONE
             return
         }
         when (selConfig.mode) {
             DialogSelectionMode.CHIP ->
-                DialogChipBinder(activityProvider, primaryColor, secondaryColor)
-                    .bind(config, b, onDismiss)
+                DialogChipBinder(primaryColor, secondaryColor)
+                    .bind(activity, config, b, onDismiss)
             DialogSelectionMode.SINGLE ->
-                DialogRadioBinder(activityProvider, primaryColor, contentTextColor)
-                    .bind(config, b, onDismiss)
+                DialogRadioBinder(primaryColor, contentTextColor)
+                    .bind(activity, config, b, onDismiss)
             DialogSelectionMode.MULTI ->
-                DialogCheckboxBinder(activityProvider, primaryColor, contentTextColor)
-                    .bind(config, b, onDismiss)
+                DialogCheckboxBinder(primaryColor, contentTextColor)
+                    .bind(activity, config, b, onDismiss)
         }
     }
+
     fun release(onReleased: () -> Unit = {}) {
 
         val inputContainer = binding?.dialogInputContainer
@@ -193,10 +196,11 @@ internal class DialogViewManager(
         binding?.dialogInputContainer?.removeAllViews()
         binding?.dialogSelectionContainer?.removeAllViews()
 
-        val rootView = activityProvider.current()?.rootViewGroup()
+        val rootView = attachedActivity?.rootViewGroup()
         dim.release(rootView) {
             binding?.root?.let { rootView?.removeView(it) }
             binding = null
+            attachedActivity = null
             onReleased()
         }
     }

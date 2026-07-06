@@ -1,5 +1,6 @@
 package com.unitx.signal_core.handler
 
+import android.app.Activity
 import com.unitx.signal_core.contract.config.ToastConfig
 import com.unitx.signal_core.helper.SignalAnimator
 import com.unitx.signal_core.helper.SignalDismissScheduler
@@ -26,9 +27,9 @@ internal class ToastHandler(
     val isShowing: Boolean
         get() = viewManager.isShowing
 
-    fun show(message: String) = show(message) {}
+    fun show(activity: Activity, message: String) = show(activity, message) {}
 
-    fun show(message: String, block: ToastConfig.() -> Unit) {
+    fun show(activity: Activity, message: String, block: ToastConfig.() -> Unit) {
         ensureMainThread()
         val config = globalConfig.copy().apply(block)
         config.message = message
@@ -38,23 +39,17 @@ internal class ToastHandler(
         currentTag = config.tag
 
         queue.enqueue(
-            show = { display(config) },
+            show = { display(activity, config) },
             dismiss = { dismiss() },
             isShowing = { isShowing }
         )
     }
 
-    private fun display(config: ToastConfig) {
-        val newBinding = activityProvider.bindToCurrentActivity { onOwningActivityDestroyed() }
-            ?: run {
-                queue.next()
-                return
-            }
-
+    private fun display(activity: Activity, config: ToastConfig) {
         currentConfig = config
-        binding = newBinding
+        binding = activityProvider.bindTo(activity) { onOwningActivityDestroyed() }
 
-        val attached = viewManager.attach(config) { dismiss() }
+        val attached = viewManager.attach(activity, config) { dismiss() }
         if (!attached) {
             clearBinding()
             queue.next()

@@ -1,5 +1,6 @@
 package com.unitx.signal_core.handler
 
+import android.app.Activity
 import com.unitx.signal_core.contract.config.SnackConfig
 import com.unitx.signal_core.helper.BackPressHandler
 import com.unitx.signal_core.helper.SignalAnimator
@@ -21,17 +22,16 @@ internal class SnackHandler(
 
     private var currentConfig: SnackConfig = globalConfig.copy()
     private var binding: ActivityBinding? = null
-
-    private val backPressHandler: BackPressHandler = BackPressHandler(activityProvider)
+    private val backPressHandler: BackPressHandler = BackPressHandler()
 
     private var currentTag: String? = null
 
     val isShowing: Boolean
         get() = viewManager.isShowing
 
-    fun show(message: String) = show(message) {}
+    fun show(activity: Activity, message: String) = show(activity, message) {}
 
-    fun show(message: String, block: SnackConfig.() -> Unit) {
+    fun show(activity: Activity, message: String, block: SnackConfig.() -> Unit) {
         ensureMainThread()
         val config = globalConfig.copy().apply(block)
         config.message = message
@@ -40,23 +40,17 @@ internal class SnackHandler(
         currentTag = config.tag
 
         queue.enqueue(
-            show = { display(config) },
+            show = { display(activity, config) },
             dismiss = { dismiss() },
             isShowing = { isShowing }
         )
     }
 
-    private fun display(config: SnackConfig) {
-        val newBinding = activityProvider.bindToCurrentActivity { onOwningActivityDestroyed() }
-            ?: run {
-                queue.next() // no foreground activity to attach to — skip, advance queue
-                return
-            }
-
+    private fun display(activity: Activity, config: SnackConfig) {
         currentConfig = config
-        binding = newBinding
+        binding = activityProvider.bindTo(activity) { onOwningActivityDestroyed() }
 
-        val attached = viewManager.attach(config, onDismiss = { dismiss() })
+        val attached = viewManager.attach(activity, config, onDismiss = { dismiss() })
         if (!attached) {
             clearBinding()
             queue.next()
@@ -64,7 +58,7 @@ internal class SnackHandler(
         }
 
         if (currentConfig.dismissOnBackPress) {
-            backPressHandler.register { dismiss() }
+            backPressHandler.register(activity) { dismiss() }
         }
 
         val container = viewManager.container ?: return

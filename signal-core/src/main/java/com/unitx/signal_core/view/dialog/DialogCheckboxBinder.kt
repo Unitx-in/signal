@@ -1,5 +1,6 @@
 package com.unitx.signal_core.view.dialog
 
+import android.app.Activity
 import android.content.res.ColorStateList
 import android.view.ContextThemeWrapper
 import android.view.View
@@ -12,12 +13,11 @@ import com.unitx.signal_core.helper.dp
 import com.unitx.signal_core.activity.ActivityProvider
 
 internal class DialogCheckboxBinder(
-    private val activityProvider: ActivityProvider,
     private val primaryColor: Int,
     private val contentTextColor: Int
 ) {
 
-    fun bind(config: DialogConfig, b: SignalDialogBinding, onDismiss: () -> Unit) {
+    fun bind(activity: Activity, config: DialogConfig, b: SignalDialogBinding, onDismiss: () -> Unit) {
         val selConfig = config.selection
         val container = b.dialogSelectionContainer
 
@@ -26,7 +26,6 @@ internal class DialogCheckboxBinder(
         container.removeAllViews()
         container.visibility = View.VISIBLE
 
-        val activity = activityProvider.current() ?: return
         val themedContext = ContextThemeWrapper(
             activity,
             R.style.Theme_MaterialComponents_Light_NoActionBar

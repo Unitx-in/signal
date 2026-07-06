@@ -1,5 +1,6 @@
 package com.unitx.signal_core.view
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.PorterDuff
@@ -24,6 +25,7 @@ internal class SnackViewManager(
 ) {
 
     private var binding: SignalSnackBinding? = null
+    private var attachedActivity: Activity? = null
 
     val container: View?
         get() = binding?.snackContainer
@@ -31,9 +33,9 @@ internal class SnackViewManager(
     val isShowing: Boolean
         get() = binding?.snackContainer?.visibility == View.VISIBLE
 
-    fun attach(config: SnackConfig, onDismiss: () -> Unit): Boolean {
-        val activity = activityProvider.current() ?: return false
+    fun attach(activity: Activity, config: SnackConfig, onDismiss: () -> Unit): Boolean {
         val rootView = activity.rootViewGroup() ?: return false
+        attachedActivity = activity
 
         if (binding == null) {
             binding = SignalSnackBinding.inflate(LayoutInflater.from(activity), rootView, false)
@@ -105,8 +107,9 @@ internal class SnackViewManager(
 
     fun release() {
         binding?.snackContainer?.visibility = View.GONE
-        val rootView = activityProvider.current()?.rootViewGroup()
+        val rootView = attachedActivity?.rootViewGroup()
         binding?.root?.let { rootView?.removeView(it) }
         binding = null
+        attachedActivity = null
     }
 }

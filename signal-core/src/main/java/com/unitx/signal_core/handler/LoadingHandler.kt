@@ -1,5 +1,6 @@
 package com.unitx.signal_core.handler
 
+import android.app.Activity
 import com.unitx.signal_core.contract.config.LoadingConfig
 import com.unitx.signal_core.helper.BackPressHandler
 import com.unitx.signal_core.helper.SignalAnimator
@@ -19,17 +20,17 @@ internal class LoadingHandler(
 ) {
     private var activeManager: ILoadingViewManager = advancedViewManager
     private var currentConfig: LoadingConfig = LoadingConfig()
-    private val backPressHandler = BackPressHandler(activityProvider)
+    private val backPressHandler: BackPressHandler = BackPressHandler()
     private var binding: ActivityBinding? = null
 
     val isShowing: Boolean
         get() = activeManager.isShowing
 
-    fun show(block: LoadingConfig.() -> Unit = {}) {
+    fun show(activity: Activity, block: LoadingConfig.() -> Unit = {}) {
         ensureMainThread()
         if (isShowing) return
         val config = globalConfig.copy().apply(block)
-        display(config)
+        display(activity, config)
     }
 
     fun updateProgress(progress: Int, message: String? = null) {
@@ -51,15 +52,12 @@ internal class LoadingHandler(
         }
     }
 
-    private fun display(config: LoadingConfig) {
-        val newBinding = activityProvider.bindToCurrentActivity { onOwningActivityDestroyed() }
-            ?: return // no foreground activity to attach to
-
+    private fun display(activity: Activity, config: LoadingConfig) {
         activeManager = if (config.simpleLoading) simpleViewManager else advancedViewManager
         currentConfig = config
-        binding = newBinding
+        binding = activityProvider.bindTo(activity) { onOwningActivityDestroyed() }
 
-        val attached = activeManager.attach(config, onDismiss = {
+        val attached = activeManager.attach(activity, config, onDismiss = {
             config.onCancelled?.invoke()
             dismiss()
         })
@@ -73,7 +71,7 @@ internal class LoadingHandler(
         config.onShown?.invoke()
 
         if (config.dismissOnBackPress) {
-            backPressHandler.register { dismiss() }
+            backPressHandler.register(activity) { dismiss() }
         }
     }
 

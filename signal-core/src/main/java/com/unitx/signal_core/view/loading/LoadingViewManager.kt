@@ -1,5 +1,6 @@
 package com.unitx.signal_core.view.loading
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable
@@ -24,6 +25,7 @@ internal class LoadingViewManager(
 ): ILoadingViewManager {
 
     private var binding: SignalLoadingBinding? = null
+    private var attachedActivity: Activity? = null
     private val dim = DimOverlay()
 
     override val container: View?
@@ -32,9 +34,11 @@ internal class LoadingViewManager(
     override val isShowing: Boolean
         get() = binding?.root?.visibility == View.VISIBLE
 
-    override fun attach(config: LoadingConfig, onDismiss: () -> Unit): Boolean {
-        val activity = activityProvider.current() ?: return false
+    override fun attach(activity: Activity, config: LoadingConfig, onDismiss: () -> Unit): Boolean {
         val rootView = activity.rootViewGroup() ?: return false
+        attachedActivity = activity
+
+        dim.attach(activity, rootView, config.cancelable, onDismiss)
 
         dim.attach(activity, rootView, config.cancelable, onDismiss)
         inflateLoading(activity, rootView, config.horizontalMargin)
@@ -123,10 +127,11 @@ internal class LoadingViewManager(
     }
 
     override fun release(onReleased: () -> Unit) {
-        val rootView = activityProvider.current()?.rootViewGroup()
+        val rootView = attachedActivity?.rootViewGroup()
         dim.release(rootView) {
             binding?.root?.let { rootView?.removeView(it) }
             binding = null
+            attachedActivity = null
             onReleased()
         }
     }

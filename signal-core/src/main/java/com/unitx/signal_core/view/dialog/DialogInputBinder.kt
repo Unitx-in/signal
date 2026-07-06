@@ -1,5 +1,6 @@
 package com.unitx.signal_core.view.dialog
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -21,12 +22,11 @@ import com.unitx.signal_core.helper.dp
 import com.unitx.signal_core.activity.ActivityProvider
 
 internal class DialogInputBinder(
-    private val activityProvider: ActivityProvider,
     private val primaryColor: Int,
     private val dividerColor: Int
 ) {
 
-    fun bind(config: DialogConfig, b: SignalDialogBinding, onDismiss: () -> Unit) {
+    fun bind(activity: Activity, config: DialogConfig, b: SignalDialogBinding, onDismiss: () -> Unit) {
         val inputContainer = b.dialogInputContainer
         inputContainer.removeAllViews()
 
@@ -36,7 +36,6 @@ internal class DialogInputBinder(
         }
 
         inputContainer.visibility = View.VISIBLE
-        val activity = activityProvider.current() ?: return
         val themedContext = ContextThemeWrapper(
             activity,
             com.google.android.material.R.style.Theme_MaterialComponents_Light_NoActionBar

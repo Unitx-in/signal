@@ -1,5 +1,6 @@
 package com.unitx.signal_core.view
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
@@ -26,6 +27,7 @@ internal class ToastViewManager(
 ) {
 
     private var binding: SignalToastBinding? = null
+    private var attachedActivity: Activity? = null
 
     val container: View?
         get() = binding?.toastContainer
@@ -33,9 +35,9 @@ internal class ToastViewManager(
     val isShowing: Boolean
         get() = binding?.toastContainer?.visibility == View.VISIBLE
 
-    fun attach(config: ToastConfig, onDismiss: () -> Unit): Boolean {
-        val activity = activityProvider.current() ?: return false
+    fun attach(activity: Activity, config: ToastConfig, onDismiss: () -> Unit): Boolean {
         val rootView = activity.rootViewGroup() ?: return false
+        attachedActivity = activity
 
         if (binding == null) {
             val themedContext = ContextThemeWrapper(activity, R.style.SignalTheme)
@@ -111,8 +113,9 @@ internal class ToastViewManager(
 
     fun release() {
         binding?.toastContainer?.visibility = View.GONE
-        val rootView = activityProvider.current()?.rootViewGroup()
+        val rootView = attachedActivity?.rootViewGroup()
         binding?.root?.let { rootView?.removeView(it) }
         binding = null
+        attachedActivity = null
     }
 }
