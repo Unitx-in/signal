@@ -14,7 +14,7 @@ import com.unitx.signal_core.view.loading.LoadingViewManager
 import com.unitx.signal_core.view.loading.SimpleLoadingViewManager
 import com.unitx.signal_core.view.SnackViewManager
 import com.unitx.signal_core.view.ToastViewManager
-import com.unitx.signal_core.provider.ActivityProvider
+import com.unitx.signal_core.activity.ActivityProvider
 import com.unitx.signal_core.queue.QueueStrategy
 import com.unitx.signal_core.queue.SignalQueue
 

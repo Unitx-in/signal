@@ -1,11 +1,11 @@
 package com.unitx.signal_core.handler
 
-import android.app.Activity
 import com.unitx.signal_core.contract.config.ToastConfig
 import com.unitx.signal_core.helper.SignalAnimator
 import com.unitx.signal_core.helper.SignalDismissScheduler
 import com.unitx.signal_core.helper.ensureMainThread
-import com.unitx.signal_core.provider.ActivityProvider
+import com.unitx.signal_core.activity.ActivityBinding
+import com.unitx.signal_core.activity.ActivityProvider
 import com.unitx.signal_core.queue.SignalQueue
 import com.unitx.signal_core.view.ToastViewManager
 
@@ -19,13 +19,9 @@ internal class ToastHandler(
 ) {
 
     private var currentConfig: ToastConfig = globalConfig.copy()
-    private val destroyListener: (Activity) -> Unit = { release() }
+    private var binding: ActivityBinding? = null
 
     private var currentTag: String? = null
-
-    init {
-        activityProvider.addOnDestroyListener(destroyListener)
-    }
 
     val isShowing: Boolean
         get() = viewManager.isShowing
@@ -49,9 +45,21 @@ internal class ToastHandler(
     }
 
     private fun display(config: ToastConfig) {
+        val newBinding = activityProvider.bindToCurrentActivity { onOwningActivityDestroyed() }
+            ?: run {
+                queue.next()
+                return
+            }
+
         currentConfig = config
+        binding = newBinding
+
         val attached = viewManager.attach(config) { dismiss() }
-        if (!attached) return
+        if (!attached) {
+            clearBinding()
+            queue.next()
+            return
+        }
         val container = viewManager.container ?: return
         animator.fadeIn(container)
         config.onShown?.invoke()
@@ -63,6 +71,7 @@ internal class ToastHandler(
 
     fun dismiss() {
         currentTag = null
+        clearBinding()
         scheduler.cancel()
         val container = viewManager.container ?: run { queue.next(); return }
         animator.fadeOut(container) {
@@ -71,10 +80,15 @@ internal class ToastHandler(
         }
     }
 
-    private fun release() {
-        activityProvider.removeOnDestroyListener(destroyListener)
+    private fun onOwningActivityDestroyed() {
+        clearBinding()
         scheduler.cancel()
         viewManager.release()
         queue.clear()
+    }
+
+    private fun clearBinding() {
+        binding?.unbind()
+        binding = null
     }
 }

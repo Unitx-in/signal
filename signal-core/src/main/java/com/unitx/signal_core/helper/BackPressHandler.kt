@@ -2,7 +2,7 @@ package com.unitx.signal_core.helper
 
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
-import com.unitx.signal_core.provider.ActivityProvider
+import com.unitx.signal_core.activity.ActivityProvider
 
 internal class BackPressHandler(private val activityProvider: ActivityProvider) {
     private var callback: OnBackPressedCallback? = null

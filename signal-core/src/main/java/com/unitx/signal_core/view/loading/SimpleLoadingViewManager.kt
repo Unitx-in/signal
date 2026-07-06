@@ -10,7 +10,7 @@ import com.unitx.signal_core.contract.config.LoadingConfig
 import com.unitx.signal_core.databinding.SignalLoadingSimpleBinding
 import com.unitx.signal_core.helper.DimOverlay
 import com.unitx.signal_core.helper.rootViewGroup
-import com.unitx.signal_core.provider.ActivityProvider
+import com.unitx.signal_core.activity.ActivityProvider
 import com.unitx.signal_core.theme.ThemeResolver
 
 internal class SimpleLoadingViewManager(

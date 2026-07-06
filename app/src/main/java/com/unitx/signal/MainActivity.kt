@@ -463,7 +463,7 @@ fun SignalTestScreen() {
         when (selected) {
             0 -> ToastScreen()
             1 -> SnackScreen()
-            2 -> DialogSelectionTest()
+            2 -> DialogScreen()
             3 -> LoadingScreen()
         }
     }

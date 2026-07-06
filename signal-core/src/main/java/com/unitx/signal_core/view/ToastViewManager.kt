@@ -18,7 +18,7 @@ import com.unitx.signal_core.databinding.SignalToastBinding
 import com.unitx.signal_core.helper.applyInsetPosition
 import com.unitx.signal_core.helper.dp
 import com.unitx.signal_core.helper.rootViewGroup
-import com.unitx.signal_core.provider.ActivityProvider
+import com.unitx.signal_core.activity.ActivityProvider
 
 internal class ToastViewManager(
     private val activityProvider: ActivityProvider,

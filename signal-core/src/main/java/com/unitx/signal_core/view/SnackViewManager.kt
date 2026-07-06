@@ -16,7 +16,7 @@ import com.unitx.signal_core.contract.type.SnackType
 import com.unitx.signal_core.databinding.SignalSnackBinding
 import com.unitx.signal_core.helper.applyInsetPosition
 import com.unitx.signal_core.helper.rootViewGroup
-import com.unitx.signal_core.provider.ActivityProvider
+import com.unitx.signal_core.activity.ActivityProvider
 
 internal class SnackViewManager(
     private val activityProvider: ActivityProvider,

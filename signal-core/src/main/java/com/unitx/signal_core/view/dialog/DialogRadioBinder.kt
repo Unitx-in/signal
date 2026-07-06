@@ -11,7 +11,7 @@ import com.unitx.signal_core.contract.config.dialog.DialogConfig
 import com.unitx.signal_core.contract.config.dialog.DialogScope
 import com.unitx.signal_core.databinding.SignalDialogBinding
 import com.unitx.signal_core.helper.dp
-import com.unitx.signal_core.provider.ActivityProvider
+import com.unitx.signal_core.activity.ActivityProvider
 
 internal class DialogRadioBinder(
     private val activityProvider: ActivityProvider,

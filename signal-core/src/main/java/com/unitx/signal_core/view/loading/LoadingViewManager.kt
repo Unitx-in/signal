@@ -15,7 +15,7 @@ import com.unitx.signal_core.databinding.SignalLoadingBinding
 import com.unitx.signal_core.helper.DimOverlay
 import com.unitx.signal_core.helper.dp
 import com.unitx.signal_core.helper.rootViewGroup
-import com.unitx.signal_core.provider.ActivityProvider
+import com.unitx.signal_core.activity.ActivityProvider
 import com.unitx.signal_core.theme.ThemeResolver
 
 internal class LoadingViewManager(
