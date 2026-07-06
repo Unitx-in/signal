@@ -30,6 +30,7 @@ class MainActivityXmlTesting2 : AppCompatActivity() {
             type = DialogType.Error
             positive("OK")
             negative("Cancel")
+            showCloseButton = false
             onShown = { Log.d("SignalRepro", "Dialog: onShown") }
             onDismissed = { Log.d("SignalRepro", "Dialog: onDismissed") }
         }

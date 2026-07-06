@@ -122,6 +122,7 @@ internal class DialogViewManager(
         b.dialogMessage.movementMethod = ScrollingMovementMethod.getInstance()
         b.dialogClose.setOnClickListener { onDismiss() }
         b.dialogIcon.setImageResource(config.icon ?: config.type.icon)
+        b.dialogClose.visibility = if (config.showCloseButton) View.VISIBLE else View.GONE
 
         config.header.takeIf { it.isNotBlank() }?.let { h ->
             b.dialogHeaderLabel.text = h

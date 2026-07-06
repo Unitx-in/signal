@@ -1,7 +1,6 @@
 package com.unitx.signal_core.contract.config.dialog
 
 import androidx.annotation.DrawableRes
-import com.unitx.signal_core.contract.config.dialog.DialogSelectionConfig
 import com.unitx.signal_core.contract.type.DialogType
 
 /**
@@ -65,6 +64,9 @@ class DialogConfig {
     /** If true, dialog dismisses when the neutral text is tapped. Default: true. */
     var dismissOnNeutral: Boolean = true
 
+    /** If true, it shows the dialog close button at the top right. Default: true. */
+    var showCloseButton : Boolean = true
+
     /** Called when the dialog becomes visible. */
     var onShown: (() -> Unit)? = null
 
@@ -119,6 +121,7 @@ class DialogConfig {
         it.accessibilityText = accessibilityText
         it.inputs = inputs
         it.selection = selection
+        it.showCloseButton = showCloseButton
         it.secondaryButtonStrokeWidth = secondaryButtonStrokeWidth
     }
 }
