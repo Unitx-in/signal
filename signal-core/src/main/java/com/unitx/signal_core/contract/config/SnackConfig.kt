@@ -9,7 +9,7 @@ import com.unitx.signal_core.contract.type.SnackType
  *
  * Usage:
  * ```
- * Signal.snack("Changes saved") {
+ * Signal.snack(this, "Changes saved") {
  *     type = SnackType.Success
  *     action("Undo") { undoChanges() }
  *     persistent = true

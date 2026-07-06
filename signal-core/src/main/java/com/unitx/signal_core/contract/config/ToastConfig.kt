@@ -10,7 +10,7 @@ import com.unitx.signal_core.contract.type.ToastType
  *
  * Usage:
  * ```
- * Signal.toast("File saved") {
+ * Signal.toast(this, "File saved") {
  *     type = ToastType.Success
  *     position = ToastPosition.Top
  *     duration = 3000L

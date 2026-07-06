@@ -9,7 +9,7 @@ import com.unitx.signal_core.contract.type.DialogSelectionMode
  *
  * Usage:
  * ```
- * Signal.dialog {
+ * Signal.dialog(this) {
  *     title = "Sort by"
  *     selection {
  *         mode = DialogSelectionType.SINGLE

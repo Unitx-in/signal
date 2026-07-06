@@ -9,7 +9,7 @@ import android.text.InputType
  * to stack fields (e.g. username + password).
  *
  * Usage:
- * Signal.dialog {
+ * Signal.dialog(this) {
  *     title = "Rename file"
  *     input {
  *         hint = "File name"

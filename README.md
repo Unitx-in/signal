@@ -7,14 +7,22 @@ A lightweight Android UI feedback library for displaying **toasts**, **snackbars
 
 ## Why Signal
 
-- **One API for everything** — toasts, snackbars, dialogs, and loading overlays all follow the same pattern
-- **Up and running in minutes** — initialize once in your `Application`, then call `Signal.toast()` anywhere
-- **A dialog in under a minute** — title, message, buttons, type, auto-dismiss, text input, and selection lists — all in one readable block
-- **Loading that actually behaves** — indefinite, determinate with live progress updates, cancelable, back-press aware, simple or advanced — all covered
-- **Beautiful out of the box** — every signal type ships with four semantic styles (Info, Success, Warning, Error) and smooth animations
-- **Fully customizable** — override colors per signal type, per light/dark mode, down to individual elements like button text or icon tint
-- **Queue-aware** — no more signals stomping on each other; choose independent or global sequential queuing
-- **Lifecycle safe** — attaches and cleans up with the activity automatically, no leaks, no stale views
+- **One API for everything** — toasts, snackbars, dialogs, and loading overlays all follow the same
+  pattern
+- **Up and running in minutes** — initialize once in your `Application`, then call
+  `Signal.toast(activity, ...)` anywhere
+- **A dialog in under a minute** — title, message, buttons, type, auto-dismiss, text input, and
+  selection lists — all in one readable block
+- **Loading that actually behaves** — indefinite, determinate with live progress updates,
+  cancelable, back-press aware, simple or advanced — all covered
+- **Beautiful out of the box** — every signal type ships with four semantic styles (Info, Success,
+  Warning, Error) and smooth animations
+- **Fully customizable** — override colors per signal type, per light/dark mode, down to individual
+  elements like button text or icon tint
+- **Queue-aware** — no more signals stomping on each other; choose independent or global sequential
+  queuing
+- **Lifecycle safe** — attaches to the exact activity you pass in and cleans up automatically when
+  it's destroyed; no leaks, no stale views, no guessing which screen is "current"
 - **Works everywhere** — drop it into XML-based layouts or Jetpack Compose with zero extra setup
 
 ## Installation
@@ -33,7 +41,6 @@ dependencyResolutionManagement {
     }
 }
 ```
-
 
 ### Step 2: Add the dependency
 
@@ -82,6 +89,12 @@ Register your Application class in `AndroidManifest.xml`:
 <application android:name=".MyApp" />
 ```
 
+> **Every `show` call requires the target `Activity`.** Signal attaches directly to the activity
+> you pass in and tears down automatically when *that* activity is destroyed — it never guesses
+> which screen is "current," so calling from `onCreate()`, `onStart()`, or `onResume()` all behave
+> identically. See [Jetpack Compose](#jetpack-compose) below for how to obtain the `Activity` from
+> a `@Composable`.
+
 ---
 
 ## Toast
@@ -89,7 +102,7 @@ Register your Application class in `AndroidManifest.xml`:
 ### Basic
 
 ```kotlin
-Signal.toast("File saved")
+Signal.toast(this, "File saved")
 ```
 
 ### With options
@@ -97,7 +110,7 @@ Signal.toast("File saved")
 **XML / View**
 
 ```kotlin
-Signal.toast("File saved") {
+Signal.toast(this, "File saved") {
     type = ToastType.Success
     position = ToastPosition.Top
     duration = 3000L
@@ -109,10 +122,15 @@ Signal.toast("File saved") {
 **Jetpack Compose**
 
 ```kotlin
+val context = LocalContext.current
+val activity = remember(context) { context.findActivity() }
+
 Button(onClick = {
-    Signal.toast("File saved") {
-        type = ToastType.Success
-        position = ToastPosition.Top
+    activity?.let {
+        Signal.toast(it, "File saved") {
+            type = ToastType.Success
+            position = ToastPosition.Top
+        }
     }
 }) { Text("Show Toast") }
 ```
@@ -141,7 +159,7 @@ Button(onClick = {
 ### Basic
 
 ```kotlin
-Signal.snack("Changes saved")
+Signal.snack(this, "Changes saved")
 ```
 
 ### With options
@@ -149,7 +167,7 @@ Signal.snack("Changes saved")
 **XML / View**
 
 ```kotlin
-Signal.snack("Changes saved") {
+Signal.snack(this, "Changes saved") {
     type = SnackType.Success
     position = SnackPosition.Bottom
     persistent = true
@@ -160,10 +178,15 @@ Signal.snack("Changes saved") {
 **Jetpack Compose**
 
 ```kotlin
+val context = LocalContext.current
+val activity = remember(context) { context.findActivity() }
+
 Button(onClick = {
-    Signal.snack("Changes saved") {
-        type = SnackType.Success
-        action("Undo") { undoChanges() }
+    activity?.let {
+        Signal.snack(it, "Changes saved") {
+            type = SnackType.Success
+            action("Undo") { undoChanges() }
+        }
     }
 }) { Text("Show Snack") }
 ```
@@ -192,7 +215,7 @@ Button(onClick = {
 ### Basic
 
 ```kotlin
-Signal.dialog {
+Signal.dialog(this) {
     title = "Delete file?"
     message = "This action cannot be undone."
     type = DialogType.Error
@@ -204,13 +227,18 @@ Signal.dialog {
 **Jetpack Compose**
 
 ```kotlin
+val context = LocalContext.current
+val activity = remember(context) { context.findActivity() }
+
 Button(onClick = {
-    Signal.dialog {
-        title = "Delete file?"
-        message = "This action cannot be undone."
-        type = DialogType.Error
-        positive("Delete") { deleteFile() }
-        negative("Cancel")
+    activity?.let {
+        Signal.dialog(it) {
+            title = "Delete file?"
+            message = "This action cannot be undone."
+            type = DialogType.Error
+            positive("Delete") { deleteFile() }
+            negative("Cancel")
+        }
     }
 }) { Text("Show Dialog") }
 ```
@@ -224,7 +252,7 @@ Signal.dismissDialog()
 ### Auto-dismiss
 
 ```kotlin
-Signal.dialog {
+Signal.dialog(this) {
     title = "Session expiring"
     message = "Your session will expire in 2 minutes."
     type = DialogType.Action
@@ -268,11 +296,12 @@ Signal.dialog {
 ### Button behavior — `DialogScope`
 
 Each button callback runs with `DialogScope` as its receiver. By default, tapping a button dismisses
-the dialog (governed by `dismissOnPositive` / `dismissOnNegative` / `dismissOnNeutral`). Call `prevent()`
+the dialog (governed by `dismissOnPositive` / `dismissOnNegative` / `dismissOnNeutral`). Call
+`prevent()`
 to keep the dialog open — useful for validation or async work — then call `dismiss()` once ready.
 
 ```kotlin
-Signal.dialog {
+Signal.dialog(this) {
     title = "Submit form"
     positive("Submit") {
         prevent()
@@ -290,7 +319,7 @@ Add one or more input fields to a dialog with `input { }`. Call it multiple time
 (e.g. username + password).
 
 ```kotlin
-Signal.dialog {
+Signal.dialog(this) {
     title = "Rename file"
     input {
         hint = "File name"
@@ -309,7 +338,7 @@ Signal.dialog {
 Multiple fields:
 
 ```kotlin
-Signal.dialog {
+Signal.dialog(this) {
     title = "Login"
     input { hint = "Username"; onInput = { username = it } }
     input {
@@ -323,7 +352,8 @@ Signal.dialog {
 }
 ```
 
-The positive button is automatically disabled until all `validator` checks pass. `onInput` fires with
+The positive button is automatically disabled until all `validator` checks pass. `onInput` fires
+with
 the field's current value when positive is tapped.
 
 #### DialogInputConfig options
@@ -346,7 +376,7 @@ the field's current value when positive is tapped.
 Add a radio (single), checkbox (multi), or chip selection list with `selection { }`.
 
 ```kotlin
-Signal.dialog {
+Signal.dialog(this) {
     title = "Sort by"
     selection {
         mode = DialogSelectionMode.SINGLE
@@ -360,7 +390,7 @@ Signal.dialog {
 ```
 
 ```kotlin
-Signal.dialog {
+Signal.dialog(this) {
     title = "Notify me about"
     selection {
         mode = DialogSelectionMode.MULTI
@@ -373,7 +403,7 @@ Signal.dialog {
 ```
 
 ```kotlin
-Signal.dialog {
+Signal.dialog(this) {
     title = "Filter by tags"
     selection {
         mode = DialogSelectionMode.CHIP
@@ -400,7 +430,7 @@ Signal.dialog {
 ### Basic
 
 ```kotlin
-Signal.loading()
+Signal.loading(this)
 ```
 
 ### With options
@@ -408,7 +438,7 @@ Signal.loading()
 **XML / View**
 
 ```kotlin
-Signal.loading {
+Signal.loading(this) {
     title = "Uploading..."
     cancelable = true
     onCancelled = { cancelUpload() }
@@ -418,11 +448,16 @@ Signal.loading {
 **Jetpack Compose**
 
 ```kotlin
+val context = LocalContext.current
+val activity = remember(context) { context.findActivity() }
+
 Button(onClick = {
-    Signal.loading {
-        title = "Uploading..."
-        cancelable = true
-        onCancelled = { cancelUpload() }
+    activity?.let {
+        Signal.loading(it) {
+            title = "Uploading..."
+            cancelable = true
+            onCancelled = { cancelUpload() }
+        }
     }
 }) { Text("Show Loading") }
 ```
@@ -430,7 +465,7 @@ Button(onClick = {
 ### Determinate (with progress)
 
 ```kotlin
-Signal.loading {
+Signal.loading(this) {
     title = "Downloading"
     type = LoadingType.Determinate
     progress = 0
@@ -447,7 +482,7 @@ Signal.dismissLoading()
 ### Simple overlay (dots only)
 
 ```kotlin
-Signal.loading { simpleLoading = true }
+Signal.loading(this) { simpleLoading = true }
 ```
 
 ### LoadingConfig options
@@ -468,6 +503,68 @@ Signal.loading { simpleLoading = true }
 | `onDismissed`        | `() -> Unit`  | `null`                    | Called when overlay is dismissed                           |
 | `onCancelled`        | `() -> Unit`  | `null`                    | Called when user cancels via tap or back press             |
 | `accessibilityText`  | `String?`     | `null`                    | Overrides the default accessibility description            |
+
+---
+
+## Jetpack Compose
+
+Every `Signal.*` function needs an `Activity`. Inside a `@Composable`, `LocalContext.current` is
+often a wrapped `Context` (not the `Activity` itself), so resolve it with a small extension:
+
+```kotlin
+fun Context.findActivity(): Activity? {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is Activity) return context
+        context = context.baseContext
+    }
+    return null
+}
+```
+
+Then in any composable:
+
+```kotlin
+@Composable
+fun MyScreen() {
+    val context = LocalContext.current
+    val activity = remember(context) { context.findActivity() }
+
+    Button(onClick = {
+        activity?.let {
+            Signal.toast(it, "Saved!")
+        }
+    }) { Text("Save") }
+}
+```
+
+To show a signal once when a screen first appears (equivalent to `onResume` in the View system), use
+`LaunchedEffect`:
+
+```kotlin
+@Composable
+fun HomeScreen() {
+    val context = LocalContext.current
+    val activity = remember(context) { context.findActivity() }
+
+    LaunchedEffect(Unit) {
+        activity?.let {
+            Signal.dialog(it) {
+                title = "Update required"
+                message = "Please update to continue."
+                cancelable = false
+                positive("Update now") { /* open Play Store */ }
+            }
+        }
+    }
+
+    // rest of your screen content
+}
+```
+
+Because Signal attaches to the `Activity` you pass in rather than inferring one, this works
+correctly
+regardless of exactly when Compose runs the effect — no timing dependency on lifecycle ordering.
 
 ---
 
@@ -541,6 +638,28 @@ Signal.createCore(this) {
 - **Min SDK:** 24
 - **Compile SDK:** 35
 - **Kotlin:** 1.9+
+
+## Migrating from earlier versions
+
+If you're upgrading from a version where `Signal.toast(...)`, `Signal.snack(...)`,
+`Signal.dialog { }`,
+and `Signal.loading { }` took no activity parameter, add the calling `Activity` (usually `this`, or
+the
+result of `findActivity()` in Compose) as the first argument to each call:
+
+```kotlin
+// Before
+Signal.toast("Saved!")
+Signal.dialog { title = "Confirm?" }
+
+// After
+Signal.toast(this, "Saved!")
+Signal.dialog(this) { title = "Confirm?" }
+```
+
+`Signal.dismissDialog()`, `Signal.dismissLoading()`, and `Signal.updateProgress(...)` are
+unchanged —
+they act on whatever signal is already showing and don't need an activity.
 
 ## Contributing
 

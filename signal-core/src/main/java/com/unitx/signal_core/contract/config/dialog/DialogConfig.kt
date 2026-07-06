@@ -9,7 +9,7 @@ import com.unitx.signal_core.contract.type.DialogType
  *
  * Usage:
  * ```
- * Signal.dialog {
+ * Signal.dialog(this) {
  *     title = "Delete file?"
  *     message = "This action cannot be undone."
  *     type = DialogType.Warning

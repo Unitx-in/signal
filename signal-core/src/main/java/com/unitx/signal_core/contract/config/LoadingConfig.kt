@@ -9,7 +9,7 @@ import com.unitx.signal_core.contract.type.LoadingType
  *
  * Usage:
  * ```
- * Signal.loading {
+ * Signal.loading(this) {
  *     title = "Uploading..."
  *     type = LoadingType.Determinate
  *     cancelable = true
@@ -17,7 +17,7 @@ import com.unitx.signal_core.contract.type.LoadingType
  * }
  *
  * // Simple dots-only overlay:
- * Signal.loading { simpleLoading = true }
+ * Signal.loading(this) { simpleLoading = true }
  * ```
  */
 class LoadingConfig {
