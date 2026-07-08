@@ -5,6 +5,7 @@ import android.graphics.Color
 import com.unitx.signal_core.contract.position.SnackPosition
 import com.unitx.signal_core.main.Signal
 import com.unitx.signal_core.contract.position.ToastPosition
+import com.unitx.signal_core.helper.color
 import com.unitx.signal_core.queue.QueueStrategy
 
 class MyApp : Application() {
@@ -15,7 +16,7 @@ class MyApp : Application() {
             theme {
                 light {
                     snackBackground = Color.WHITE
-//                    toastBackground = ContextCompat.getColor(applicationContext, R.color.white)
+                    toastBackground = applicationContext.color(R.color.white)
                 }
                 dark {
                     snackBackground = Color.BLACK

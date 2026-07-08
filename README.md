@@ -264,23 +264,25 @@ Signal.dialog(this) {
 
 ### DialogConfig options
 
-| Property              | Type         | Default   | Description                                            |
-|-----------------------|--------------|-----------|--------------------------------------------------------|
-| `title`               | `String`     | `""`      | Main heading                                           |
-| `message`             | `String`     | `""`      | Body text                                              |
-| `type`                | `DialogType` | `Default` | `Default`, `Positive`, `Action`, `Error`               |
-| `header`              | `String`     | `""`      | Header strip label — defaults to `type` label if blank |
-| `icon`                | `Int?`       | `null`    | Custom header icon — defaults to `type` icon if null   |
-| `cancelable`          | `Boolean`    | `false`   | Dismiss on outside tap or back press                   |
-| `horizontalMargin`    | `Int`        | `24`      | Margin from screen edges in dp                         |
-| `autoDismiss`         | `Boolean`    | `false`   | Auto-dismiss after `autoDismissDuration`               |
-| `autoDismissDuration` | `Long`       | `4000`    | Duration in ms before auto-dismiss                     |
-| `dismissOnPositive`   | `Boolean`    | `true`    | Dismiss on positive button tap                         |
-| `dismissOnNegative`   | `Boolean`    | `true`    | Dismiss on negative button tap                         |
-| `dismissOnNeutral`    | `Boolean`    | `true`    | Dismiss on neutral text tap                            |
-| `onShown`             | `() -> Unit` | `null`    | Called when dialog appears                             |
-| `onDismissed`         | `() -> Unit` | `null`    | Called when dialog is dismissed                        |
-| `accessibilityText`   | `String?`    | `null`    | Overrides the default accessibility description        |
+| Property                     | Type         | Default   | Description                                                                    |
+|------------------------------|--------------|-----------|--------------------------------------------------------------------------------|
+| `title`                      | `String`     | `""`      | Main heading                                                                   |
+| `message`                    | `String`     | `""`      | Body text                                                                      |
+| `type`                       | `DialogType` | `Default` | `Default`, `Positive`, `Action`, `Error`                                       |
+| `header`                     | `String`     | `""`      | Header strip label — defaults to `type` label if blank                         |
+| `icon`                       | `Int?`       | `null`    | Custom header icon — defaults to `type` icon if null                           |
+| `cancelable`                 | `Boolean`    | `false`   | Dismiss on outside tap or back press                                           |
+| `horizontalMargin`           | `Int`        | `24`      | Margin from screen edges in dp                                                 |
+| `autoDismiss`                | `Boolean`    | `false`   | Auto-dismiss after `autoDismissDuration`                                       |
+| `autoDismissDuration`        | `Long`       | `4000`    | Duration in ms before auto-dismiss                                             |
+| `dismissOnPositive`          | `Boolean`    | `true`    | Dismiss on positive button tap                                                 |
+| `dismissOnNegative`          | `Boolean`    | `true`    | Dismiss on negative button tap                                                 |
+| `dismissOnNeutral`           | `Boolean`    | `true`    | Dismiss on neutral text tap                                                    |
+| `onShown`                    | `() -> Unit` | `null`    | Called when dialog appears                                                     |
+| `onDismissed`                | `() -> Unit` | `null`    | Called when dialog is dismissed                                                |
+| `accessibilityText`          | `String?`    | `null`    | Overrides the default accessibility description                                |
+| `showCloseButton`            | `Boolean`    | `true`    | Shows the dialog close button at the top right                                 |
+| `secondaryButtonStrokeWidth` | `Int`        | `2`       | Stroke width of the outlined (negative) button in dp — set via `negative(...)` |
 
 > **Back press:** non-cancelable dialogs consume the back press and stay open. Cancelable dialogs
 > dismiss on back press, same as on outside tap.
@@ -577,13 +579,13 @@ Signal.createCore(this) {
     theme {
         light {
             snackBackground = Color.WHITE
-            snackTextColor = Color.BLACK
+            snackTextColor = applicationContext.color(R.color.white)
             dialogPrimaryColor = Color.BLUE
         }
         dark {
             snackBackground = Color.BLACK
             snackTextColor = Color.WHITE
-            dialogPrimaryColor = Color.CYAN
+            dialogPrimaryColor = applicationContext.color(R.color.cyan)
         }
     }
 }
@@ -636,8 +638,9 @@ Signal.createCore(this) {
 ## Requirements
 
 - **Min SDK:** 24
-- **Compile SDK:** 35
+- **Compile SDK:** 36
 - **Kotlin:** 1.9+
+- **Min AGP:** 8.6.1 or higher (required by transitive AndroidX dependencies)
 
 ## Migrating from earlier versions
 
