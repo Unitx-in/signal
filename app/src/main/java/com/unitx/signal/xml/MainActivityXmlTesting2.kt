@@ -1,4 +1,4 @@
-package com.unitx.signal
+package com.unitx.signal.xml
 
 import android.os.Bundle
 import android.util.Log
@@ -6,6 +6,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.unitx.signal.R
 import com.unitx.signal_core.contract.type.DialogType
 import com.unitx.signal_core.main.Signal
 

@@ -15,7 +15,6 @@ import com.unitx.signal_core.activity.ActivityProvider
 import com.unitx.signal_core.theme.ThemeResolver
 
 internal class SimpleLoadingViewManager(
-    private val activityProvider: ActivityProvider,
     private val themeResolver: ThemeResolver
 ) : ILoadingViewManager {
 

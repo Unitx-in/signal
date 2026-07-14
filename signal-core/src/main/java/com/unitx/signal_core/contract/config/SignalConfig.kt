@@ -28,6 +28,11 @@ class SignalConfig {
     internal val theme = ThemeConfig()
     internal var queueStrategy: QueueStrategy = QueueStrategy.default
 
+    internal val notifConfig = NotificationConfig()
+
+    /** Sets global defaults for notifications. */
+    fun notif(block: NotificationConfig.() -> Unit) { notifConfig.apply(block) }
+
     /** Sets global defaults for snackbars. */
     fun snack(block: SnackConfig.() -> Unit) { snackConfig.apply(block) }
 

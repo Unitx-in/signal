@@ -69,4 +69,13 @@ data class ColorScheme(
     @ColorInt val loadingIconColor: Int? = null,
     // endregion
 
+    // region Notification
+    /** Background color of the notification card. */
+    @ColorInt val notifBackground: Int? = null,
+    /** Color of the leading regular-weight text. */
+    @ColorInt val notifTextColor: Int? = null,
+    /** Color of the trailing bold/highlight text. */
+    @ColorInt val notifHighlightTextColor: Int? = null,
+    // endregion
+
 )

@@ -15,8 +15,10 @@ import com.unitx.signal_core.view.loading.SimpleLoadingViewManager
 import com.unitx.signal_core.view.SnackViewManager
 import com.unitx.signal_core.view.ToastViewManager
 import com.unitx.signal_core.activity.ActivityProvider
+import com.unitx.signal_core.handler.NotificationHandler
 import com.unitx.signal_core.queue.QueueStrategy
 import com.unitx.signal_core.queue.SignalQueue
+import com.unitx.signal_core.view.NotificationViewManager
 
 internal class SignalCore(
     app: Application, private val globalConfig: SignalConfig
@@ -30,7 +32,7 @@ internal class SignalCore(
         activityProvider = activityProvider,
         globalConfig = globalConfig.toastConfig,
         queue = getRequiredQueue(),
-        viewManager = ToastViewManager(activityProvider, themeResolver),
+        viewManager = ToastViewManager(themeResolver),
         animator = SignalAnimator,
         scheduler = SignalDismissScheduler()
     )
@@ -39,7 +41,7 @@ internal class SignalCore(
         activityProvider = activityProvider,
         globalConfig = globalConfig.snackConfig,
         queue = getRequiredQueue(),
-        viewManager = SnackViewManager(activityProvider, themeResolver),
+        viewManager = SnackViewManager(themeResolver),
         animator = SignalAnimator,
         scheduler = SignalDismissScheduler()
     )
@@ -48,7 +50,7 @@ internal class SignalCore(
         activityProvider = activityProvider,
         globalConfig = globalConfig.dialogConfig,
         queue = getRequiredQueue(),
-        viewManager = DialogViewManager(activityProvider, themeResolver),
+        viewManager = DialogViewManager(themeResolver),
         animator = SignalAnimator,
         scheduler = SignalDismissScheduler()
     )
@@ -56,9 +58,18 @@ internal class SignalCore(
     internal val loadingHandler = LoadingHandler(
         activityProvider = activityProvider,
         globalConfig = globalConfig.loadingConfig,
-        advancedViewManager = LoadingViewManager(activityProvider, themeResolver),
-        simpleViewManager = SimpleLoadingViewManager(activityProvider, themeResolver),
+        advancedViewManager = LoadingViewManager(themeResolver),
+        simpleViewManager = SimpleLoadingViewManager(themeResolver),
         animator = SignalAnimator
+    )
+
+    internal val notifHandler = NotificationHandler(
+        activityProvider = activityProvider,
+        globalConfig = globalConfig.notifConfig,
+        queue = getRequiredQueue(),
+        viewManager = NotificationViewManager(themeResolver),
+        animator = SignalAnimator,
+        scheduler = SignalDismissScheduler()
     )
 
     private fun getRequiredQueue() = when (globalConfig.queueStrategy) {

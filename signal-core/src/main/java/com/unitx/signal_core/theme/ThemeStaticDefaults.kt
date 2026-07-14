@@ -18,6 +18,9 @@ internal object ThemeStaticDefaults {
         loadingIconColor = Color.BLACK,
         loadingSimpleAnimationActiveColor = Color.WHITE,
         loadingSimpleAnimationInactiveColor = "#757575".toColorInt(),
+        notifBackground = "#e7e7e7".toColorInt(),
+        notifTextColor = Color.BLACK,
+        notifHighlightTextColor = Color.BLACK,
     )
 
     val dark = ColorScheme(
@@ -34,6 +37,9 @@ internal object ThemeStaticDefaults {
         loadingIconColor = Color.WHITE,
         loadingSimpleAnimationActiveColor = Color.WHITE,
         loadingSimpleAnimationInactiveColor = "#757575".toColorInt(),
+        notifBackground = "#2C2C2C".toColorInt(),
+        notifTextColor = Color.WHITE,
+        notifHighlightTextColor = Color.WHITE,
     )
 
     fun resolve(scheme: ColorScheme, isNight: Boolean): ColorScheme {
@@ -54,6 +60,10 @@ internal object ThemeStaticDefaults {
             loadingIconColor = scheme.loadingIconColor ?: defaults.loadingIconColor,
             loadingSimpleAnimationActiveColor = scheme.loadingSimpleAnimationActiveColor ?: defaults.loadingSimpleAnimationActiveColor,
             loadingSimpleAnimationInactiveColor = scheme.loadingSimpleAnimationInactiveColor ?: defaults.loadingSimpleAnimationInactiveColor,
+
+            notifBackground = scheme.notifBackground ?: defaults.notifBackground,
+            notifTextColor = scheme.notifTextColor ?: defaults.notifTextColor,
+            notifHighlightTextColor = scheme.notifHighlightTextColor ?: defaults.notifHighlightTextColor,
 
             // Needs to be null if not defined in the global theme config as they are provided by config
             snackIconBackground = scheme.snackIconBackground,

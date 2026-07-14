@@ -1,4 +1,4 @@
-package com.unitx.signal
+package com.unitx.signal.xml
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,6 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.unitx.signal.R
 
 class MainActivityXmlTesting1 : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

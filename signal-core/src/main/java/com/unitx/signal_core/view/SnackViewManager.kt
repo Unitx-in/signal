@@ -20,7 +20,6 @@ import com.unitx.signal_core.helper.rootViewGroup
 import com.unitx.signal_core.activity.ActivityProvider
 
 internal class SnackViewManager(
-    private val activityProvider: ActivityProvider,
     private val themeResolver: ThemeResolver
 ) {
 

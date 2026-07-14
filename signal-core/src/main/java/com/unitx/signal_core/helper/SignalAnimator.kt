@@ -4,6 +4,7 @@ import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import androidx.core.view.doOnLayout
+import com.unitx.signal_core.contract.position.NotificationPosition
 import com.unitx.signal_core.contract.position.SnackPosition
 
 internal object SignalAnimator {
@@ -23,12 +24,14 @@ internal object SignalAnimator {
             .setDuration(200)
             .withEndAction {
                 container.visibility = View.GONE
+                container.alpha = 1f
                 onEnd()
             }
             .start()
     }
     fun slideIn(container: View, position: SnackPosition) {
         container.visibility = View.VISIBLE
+        container.alpha = 1f
         container.doOnLayout {
             val startY = when (position) {
                 SnackPosition.Bottom -> container.height.toFloat()
@@ -46,6 +49,47 @@ internal object SignalAnimator {
         val endY = when (position) {
             SnackPosition.Bottom -> container.height.toFloat()
             SnackPosition.Top -> -container.height.toFloat()
+        }
+        container.animate()
+            .translationY(endY)
+            .setDuration(250)
+            .withEndAction {
+                container.visibility = View.GONE
+                onEnd()
+            }
+            .start()
+    }
+
+    fun slideIn(container: View, position: NotificationPosition) {
+        container.visibility = View.VISIBLE
+        container.alpha = 1f
+        if (position == NotificationPosition.Center) {
+            fadeIn(container)
+            return
+        }
+        container.doOnLayout {
+            val startY = when (position) {
+                NotificationPosition.Bottom -> container.height.toFloat()
+                NotificationPosition.Top -> -container.height.toFloat()
+                NotificationPosition.Center -> 0f
+            }
+            container.translationY = startY
+            container.animate()
+                .translationY(0f)
+                .setDuration(300)
+                .start()
+        }
+    }
+
+    fun slideOut(container: View, position: NotificationPosition, onEnd: () -> Unit) {
+        if (position == NotificationPosition.Center) {
+            fadeOut(container, onEnd)
+            return
+        }
+        val endY = when (position) {
+            NotificationPosition.Bottom -> container.height.toFloat()
+            NotificationPosition.Top -> -container.height.toFloat()
+            NotificationPosition.Center -> 0f
         }
         container.animate()
             .translationY(endY)

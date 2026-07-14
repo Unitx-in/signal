@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import com.unitx.signal_core.contract.config.dialog.DialogConfig
 import com.unitx.signal_core.contract.config.LoadingConfig
+import com.unitx.signal_core.contract.config.NotificationConfig
 import com.unitx.signal_core.contract.config.SignalConfig
 import com.unitx.signal_core.contract.config.SnackConfig
 import com.unitx.signal_core.contract.config.ToastConfig
@@ -139,4 +140,11 @@ object Signal {
      * Triggers [LoadingConfig.onDismissed].
      */
     fun dismissLoading() = safeCore.loadingHandler.dismiss()
+
+    /** Shows a notification on [activity], configured via [block]. See [NotificationConfig] for options. */
+    fun notif(activity: Activity, block: NotificationConfig.() -> Unit) =
+        safeCore.notifHandler.show(activity, block)
+
+    /** Dismisses the currently visible notification, if any. Triggers [NotificationConfig.onDismissed]. */
+    fun dismissNotif() = safeCore.notifHandler.dismiss()
 }

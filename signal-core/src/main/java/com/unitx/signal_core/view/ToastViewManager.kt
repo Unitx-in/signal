@@ -22,7 +22,6 @@ import com.unitx.signal_core.helper.rootViewGroup
 import com.unitx.signal_core.activity.ActivityProvider
 
 internal class ToastViewManager(
-    private val activityProvider: ActivityProvider,
     private val themeResolver: ThemeResolver
 ) {
 
@@ -57,7 +56,7 @@ internal class ToastViewManager(
             bottomOffset = config.bottomOffset,
             centerHorizontal = true
         )
-        bind(config, onDismiss)
+        bind(config)
         applyTheme(activity, config)
         return true
     }
@@ -89,7 +88,7 @@ internal class ToastViewManager(
         b.toastText.compoundDrawables.forEach { it?.setTint(iconColor) }
     }
 
-    private fun bind(config: ToastConfig, onDismiss: () -> Unit) {
+    private fun bind(config: ToastConfig) {
         val b = binding ?: return
 
         b.toastText.text = config.message

@@ -49,6 +49,12 @@ class ColorSchemeBuilder {
     @ColorInt var loadingIconColor: Int? = null
     // endregion
 
+    // region Notification
+    @ColorInt var notifBackground: Int? = null
+    @ColorInt var notifTextColor: Int? = null
+    @ColorInt var notifHighlightTextColor: Int? = null
+    // endregion
+
     /** Builds and returns a [ColorScheme] from the current property values. */
     fun build() = ColorScheme(
         snackBackground = snackBackground,
@@ -70,6 +76,9 @@ class ColorSchemeBuilder {
         loadingAnimationInactiveColor = loadingAnimationInactiveColor,
         loadingIconColor = loadingIconColor,
         loadingSimpleAnimationActiveColor = loadingSimpleAnimationActiveColor,
-        loadingSimpleAnimationInactiveColor = loadingSimpleAnimationInactiveColor
+        loadingSimpleAnimationInactiveColor = loadingSimpleAnimationInactiveColor,
+        notifBackground = notifBackground,
+        notifTextColor = notifTextColor,
+        notifHighlightTextColor = notifHighlightTextColor,
     )
 }
