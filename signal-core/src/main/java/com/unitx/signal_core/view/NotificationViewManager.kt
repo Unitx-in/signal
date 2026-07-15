@@ -5,16 +5,14 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import androidx.core.content.ContextCompat
 import com.unitx.signal_core.contract.config.NotificationConfig
 import com.unitx.signal_core.contract.position.EdgePosition
-import com.unitx.signal_core.contract.position.ToastPosition
 import com.unitx.signal_core.theme.ThemeResolver
 import com.unitx.signal_core.databinding.SignalNotificationBinding
 import com.unitx.signal_core.helper.applyInsetPosition
 import com.unitx.signal_core.helper.rootViewGroup
-import com.unitx.signal_core.activity.ActivityProvider
 import com.unitx.signal_core.contract.position.NotificationPosition
+import com.unitx.signal_core.helper.SignalImageLoader
 
 internal class NotificationViewManager(
     private val themeResolver: ThemeResolver
@@ -70,12 +68,18 @@ internal class NotificationViewManager(
         b.signalNotifCard.contentDescription =
             config.accessibilityText ?: "${config.message} ${config.highlight}"
 
-        config.iconRes?.let {
-            b.signalNotifIcon.setImageResource(it)
+        when {
+            config.iconRes != null -> {
+                b.signalNotifIcon.setImageResource(config.iconRes!!)
+            }
+            config.iconUrl != null -> {
+                b.signalNotifIcon.setImageDrawable(null)
+                SignalImageLoader.load(config.iconUrl!!, b.signalNotifIcon, requestTag = config.iconUrl!!)
+            }
+            else -> {
+                b.signalNotifIcon.setImageDrawable(null)
+            }
         }
-        // NOTE: config.iconUrl is not loaded here — no image-loading library
-        // (Coil/Glide) is wired into signal-core yet. Hook it up here once
-        // one is added as a dependency; until then iconUrl is a no-op.
     }
 
     private fun applyTheme(context: Context, config: NotificationConfig) {

@@ -32,6 +32,7 @@ fun NotificationScreen() {
             Signal.notif(activity) {
                 message = "Saved to"
                 highlight = "Men fashion casual outfits"
+                iconUrl = "https://picsum.photos/200/300.jpg"
             }
         }) { Text("Basic Notif") }
 

@@ -60,9 +60,8 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-//    implementation("com.github.Unitx-in:signal:0.0.1")
-
     implementation(project(":signal-core"))
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
 
 }

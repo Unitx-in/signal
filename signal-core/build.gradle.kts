@@ -64,4 +64,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // OkHttp — compileOnly so the consumer brings their own version.
+    // Shade-okhttp is tested against 4.x; 3.x should also work.
+    compileOnly(libs.okhttp)
 }
