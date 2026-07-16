@@ -3,7 +3,6 @@ package com.unitx.signal_core.view.dialog
 import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.text.method.ScrollingMovementMethod
 import android.view.ContextThemeWrapper
@@ -14,7 +13,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.annotation.ColorRes
-import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import com.google.android.material.R
 import com.google.android.material.textfield.TextInputLayout
@@ -25,7 +23,7 @@ import com.unitx.signal_core.databinding.SignalDialogBinding
 import com.unitx.signal_core.helper.DimOverlay
 import com.unitx.signal_core.helper.dp
 import com.unitx.signal_core.helper.rootViewGroup
-import com.unitx.signal_core.activity.ActivityProvider
+import com.unitx.signal_core.helper.SignalImageLoader
 import com.unitx.signal_core.theme.ThemeResolver
 
 internal class DialogViewManager(
@@ -95,7 +93,7 @@ internal class DialogViewManager(
         b.dialogHeaderBg.setBackgroundColor(secondary)
         b.dialogHeaderLabel.setTextColor(primary)
         b.dialogClose.imageTintList = ColorStateList.valueOf(primary)
-        b.dialogIcon.imageTintList = ColorStateList.valueOf(primary)
+        if (!config.disableIconColor) b.dialogIcon.imageTintList = ColorStateList.valueOf(primary)
         b.dialogTitle.setTextColor(textColor)
         b.dialogMessage.setTextColor(textColor)
         b.dialogPrimaryBtn.backgroundTintList = ColorStateList.valueOf(primary)
@@ -120,7 +118,15 @@ internal class DialogViewManager(
         b.dialogMessage.text = config.message
         b.dialogMessage.movementMethod = ScrollingMovementMethod.getInstance()
         b.dialogClose.setOnClickListener { onDismiss() }
-        b.dialogIcon.setImageResource(config.icon ?: config.type.icon)
+        when {
+            config.iconUrl != null -> {
+                b.dialogIcon.setImageDrawable(null)
+                SignalImageLoader.load(config.iconUrl!!, b.dialogIcon, requestTag = config.iconUrl!!)
+            }
+            else -> {
+                b.dialogIcon.setImageResource(config.icon ?: config.type.icon)
+            }
+        }
         b.dialogClose.visibility = if (config.showCloseButton) View.VISIBLE else View.GONE
 
         config.header.takeIf { it.isNotBlank() }?.let { h ->

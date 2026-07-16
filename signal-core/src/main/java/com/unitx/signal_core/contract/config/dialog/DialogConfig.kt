@@ -36,9 +36,12 @@ class DialogConfig {
     /** Optional label shown in the colored header strip. Defaults to the [type] label if blank. */
     var header: String = ""
 
-    /** Optional icon shown in the header. Defaults to the [type] icon if null. */
+    /** Optional icon. Defaults to the [type] icon if null. */
     @DrawableRes
     var icon: Int? = null
+
+    /** Optional remote icon, loaded async. Takes precedence over [icon] if both are set. */
+    var iconUrl: String? = null
 
     /** Visual style of the dialog — affects colors and default icon/header. Default: [DialogType.Default]. */
     var type: DialogType = DialogType.Default
@@ -76,6 +79,9 @@ class DialogConfig {
     /** Overrides the default accessibility description. */
     var accessibilityText: String? = null
 
+    /* Disables loading icon color as icon url can fetch images. */
+    var disableIconColor: Boolean = false
+
     /** Adds a primary (filled) button. */
     fun positive(label: String, onClick: DialogScope.() -> Unit = {}) {
         positive = label to onClick
@@ -101,6 +107,7 @@ class DialogConfig {
     fun selection(block: DialogSelectionConfig.() -> Unit) {
         selection = DialogSelectionConfig().apply(block)
     }
+
     internal fun copy(): DialogConfig = DialogConfig().also {
         it.title = title
         it.message = message
@@ -109,6 +116,7 @@ class DialogConfig {
         it.autoDismiss = autoDismiss
         it.autoDismissDuration = autoDismissDuration
         it.icon = icon
+        it.iconUrl = iconUrl
         it.header = header
         it.horizontalMargin = horizontalMargin
         it.positive = positive
@@ -123,5 +131,6 @@ class DialogConfig {
         it.selection = selection
         it.showCloseButton = showCloseButton
         it.secondaryButtonStrokeWidth = secondaryButtonStrokeWidth
+        it.disableIconColor = disableIconColor
     }
 }

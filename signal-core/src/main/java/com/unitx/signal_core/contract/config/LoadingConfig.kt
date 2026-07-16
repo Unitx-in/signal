@@ -40,8 +40,11 @@ class LoadingConfig {
     /** Optional message appended to the progress text, e.g. "Uploading files" → "10% · Uploading files". */
     var progressMessage: String? = null
 
-    /** Optional icon shown in the center of the animation ring. Ignored when [simpleLoading] is true. */
+    /** Optional icon shown. Ignored when [simpleLoading] is true. */
     @DrawableRes var icon: Int? = null
+
+    /** Optional remote icon URL, loaded async. Takes precedence over [icon] if both are set. Ignored when [simpleLoading] is true. */
+    var iconUrl: String? = null
 
     /** Horizontal margin from screen edges in dp. Ignored when [simpleLoading] is true. Default: 12. */
     var horizontalMargin: Int = 12
@@ -64,6 +67,9 @@ class LoadingConfig {
     /** Overrides the default accessibility description. */
     var accessibilityText: String? = null
 
+    /* Disables loading icon color as icon url can fetch images. */
+    var disableIconColor: Boolean = false
+
     /** Fine-grained control over the dots animation timing and appearance. */
     var animationAttr: LoadingAnimationAttr = LoadingAnimationAttr()
 
@@ -74,6 +80,7 @@ class LoadingConfig {
         it.progress = progress
         it.progressMessage = progressMessage
         it.icon = icon
+        it.iconUrl = iconUrl
         it.cancelable = cancelable
         it.dismissOnBackPress = dismissOnBackPress
         it.onShown = onShown
@@ -83,5 +90,6 @@ class LoadingConfig {
         it.animationAttr = animationAttr
         it.accessibilityText = accessibilityText
         it.simpleLoading = simpleLoading
+        it.disableIconColor = disableIconColor
     }
 }

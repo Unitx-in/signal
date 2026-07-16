@@ -16,7 +16,7 @@ import com.unitx.signal_core.databinding.SignalLoadingBinding
 import com.unitx.signal_core.helper.DimOverlay
 import com.unitx.signal_core.helper.dp
 import com.unitx.signal_core.helper.rootViewGroup
-import com.unitx.signal_core.activity.ActivityProvider
+import com.unitx.signal_core.helper.SignalImageLoader
 import com.unitx.signal_core.theme.ThemeResolver
 
 internal class LoadingViewManager(
@@ -41,7 +41,7 @@ internal class LoadingViewManager(
 
         dim.attach(activity, rootView, config.cancelable, onDismiss)
         inflateLoading(activity, rootView, config.horizontalMargin)
-        applyTheme(activity)
+        applyTheme(activity, config.disableIconColor)
         bind(config)
         return true
     }
@@ -70,17 +70,25 @@ internal class LoadingViewManager(
         b.root.contentDescription = config.accessibilityText ?: config.title
         b.loadingDots.animationConfig = config.animationAttr
 
-        config.icon?.let {
-            b.cardIcon.visibility = View.VISIBLE
-            b.cardIcon.setImageResource(it)
-        } ?: run {
-            b.cardIcon.visibility = View.GONE
+        when {
+            config.iconUrl != null -> {
+                b.cardIcon.visibility = View.VISIBLE
+                b.cardIcon.setImageDrawable(null)
+                SignalImageLoader.load(config.iconUrl!!, b.cardIcon, requestTag = config.iconUrl!!)
+            }
+            config.icon != null -> {
+                b.cardIcon.visibility = View.VISIBLE
+                b.cardIcon.setImageResource(config.icon!!)
+            }
+            else -> {
+                b.cardIcon.visibility = View.GONE
+            }
         }
 
         updateProgress(config)
     }
 
-    private fun applyTheme(context: Context) {
+    private fun applyTheme(context: Context, disableIconColor: Boolean) {
         val b = binding ?: return
         val scheme = themeResolver.resolve(context)
 
@@ -95,6 +103,7 @@ internal class LoadingViewManager(
         }
 
         scheme.loadingIconColor?.let { color ->
+            if (disableIconColor) return@let
             ImageViewCompat.setImageTintList(b.cardIcon, ColorStateList.valueOf(color))
         }
 

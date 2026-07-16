@@ -46,6 +46,7 @@ fun LoadingScreen() {
                 progress = 0
                 progressMessage = "Starting download..."
                 icon = R.drawable.ic_download
+                iconUrl = "https://picsum.photos/200/300.jpg"
             }
             // simulate progress
             var p = 0
