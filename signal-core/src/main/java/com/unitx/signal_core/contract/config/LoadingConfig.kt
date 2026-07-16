@@ -25,7 +25,7 @@ class LoadingConfig {
     /** Primary text shown below the animation. Ignored when [simpleLoading] is true. Default: "Please wait a moment." */
     var title: String = "Please wait a moment."
 
-    /** Secondary text shown below the title. Used with [LoadingType.Indefinite]. */
+    /** Secondary text shown below the title. Ignored when [simpleLoading] is true. */
     var subtitle: String? = null
 
     /** If true, shows a minimal dots-only overlay with no text or icon. Default: false. */
@@ -43,8 +43,11 @@ class LoadingConfig {
     /** Optional icon shown. Ignored when [simpleLoading] is true. */
     @DrawableRes var icon: Int? = null
 
-    /** Optional remote icon URL, loaded async. Takes precedence over [icon] if both are set. Ignored when [simpleLoading] is true. */
+    /** Optional remote icon URL. Takes precedence over [icon] if both are set. Ignored when [simpleLoading] is true. */
     var iconUrl: String? = null
+
+    /** Disables loading icon color as icon url can fetch images. */
+    var disableIconColor: Boolean = false
 
     /** Horizontal margin from screen edges in dp. Ignored when [simpleLoading] is true. Default: 12. */
     var horizontalMargin: Int = 12
@@ -66,9 +69,6 @@ class LoadingConfig {
 
     /** Overrides the default accessibility description. */
     var accessibilityText: String? = null
-
-    /* Disables loading icon color as icon url can fetch images. */
-    var disableIconColor: Boolean = false
 
     /** Fine-grained control over the dots animation timing and appearance. */
     var animationAttr: LoadingAnimationAttr = LoadingAnimationAttr()

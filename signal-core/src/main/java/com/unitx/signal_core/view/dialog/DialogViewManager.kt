@@ -33,7 +33,6 @@ internal class DialogViewManager(
     private var binding: SignalDialogBinding? = null
     private var attachedActivity: Activity? = null
     private val dim = DimOverlay()
-
     private var primaryColor: Int = 0
     private var contentTextColor: Int = 0
     private var dividerColor: Int = 0

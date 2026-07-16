@@ -1,7 +1,7 @@
 # Signal
 
-A lightweight Android UI feedback library for displaying **toasts**, **snackbars**, **dialogs**, and
-**loading overlays** with a unified, type-safe API.
+A lightweight Android UI feedback library for displaying **toasts**, **snackbars**, **dialogs**,
+**loading overlays**, and **notifications** with a unified, type-safe API.
 
 ---
 
@@ -24,6 +24,8 @@ A lightweight Android UI feedback library for displaying **toasts**, **snackbars
 - **Lifecycle safe** — attaches to the exact activity you pass in and cleans up automatically when
   it's destroyed; no leaks, no stale views, no guessing which screen is "current"
 - **Works everywhere** — drop it into XML-based layouts or Jetpack Compose with zero extra setup
+- **Pinterest-style notifications** — a lightweight "Saved to X" style banner with a leading icon
+  and two-part text, distinct from toasts and snackbars
 
 ## Installation
 
@@ -507,6 +509,68 @@ Signal.loading(this) { simpleLoading = true }
 | `accessibilityText`  | `String?`     | `null`                    | Overrides the default accessibility description            |
 
 ---
+
+## Notification
+
+A Pinterest-style ephemeral banner for two-part messages like "Saved to **Board name**", separate
+from the toast system.
+
+### Basic
+
+```kotlin
+Signal.notif(this) {
+    message = "Saved to"
+    highlight = "Men fashion casual outfits"
+    iconRes = R.drawable.ic_board_thumb
+}
+```
+
+**Jetpack Compose**
+
+```kotlin
+val context = LocalContext.current
+val activity = remember(context) { context.findActivity() }
+
+Button(onClick = {
+    activity?.let {
+        Signal.notif(it) {
+            message = "Saved to"
+            highlight = "Men fashion casual outfits"
+            iconRes = R.drawable.ic_board_thumb
+        }
+    }
+}) { Text("Show Notification") }
+```
+
+### With a remote icon
+
+```kotlin
+Signal.notif(this) {
+    message = "Added to"
+    highlight = "Travel wishlist"
+    iconUrl = "https://example.com/board-thumb.jpg"
+    duration = 3000L
+}
+```
+
+### NotificationConfig options
+
+| Property             | Type                   | Default | Description                                                                 |
+|----------------------|------------------------|---------|-----------------------------------------------------------------------------|
+| `message`            | `String`               | `""`    | Leading, regular-weight text (e.g. "Saved to")                              |
+| `highlight`          | `String`               | `""`    | Trailing, bold-weight text (e.g. board or item name)                        |
+| `duration`           | `Long`                 | `2500`  | Display duration in ms                                                      |
+| `position`           | `NotificationPosition` | `Top`   | Screen position of the notification                                         |
+| `iconRes`            | `Int?`                 | `null`  | Drawable shown in the leading icon slot                                     |
+| `iconUrl`            | `String?`              | `null`  | Remote image URL for the icon slot — takes precedence over `iconRes` if set |
+| `dismissOnTap`       | `Boolean`              | `true`  | Dismiss immediately when tapped                                             |
+| `topOffset`          | `Int`                  | `0`     | Extra offset from top edge in px — applied when `position` is `Top`         |
+| `bottomOffset`       | `Int`                  | `0`     | Extra offset from bottom edge in px — applied when `position` is `Bottom`   |
+| `dismissOnBackPress` | `Boolean`              | `false` | Dismiss on back press                                                       |
+| `tag`                | `String?`              | `null`  | Prevents duplicate notifications with the same tag from queuing             |
+| `onShown`            | `() -> Unit`           | `null`  | Called when the notification appears                                        |
+| `onDismissed`        | `() -> Unit`           | `null`  | Called when the notification is dismissed                                   |
+| `accessibilityText`  | `String?`              | `null`  | Overrides the default accessibility description                             |
 
 ## Jetpack Compose
 
