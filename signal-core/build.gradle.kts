@@ -51,7 +51,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.Unitx-in"
                 artifactId = "signal"
-                version = "0.0.3-alpha-01"
+                version = "0.0.3-alpha-02"
             }
         }
     }
