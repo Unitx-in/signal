@@ -3,6 +3,7 @@ package com.unitx.signal_core.contract.config
 import androidx.annotation.DrawableRes
 import com.unitx.signal_core.contract.position.NotificationPosition
 import com.unitx.signal_core.contract.position.ToastPosition
+import com.unitx.signal_core.interop.JavaVoidCallback
 
 /**
  * Configuration for a notification signal (Pinterest-style "Saved to X" toast).
@@ -51,8 +52,28 @@ class NotificationConfig {
     /** Called when the notification becomes visible. */
     var onShown: (() -> Unit)? = null
 
+    /**
+     * Java-friendly setter for [onShown]. Avoids requiring `return null;`
+     * from Java lambdas.
+     *
+     * Called when the notification becomes visible.
+     */
+    fun onShown(block: JavaVoidCallback) {
+        onShown = { block.invoke() }
+    }
+
     /** Called when the notification is dismissed. */
     var onDismissed: (() -> Unit)? = null
+
+    /**
+     * Java-friendly setter for [onDismissed]. Avoids requiring `return null;`
+     * from Java lambdas.
+     *
+     * Called when the notification is dismissed.
+     */
+    fun onDismissed(block: JavaVoidCallback) {
+        onDismissed = { block.invoke() }
+    }
 
     /** Overrides the default accessibility description. */
     var accessibilityText: String? = null

@@ -2,6 +2,7 @@ package com.unitx.signal_core.contract.config.dialog
 
 import com.unitx.signal_core.contract.model.DialogSelectionOption
 import com.unitx.signal_core.contract.type.DialogSelectionMode
+import com.unitx.signal_core.interop.JavaUnitCallback
 
 /**
  * Optional selection list configuration for a dialog — renders as radio buttons,
@@ -34,6 +35,16 @@ class DialogSelectionConfig {
 
     /** Called with the final selected values when the positive button is tapped. */
     var onSelected: ((Set<String>) -> Unit)? = null
+
+    /**
+     * Java-friendly setter for [onSelected]. Avoids requiring `return null;`
+     * from Java lambdas.
+     *
+     * Called with the final selected values when the positive button is tapped.
+     */
+    fun onSelected(block: JavaUnitCallback<Set<String>>) {
+        onSelected = { block.invoke(it) }
+    }
 
     /** Convenience — builds options from plain string labels. */
     fun options(vararg labels: String) {

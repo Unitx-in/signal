@@ -3,6 +3,7 @@ package com.unitx.signal_core.contract.config
 import androidx.annotation.DrawableRes
 import com.unitx.signal_core.contract.model.LoadingAnimationAttr
 import com.unitx.signal_core.contract.type.LoadingType
+import com.unitx.signal_core.interop.JavaVoidCallback
 
 /**
  * Configuration for a loading overlay signal.
@@ -61,11 +62,41 @@ class LoadingConfig {
     /** Called when the overlay becomes visible. */
     var onShown: (() -> Unit)? = null
 
+    /**
+     * Java-friendly setter for [onShown]. Avoids requiring `return null;`
+     * from Java lambdas.
+     *
+     * Called when the overlay becomes visible.
+     */
+    fun onShown(block: JavaVoidCallback) {
+        onShown = { block.invoke() }
+    }
+
     /** Called when the overlay is dismissed for any reason. */
     var onDismissed: (() -> Unit)? = null
 
+    /**
+     * Java-friendly setter for [onDismissed]. Avoids requiring `return null;`
+     * from Java lambdas.
+     *
+     * Called when the overlay is dismissed for any reason.
+     */
+    fun onDismissed(block: JavaVoidCallback) {
+        onDismissed = { block.invoke() }
+    }
+
     /** Called when the user cancels via tap or back press. */
     var onCancelled: (() -> Unit)? = null
+
+    /**
+     * Java-friendly setter for [onCancelled]. Avoids requiring `return null;`
+     * from Java lambdas.
+     *
+     * Called when the user cancels via tap or back press.
+     */
+    fun onCancelled(block: JavaVoidCallback) {
+        onCancelled = { block.invoke() }
+    }
 
     /** Overrides the default accessibility description. */
     var accessibilityText: String? = null

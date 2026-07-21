@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import com.unitx.signal_core.contract.position.IconPosition
 import com.unitx.signal_core.contract.position.ToastPosition
 import com.unitx.signal_core.contract.type.ToastType
+import com.unitx.signal_core.interop.JavaVoidCallback
 
 /**
  * Configuration for a toast signal.
@@ -52,8 +53,28 @@ class ToastConfig {
     /** Called when the toast becomes visible. */
     var onShown: (() -> Unit)? = null
 
+    /**
+     * Java-friendly setter for [onShown]. Avoids requiring `return null;`
+     * from Java lambdas.
+     *
+     * Called when the toast becomes visible.
+     */
+    fun onShown(block: JavaVoidCallback) {
+        onShown = { block.invoke() }
+    }
+
     /** Called when the toast is dismissed. */
     var onDismissed: (() -> Unit)? = null
+
+    /**
+     * Java-friendly setter for [onDismissed]. Avoids requiring `return null;`
+     * from Java lambdas.
+     *
+     * Called when the toast is dismissed.
+     */
+    fun onDismissed(block: JavaVoidCallback) {
+        onDismissed = { block.invoke() }
+    }
 
     /** Overrides the default accessibility description. */
     var accessibilityText: String? = null

@@ -1,6 +1,7 @@
 package com.unitx.signal_core.contract.config.dialog
 
 import android.text.InputType
+import com.unitx.signal_core.interop.JavaUnitCallback
 
 /**
  * Optional text input configuration for a dialog.
@@ -46,7 +47,14 @@ class DialogInputConfig {
     /** If true, input expands to multi-line. */
     var multiLine: Boolean = false
 
-    /** If provided, positive button is disabled until this returns true. */
+    /**
+     * If provided, positive button is disabled until this returns true.
+     *
+     * Note: no Java-friendly overload is needed here — since this returns
+     * [Boolean] rather than [Unit], Java lambdas already satisfy
+     * `Function1<String, Boolean>` directly (e.g. `input -> input.isNotBlank()`)
+     * without requiring `return null;`.
+     */
     var validator: ((String) -> Boolean)? = null
 
     /** Error message shown below the field when [validator] returns false. */
@@ -54,4 +62,14 @@ class DialogInputConfig {
 
     /** Called with the current input value when positive is tapped. */
     var onInput: ((String) -> Unit)? = null
+
+    /**
+     * Java-friendly setter for [onInput]. Avoids requiring `return null;`
+     * from Java lambdas.
+     *
+     * Called with the current input value when positive is tapped.
+     */
+    fun onInput(block: JavaUnitCallback<String>) {
+        onInput = { block.invoke(it) }
+    }
 }

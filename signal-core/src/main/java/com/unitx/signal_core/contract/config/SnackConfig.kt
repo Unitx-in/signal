@@ -3,6 +3,7 @@ package com.unitx.signal_core.contract.config
 import com.unitx.signal_core.contract.model.SignalAction
 import com.unitx.signal_core.contract.position.SnackPosition
 import com.unitx.signal_core.contract.type.SnackType
+import com.unitx.signal_core.interop.JavaVoidCallback
 
 /**
  * Configuration for a snackbar signal.
@@ -51,8 +52,28 @@ class SnackConfig {
     /** Called when the snackbar becomes visible. */
     var onShown: (() -> Unit)? = null
 
+    /**
+     * Java-friendly setter for [onShown]. Avoids requiring `return null;`
+     * from Java lambdas.
+     *
+     * Called when the snackbar becomes visible.
+     */
+    fun onShown(block: JavaVoidCallback) {
+        onShown = { block.invoke() }
+    }
+
     /** Called when the snackbar is dismissed. */
     var onDismissed: (() -> Unit)? = null
+
+    /**
+     * Java-friendly setter for [onDismissed]. Avoids requiring `return null;`
+     * from Java lambdas.
+     *
+     * Called when the snackbar is dismissed.
+     */
+    fun onDismissed(block: JavaVoidCallback) {
+        onDismissed = { block.invoke() }
+    }
 
     /** Overrides the default accessibility description. */
     var accessibilityText: String? = null
@@ -60,6 +81,16 @@ class SnackConfig {
     /** Adds a text action button on the right side. */
     fun action(label: String, onClick: () -> Unit) {
         action = SignalAction(label = label, onClick = onClick)
+    }
+
+    /**
+     * Java-friendly overload of [action]. Avoids requiring `return null;`
+     * from Java lambdas.
+     *
+     * Adds a text action button on the right side.
+     */
+    fun action(label: String, onClick: JavaVoidCallback) {
+        action = SignalAction(label = label, onClick = { onClick.invoke() })
     }
 
     internal var action: SignalAction? = null

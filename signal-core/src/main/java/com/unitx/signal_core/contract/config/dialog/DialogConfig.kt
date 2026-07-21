@@ -2,6 +2,8 @@ package com.unitx.signal_core.contract.config.dialog
 
 import androidx.annotation.DrawableRes
 import com.unitx.signal_core.contract.type.DialogType
+import com.unitx.signal_core.interop.JavaUnitCallback
+import com.unitx.signal_core.interop.JavaVoidCallback
 
 /**
  * Configuration for a dialog signal.
@@ -73,8 +75,28 @@ class DialogConfig {
     /** Called when the dialog becomes visible. */
     var onShown: (() -> Unit)? = null
 
+    /**
+     * Java-friendly setter for [onShown]. Avoids requiring `return null;`
+     * from Java lambdas.
+     *
+     * Called when the dialog becomes visible.
+     */
+    fun onShown(block: JavaVoidCallback) {
+        onShown = { block.invoke() }
+    }
+
     /** Called when the dialog is dismissed for any reason. */
     var onDismissed: (() -> Unit)? = null
+
+    /**
+     * Java-friendly setter for [onDismissed]. Avoids requiring `return null;`
+     * from Java lambdas.
+     *
+     * Called when the dialog is dismissed for any reason.
+     */
+    fun onDismissed(block: JavaVoidCallback) {
+        onDismissed = { block.invoke() }
+    }
 
     /** Overrides the default accessibility description. */
     var accessibilityText: String? = null
@@ -87,10 +109,31 @@ class DialogConfig {
         positive = label to onClick
     }
 
+    /**
+     * Java-friendly overload of [positive]. Avoids requiring `return null;`
+     * from Java lambdas.
+     *
+     * Adds a primary (filled) button.
+     */
+    fun positive(label: String, onClick: JavaUnitCallback<DialogScope>) {
+        positive = label to { onClick.invoke(this) }
+    }
+
     /** Adds a secondary (outlined) button. */
     fun negative(label: String, strokeWidth: Int = 2, onClick: DialogScope.() -> Unit = {}) {
         secondaryButtonStrokeWidth = strokeWidth
         negative = label to onClick
+    }
+
+    /**
+     * Java-friendly overload of [negative]. Avoids requiring `return null;`
+     * from Java lambdas.
+     *
+     * Adds a secondary (outlined) button.
+     */
+    fun negative(label: String, strokeWidth: Int = 2, onClick: JavaUnitCallback<DialogScope>) {
+        secondaryButtonStrokeWidth = strokeWidth
+        negative = label to { onClick.invoke(this) }
     }
 
     /** Adds a text-only neutral action below the buttons. */
@@ -98,14 +141,44 @@ class DialogConfig {
         neutral = label to onClick
     }
 
+    /**
+     * Java-friendly overload of [neutral]. Avoids requiring `return null;`
+     * from Java lambdas.
+     *
+     * Adds a text-only neutral action below the buttons.
+     */
+    fun neutral(label: String, onClick: JavaUnitCallback<DialogScope>) {
+        neutral = label to { onClick.invoke(this) }
+    }
+
     /** Adds a text input field to the dialog. Call multiple times to stack fields. */
     fun input(block: DialogInputConfig.() -> Unit) {
         inputs = inputs + DialogInputConfig().apply(block)
     }
 
+    /**
+     * Java-friendly overload of [input]. Avoids requiring `return null;`
+     * from Java lambdas.
+     *
+     * Adds a text input field to the dialog. Call multiple times to stack fields.
+     */
+    fun input(block: JavaUnitCallback<DialogInputConfig>) {
+        inputs = inputs + DialogInputConfig().apply { block.invoke(this) }
+    }
+
     /** Adds a selection list (radio/checkbox/chip) to the dialog. */
     fun selection(block: DialogSelectionConfig.() -> Unit) {
         selection = DialogSelectionConfig().apply(block)
+    }
+
+    /**
+     * Java-friendly overload of [selection]. Avoids requiring `return null;`
+     * from Java lambdas.
+     *
+     * Adds a selection list (radio/checkbox/chip) to the dialog.
+     */
+    fun selection(block: JavaUnitCallback<DialogSelectionConfig>) {
+        selection = DialogSelectionConfig().apply { block.invoke(this) }
     }
 
     internal fun copy(): DialogConfig = DialogConfig().also {
