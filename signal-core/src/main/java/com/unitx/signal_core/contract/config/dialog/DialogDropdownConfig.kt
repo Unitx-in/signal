@@ -15,6 +15,7 @@ import com.unitx.signal_core.interop.JavaUnitCallback
  *         placeholder = "Select sort order"
  *         options("Name", "Date", "Size")
  *         preSelected = "Name"
+ *         autoDismissOnSelection = true
  *         onSelected = { selected -> }
  *     }
  *     positive("Apply") {}
@@ -23,6 +24,7 @@ import com.unitx.signal_core.interop.JavaUnitCallback
  */
 class DialogDropdownConfig {
 
+    /** Option to manage dismissing of dropdown, when a value is selected. */
     val autoDismissOnSelection: Boolean = false
 
     /** Text shown in the field before a selection is made. */

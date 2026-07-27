@@ -49,9 +49,9 @@ afterEvaluate {
         publications {
             create<MavenPublication>("release") {
                 from(components["release"])
-                groupId = "com.github.Unitx-in"
+                groupId = "com.github.unitx.in"
                 artifactId = "signal"
-                version = "0.0.3-alpha-02"
+                version = "0.0.4-alpha-01"
             }
         }
     }

@@ -48,7 +48,7 @@ dependencyResolutionManagement {
 
 ```kotlin
 dependencies {
-    implementation("com.github.Unitx-in:signal:latest_release")
+    implementation("com.github.unitx.in:signal:latest_release")
 }
 ```
 
