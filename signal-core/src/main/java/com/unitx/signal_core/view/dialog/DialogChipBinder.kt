@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import com.google.android.material.R
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -53,6 +54,7 @@ internal class DialogChipBinder(
                 text = option.label
                 isCheckable = true
                 isChecked = option.value in selected
+                typeface = ResourcesCompat.getFont(context, com.unitx.signal_core.R.font.lora_reg)
                 chipBackgroundColor = ColorStateList(
                     arrayOf(intArrayOf(android.R.attr.state_checked), intArrayOf()),
                     intArrayOf(primaryColor, secondaryColor)
@@ -82,5 +84,6 @@ internal class DialogChipBinder(
             textSize = 13f
             setTextColor(contentTextColor)
             setPadding(0, 0, 0, activity.dp(6))
+            typeface = ResourcesCompat.getFont(context, com.unitx.signal_core.R.font.poppins_med)
         }
 }

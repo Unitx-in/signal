@@ -208,7 +208,7 @@ internal class DialogViewManager(
                             .bindSingle(activity, field.config, container, topMargin)
                 }
                 is DialogField.Dropdown ->
-                    DialogDropdownBinder(primaryColor, secondaryColor, contentTextColor, dividerColor)
+                    DialogDropdownBinder(primaryColor, secondaryColor, contentTextColor, dividerColor, field.config.autoDismissOnSelection)
                         .bindSingle(activity, field.config, container, topMargin)
             }
         }

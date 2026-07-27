@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import com.google.android.material.R
 import com.unitx.signal_core.contract.config.dialog.DialogSelectionConfig
 import com.unitx.signal_core.helper.dp
@@ -51,6 +52,7 @@ internal class DialogCheckboxBinder(
                 text = option.label
                 isChecked = option.value in selected
                 buttonTintList = ColorStateList.valueOf(primaryColor)
+                typeface = ResourcesCompat.getFont(context, com.unitx.signal_core.R.font.lora_reg)
                 setTextColor(contentTextColor)
                 setPadding(activity.dp(8), activity.dp(4), 0, activity.dp(4))
                 setOnCheckedChangeListener { _, isChecked ->
@@ -74,5 +76,6 @@ internal class DialogCheckboxBinder(
             textSize = 13f
             setTextColor(contentTextColor)
             setPadding(0, 0, 0, activity.dp(6))
+            typeface = ResourcesCompat.getFont(context, com.unitx.signal_core.R.font.poppins_med)
         }
 }

@@ -13,8 +13,10 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
+import androidx.core.content.res.ResourcesCompat
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.unitx.signal_core.R
 import com.unitx.signal_core.helper.dp
 import com.unitx.signal_core.contract.config.dialog.DialogInputConfig
 
@@ -69,6 +71,7 @@ internal class DialogInputBinder(
                 config.multiLine -> InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
                 else -> config.inputType
             }
+            typeface = ResourcesCompat.getFont(context, R.font.lora_reg)
             if (config.multiLine) { minLines = 3; maxLines = 6; gravity = Gravity.TOP or Gravity.START }
             if (config.maxLength != null) filters = arrayOf(InputFilter.LengthFilter(config.maxLength!!))
             if (config.prefill.isNotEmpty()) { setText(config.prefill); setSelection(config.prefill.length) }

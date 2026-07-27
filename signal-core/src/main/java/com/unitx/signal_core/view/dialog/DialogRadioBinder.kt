@@ -3,6 +3,7 @@ package com.unitx.signal_core.view.dialog
 import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Typeface
 import android.view.ContextThemeWrapper
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,8 @@ import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
-import com.google.android.material.R
+import androidx.core.content.res.ResourcesCompat
+import com.unitx.signal_core.R
 import com.unitx.signal_core.contract.config.dialog.DialogSelectionConfig
 import com.unitx.signal_core.helper.dp
 
@@ -25,7 +27,7 @@ internal class DialogRadioBinder(
         parent: ViewGroup,
         topMargin: Int
     ): () -> Unit {
-        val themedContext = ContextThemeWrapper(activity, R.style.Theme_MaterialComponents_Light_NoActionBar)
+        val themedContext = ContextThemeWrapper(activity, com.google.android.material.R.style.Theme_MaterialComponents_Light_NoActionBar)
         val selected = selConfig.preSelected.toMutableSet()
 
         val wrapper = LinearLayout(themedContext).apply {
@@ -54,6 +56,7 @@ internal class DialogRadioBinder(
                 id = View.generateViewId()
                 isChecked = option.value in selected
                 buttonTintList = ColorStateList.valueOf(primaryColor)
+                typeface = ResourcesCompat.getFont(context, R.font.lora_reg)
                 setTextColor(contentTextColor)
                 setPadding(activity.dp(8), activity.dp(4), 0, activity.dp(4))
                 tag = option.value
@@ -81,5 +84,6 @@ internal class DialogRadioBinder(
             textSize = 13f
             setTextColor(contentTextColor)
             setPadding(0, 0, 0, activity.dp(6))
+            typeface = ResourcesCompat.getFont(context, R.font.poppins_med)
         }
 }

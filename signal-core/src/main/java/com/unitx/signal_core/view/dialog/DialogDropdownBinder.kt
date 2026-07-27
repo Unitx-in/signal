@@ -11,16 +11,19 @@ import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import com.google.android.material.R
 import com.unitx.signal_core.contract.config.dialog.DialogDropdownConfig
 import com.unitx.signal_core.contract.model.DialogSelectionOption
 import com.unitx.signal_core.helper.dp
+import androidx.core.graphics.toColorInt
 
 internal class DialogDropdownBinder(
     private val primaryColor: Int,
     private val secondaryColor: Int,
     private val contentTextColor: Int,
-    private val dividerColor: Int
+    private val dividerColor: Int,
+    private val autoDismissOnSelection: Boolean
 ) {
 
     fun bindSingle(activity: Activity, config: DialogDropdownConfig, parent: ViewGroup, topMargin: Int): () -> Unit {
@@ -83,6 +86,7 @@ internal class DialogDropdownBinder(
             isFocusable = true
 
             addView(TextView(themedContext).apply {
+                typeface = ResourcesCompat.getFont(context, com.unitx.signal_core.R.font.lora_reg)
                 layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
                 textSize = 16f
             })
@@ -102,6 +106,8 @@ internal class DialogDropdownBinder(
         onOptionSelected: (String) -> Unit,
         onDismissed: () -> Unit
     ): PopupWindow {
+        var currentValue = selectedValue
+
         val listContainer = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
             background = GradientDrawable().apply {
@@ -111,26 +117,47 @@ internal class DialogDropdownBinder(
             }
         }
 
-        options.forEach { option ->
-            listContainer.addView(TextView(context).apply {
-                text = option.label
-                textSize = 16f
-                setPadding(activity.dp(16), activity.dp(12), activity.dp(16), activity.dp(12))
-                setTextColor(if (option.value == selectedValue) primaryColor else contentTextColor)
-                setBackgroundColor(
-                    if (option.value == selectedValue) secondaryColor
-                    else ContextCompat.getColor(activity, android.R.color.white)
-                )
-                isClickable = true
-                setOnClickListener { onOptionSelected(option.value) }
-            })
+        lateinit var popupWindow: PopupWindow
+
+        fun applyRowStyle(row: TextView, option: DialogSelectionOption) {
+            val isSelected = option.value == currentValue
+            row.setTextColor(if (isSelected) primaryColor else contentTextColor)
+            row.setBackgroundColor(
+                if (isSelected) "#1A000000".toColorInt()
+                else ContextCompat.getColor(activity, android.R.color.white)
+            )
         }
 
-        return PopupWindow(listContainer, anchor.width, ViewGroup.LayoutParams.WRAP_CONTENT, true).apply {
+        options.forEach { option ->
+            val row = TextView(context).apply {
+                text = option.label
+                textSize = 16f
+                typeface = ResourcesCompat.getFont(context, com.unitx.signal_core.R.font.lora_reg)
+                setPadding(activity.dp(16), activity.dp(12), activity.dp(16), activity.dp(12))
+                isClickable = true
+            }
+            applyRowStyle(row, option)
+
+            row.setOnClickListener {
+                currentValue = option.value // update local state first
+                for (i in 0 until listContainer.childCount) {
+                    val child = listContainer.getChildAt(i) as TextView
+                    applyRowStyle(child, options[i])
+                }
+                onOptionSelected(option.value)
+                listContainer.postDelayed({ popupWindow.dismiss() }, 150)
+            }
+
+            listContainer.addView(row)
+        }
+
+        popupWindow = PopupWindow(listContainer, anchor.width, ViewGroup.LayoutParams.WRAP_CONTENT, true).apply {
             elevation = activity.dp(8).toFloat()
             isOutsideTouchable = true
             setOnDismissListener { onDismissed() }
             showAsDropDown(anchor, 0, activity.dp(4))
         }
+
+        return popupWindow
     }
 }
