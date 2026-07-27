@@ -24,6 +24,9 @@ import com.unitx.signal_core.interop.JavaUnitCallback
  */
 class DialogSelectionConfig {
 
+    /** Optional heading shown above this selection group. Recommended when stacking multiple selection groups in one dialog. */
+    var label: String = ""
+
     /** Selection UI style: SINGLE (radio), MULTI (checkbox), or CHIP. */
     var mode: DialogSelectionMode = DialogSelectionMode.SINGLE
 

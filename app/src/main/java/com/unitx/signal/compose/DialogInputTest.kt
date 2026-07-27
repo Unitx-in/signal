@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,17 +21,20 @@ import com.unitx.signal_core.helper.findActivity
 import com.unitx.signal_core.main.Signal
 
 @Composable
-fun DialogSelection() {
+fun DialogInputTest() {
     val context = LocalContext.current
     val activity = requireNotNull(context.findActivity()) { "DialogSelectionTest must be hosted in an Activity" }
 
     Column(
-        modifier = Modifier.Companion
+        modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Companion.CenterVertically),
-        horizontalAlignment = Alignment.Companion.CenterHorizontally
+        verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
+        // --- Existing: multi input ---
         Button(onClick = {
             Signal.dialog(activity) {
                 title = "Login"
@@ -71,7 +76,7 @@ fun DialogSelection() {
             }
         }) { Text("Multi Input — Range") }
 
-        // Radio / Single selection
+        // --- Existing: single selection modes ---
         Button(onClick = {
             Signal.dialog(activity) {
                 title = "Sort By"
@@ -87,12 +92,10 @@ fun DialogSelection() {
             }
         }) { Text("Selection — Radio (Single)") }
 
-        // Multi-select checkboxes
         Button(onClick = {
             Signal.dialog(activity) {
                 title = "Notify Me About"
-                message =
-                    "I am sleepy. I need to sleep for some hours but I can't sleep in the middle of a work day."
+                message = "Choose what you'd like to be notified about."
                 type = DialogType.Default
                 selection {
                     mode = DialogSelectionMode.MULTI
@@ -105,7 +108,6 @@ fun DialogSelection() {
             }
         }) { Text("Selection — Checkboxes (Multi)") }
 
-        // Chip selection
         Button(onClick = {
             Signal.dialog(activity) {
                 title = "Filter By Tags"
@@ -121,7 +123,117 @@ fun DialogSelection() {
             }
         }) { Text("Selection — Chips") }
 
-        // Mixed: input + no selection (edge case)
+        // --- New: dropdown alone ---
+        Button(onClick = {
+            Signal.dialog(activity) {
+                title = "Choose Country"
+                type = DialogType.Default
+                dropdown {
+                    placeholder = "Select a country"
+                    options("India", "USA", "UK", "Germany", "Japan")
+                    preSelected = "India"
+                    onSelected = { Log.i("Dialog", "Country: $it") }
+                }
+                positive("Confirm") {}
+                negative("Cancel")
+            }
+        }) { Text("Dropdown — Country") }
+
+        // --- New: same field type called twice — proves append, not overwrite ---
+        Button(onClick = {
+            Signal.dialog(activity) {
+                title = "Location"
+                message = "Pick your country and state."
+                type = DialogType.Default
+                dropdown {
+                    placeholder = "Select country"
+                    options("India", "USA", "UK")
+                    onSelected = { Log.i("Dialog", "Country: $it") }
+                }
+                dropdown {
+                    placeholder = "Select state"
+                    options("Delhi", "UP", "Maharashtra")
+                    onSelected = { Log.i("Dialog", "State: $it") }
+                }
+                positive("Confirm") {}
+                negative("Cancel")
+            }
+        }) { Text("Dropdown x2 — Country + State") }
+
+        // --- New: all three selection modes together, same dialog ---
+        Button(onClick = {
+            Signal.dialog(activity) {
+                title = "Advanced Filters"
+                message = "Combine radio, checkbox, and chip in one dialog."
+                type = DialogType.Default
+                selection {
+                    label = "Single mode "
+                    mode = DialogSelectionMode.SINGLE
+                    options("Newest", "Oldest", "A-Z")
+                    preSelected = setOf("Newest")
+                    onSelected = { Log.i("Dialog", "Sort: ${it.first()}") }
+                }
+                selection {
+                    label = "Multi mode"
+                    mode = DialogSelectionMode.MULTI
+                    options("Active", "Archived", "Draft")
+                    onSelected = { Log.i("Dialog", "Status: ${it.joinToString()}") }
+                }
+                selection {
+                    mode = DialogSelectionMode.CHIP
+                    options("Urgent", "Later", "Someday")
+                    onSelected = { Log.i("Dialog", "Tags: ${it.joinToString()}") }
+                }
+                positive("Apply") {}
+                negative("Reset")
+            }
+        }) { Text("Selection — Radio + Checkbox + Chip together") }
+
+        // --- New: everything interleaved in a deliberately non-grouped order ---
+        Button(onClick = {
+            Signal.dialog(activity) {
+                title = "New Task"
+                message = "Fill in all the details for this task."
+                type = DialogType.Action
+                cancelable = true
+                input {
+                    hint = "Task title"
+                    validator = { it.isNotBlank() }
+                    validationError = "Title required"
+                    onInput = { Log.i("Dialog", "Title: $it") }
+                }
+                dropdown {
+                    placeholder = "Select priority"
+                    options("Low", "Medium", "High")
+                    preSelected = "Medium"
+                    onSelected = { Log.i("Dialog", "Priority: $it") }
+                }
+                selection {
+                    mode = DialogSelectionMode.CHIP
+                    options("Bug", "Feature", "Chore")
+                    onSelected = { Log.i("Dialog", "Type: ${it.joinToString()}") }
+                }
+                input {
+                    hint = "Notes"
+                    multiLine = true
+                    onInput = { Log.i("Dialog", "Notes: $it") }
+                }
+                selection {
+                    mode = DialogSelectionMode.MULTI
+                    options("Notify assignee", "Notify watchers")
+                    onSelected = { Log.i("Dialog", "Notify: ${it.joinToString()}") }
+                }
+                dropdown {
+                    placeholder = "Assign to"
+                    options("Navneet", "Pooja", "Anuj")
+                    onSelected = { Log.i("Dialog", "Assignee: $it") }
+                }
+                positive("Create Task") {}
+                negative("Discard")
+            }
+        }) { Text("Full Mix — Input/Dropdown/Chip/Input/Checkbox/Dropdown") }
+
+        // --- Existing: input + chip (kept as a simpler mixed case) ---
         Button(onClick = {
             Signal.dialog(activity) {
                 title = "Create Label"

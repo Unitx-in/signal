@@ -1,6 +1,7 @@
 package com.unitx.signal_core.contract.config.dialog
 
 import androidx.annotation.DrawableRes
+import com.unitx.signal_core.contract.model.DialogField
 import com.unitx.signal_core.contract.type.DialogType
 import com.unitx.signal_core.interop.JavaUnitCallback
 import com.unitx.signal_core.interop.JavaVoidCallback
@@ -25,8 +26,7 @@ class DialogConfig {
     internal var negative: Pair<String, DialogScope.() -> Unit>? = null
     internal var neutral: Pair<String, DialogScope.() -> Unit>? = null
 
-    internal var inputs: List<DialogInputConfig> = emptyList()
-    internal var selection: DialogSelectionConfig? = null
+    internal var fields: List<DialogField> = emptyList()
     internal var secondaryButtonStrokeWidth: Int = 2
 
     /** Main heading of the dialog. */
@@ -34,6 +34,7 @@ class DialogConfig {
 
     /** Body text shown below the title. */
     var message: String = ""
+
 
     /** Optional label shown in the colored header strip. Defaults to the [type] label if blank. */
     var header: String = ""
@@ -153,7 +154,7 @@ class DialogConfig {
 
     /** Adds a text input field to the dialog. Call multiple times to stack fields. */
     fun input(block: DialogInputConfig.() -> Unit) {
-        inputs = inputs + DialogInputConfig().apply(block)
+        fields = fields + DialogField.Input(DialogInputConfig().apply(block))
     }
 
     /**
@@ -163,14 +164,13 @@ class DialogConfig {
      * Adds a text input field to the dialog. Call multiple times to stack fields.
      */
     fun input(block: JavaUnitCallback<DialogInputConfig>) {
-        inputs = inputs + DialogInputConfig().apply { block.invoke(this) }
+        fields = fields + DialogField.Input(DialogInputConfig().apply { block.invoke(this) })
     }
 
     /** Adds a selection list (radio/checkbox/chip) to the dialog. */
     fun selection(block: DialogSelectionConfig.() -> Unit) {
-        selection = DialogSelectionConfig().apply(block)
+        fields = fields + DialogField.Selection(DialogSelectionConfig().apply(block))
     }
-
     /**
      * Java-friendly overload of [selection]. Avoids requiring `return null;`
      * from Java lambdas.
@@ -178,7 +178,21 @@ class DialogConfig {
      * Adds a selection list (radio/checkbox/chip) to the dialog.
      */
     fun selection(block: JavaUnitCallback<DialogSelectionConfig>) {
-        selection = DialogSelectionConfig().apply { block.invoke(this) }
+        fields = fields + DialogField.Selection(DialogSelectionConfig().apply { block.invoke(this) })
+    }
+
+    /** Adds a dropdown field to the dialog. */
+    fun dropdown(block: DialogDropdownConfig.() -> Unit) {
+        fields = fields + DialogField.Dropdown(DialogDropdownConfig().apply(block))
+    }
+    /**
+     * Java-friendly overload of [dropdown]. Avoids requiring `return null;`
+     * from Java lambdas.
+     *
+     * Adds a dropdown field to the dialog.
+     */
+    fun dropdown(block: JavaUnitCallback<DialogDropdownConfig>) {
+        fields = fields + DialogField.Dropdown(DialogDropdownConfig().apply { block.invoke(this) })
     }
 
     internal fun copy(): DialogConfig = DialogConfig().also {
@@ -200,10 +214,9 @@ class DialogConfig {
         it.onShown = onShown
         it.onDismissed = onDismissed
         it.accessibilityText = accessibilityText
-        it.inputs = inputs
-        it.selection = selection
         it.showCloseButton = showCloseButton
         it.secondaryButtonStrokeWidth = secondaryButtonStrokeWidth
         it.disableIconColor = disableIconColor
+        it.fields = fields
     }
 }

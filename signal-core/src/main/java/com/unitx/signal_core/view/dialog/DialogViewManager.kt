@@ -18,6 +18,7 @@ import com.google.android.material.R
 import com.google.android.material.textfield.TextInputLayout
 import com.unitx.signal_core.contract.config.dialog.DialogConfig
 import com.unitx.signal_core.contract.config.dialog.DialogScope
+import com.unitx.signal_core.contract.model.DialogField
 import com.unitx.signal_core.contract.type.DialogSelectionMode
 import com.unitx.signal_core.databinding.SignalDialogBinding
 import com.unitx.signal_core.helper.DimOverlay
@@ -134,12 +135,16 @@ internal class DialogViewManager(
             b.dialogHeaderLabel.text = ContextCompat.getString(b.root.context, config.type.header)
         }
 
+        // Bind all fields first — positive listener below needs their commit lambdas in scope.
+        val commits = bindFields(activity, config, b)
+
         config.positive?.let { (label, onClick) ->
             b.dialogPrimaryBtn.visibility = View.VISIBLE
             b.dialogPrimaryBtn.text = label
             b.dialogPrimaryBtn.setOnClickListener {
                 val scope = DialogScope()
                 scope.onClick()
+                commits.forEach { it() }
                 if (config.dismissOnPositive && scope.shouldDismiss) onDismiss()
             }
         } ?: run { b.dialogPrimaryBtn.visibility = View.GONE }
@@ -163,47 +168,66 @@ internal class DialogViewManager(
                 if (config.dismissOnNeutral && scope.shouldDismiss) onDismiss()
             }
         } ?: run { b.dialogNeutralText.visibility = View.GONE }
-
-        bindInputs(activity, config, b, onDismiss)
-        bindSelection(activity, config, b, onDismiss)
     }
 
-    private fun bindInputs(activity: Activity, config: DialogConfig, b: SignalDialogBinding, onDismiss: () -> Unit) {
-        DialogInputBinder(primaryColor, dividerColor)
-            .bind(activity, config, b, onDismiss)
-    }
+    /**
+     * Binds every field in [DialogConfig.fields], in declared order, into the shared
+     * [SignalDialogBinding.dialogFieldsContainer]. Returns one commit lambda per field —
+     * invoked in order when the positive button is tapped.
+     */
+    private fun bindFields(activity: Activity, config: DialogConfig, b: SignalDialogBinding): List<() -> Unit> {
+        val container = b.dialogFieldsContainer
+        container.removeAllViews()
 
-    private fun bindSelection(activity: Activity, config: DialogConfig, b: SignalDialogBinding, onDismiss: () -> Unit) {
-        val selConfig = config.selection ?: run {
-            b.dialogSelectionContainer.visibility = View.GONE
-            return
+        if (config.fields.isEmpty()) {
+            container.visibility = View.GONE
+            return emptyList()
         }
-        when (selConfig.mode) {
-            DialogSelectionMode.CHIP ->
-                DialogChipBinder(primaryColor, secondaryColor)
-                    .bind(activity, config, b, onDismiss)
-            DialogSelectionMode.SINGLE ->
-                DialogRadioBinder(primaryColor, contentTextColor)
-                    .bind(activity, config, b, onDismiss)
-            DialogSelectionMode.MULTI ->
-                DialogCheckboxBinder(primaryColor, contentTextColor)
-                    .bind(activity, config, b, onDismiss)
+        container.visibility = View.VISIBLE
+
+        var firstInputSeen = false
+
+        return config.fields.mapIndexed { index, field ->
+            val topMargin = if (index == 0) 0 else activity.dp(12)
+            when (field) {
+                is DialogField.Input -> {
+                    val autoFocus = !firstInputSeen
+                    firstInputSeen = true
+                    DialogInputBinder(primaryColor, dividerColor)
+                        .bindSingle(activity, field.config, container, topMargin, autoFocus)
+                }
+                is DialogField.Selection -> when (field.config.mode) {
+                    DialogSelectionMode.CHIP ->
+                        DialogChipBinder(primaryColor, secondaryColor, contentTextColor)
+                            .bindSingle(activity, field.config, container, topMargin)
+                    DialogSelectionMode.SINGLE ->
+                        DialogRadioBinder(primaryColor, contentTextColor)
+                            .bindSingle(activity, field.config, container, topMargin)
+                    DialogSelectionMode.MULTI ->
+                        DialogCheckboxBinder(primaryColor, contentTextColor)
+                            .bindSingle(activity, field.config, container, topMargin)
+                }
+                is DialogField.Dropdown ->
+                    DialogDropdownBinder(primaryColor, secondaryColor, contentTextColor, dividerColor)
+                        .bindSingle(activity, field.config, container, topMargin)
+            }
         }
     }
 
     fun release(onReleased: () -> Unit = {}) {
 
-        val inputContainer = binding?.dialogInputContainer
-        val firstEt = (0 until (inputContainer?.childCount ?: 0))
-            .firstNotNullOfOrNull { inputContainer?.getChildAt(it) as? TextInputLayout }
+        val fieldsContainer = binding?.dialogFieldsContainer
+        val firstEt = (0 until (fieldsContainer?.childCount ?: 0))
+            .asSequence()
+            .mapNotNull { fieldsContainer?.getChildAt(it) as? TextInputLayout }
+            .firstOrNull()
             ?.editText
         firstEt?.let {
             val imm = it.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(it.windowToken, 0)
         }
 
-        binding?.dialogInputContainer?.removeAllViews()
-        binding?.dialogSelectionContainer?.removeAllViews()
+        binding?.dialogFieldsContainer?.removeAllViews()
 
         val rootView = attachedActivity?.rootViewGroup()
         dim.release(rootView) {

@@ -1,0 +1,136 @@
+package com.unitx.signal_core.view.dialog
+
+import android.app.Activity
+import android.content.Context
+import android.graphics.drawable.GradientDrawable
+import android.view.ContextThemeWrapper
+import android.view.Gravity
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.PopupWindow
+import android.widget.TextView
+import androidx.core.content.ContextCompat
+import com.google.android.material.R
+import com.unitx.signal_core.contract.config.dialog.DialogDropdownConfig
+import com.unitx.signal_core.contract.model.DialogSelectionOption
+import com.unitx.signal_core.helper.dp
+
+internal class DialogDropdownBinder(
+    private val primaryColor: Int,
+    private val secondaryColor: Int,
+    private val contentTextColor: Int,
+    private val dividerColor: Int
+) {
+
+    fun bindSingle(activity: Activity, config: DialogDropdownConfig, parent: ViewGroup, topMargin: Int): () -> Unit {
+        val themedContext = ContextThemeWrapper(activity, R.style.Theme_MaterialComponents_Light_NoActionBar)
+        var selectedValue: String? = config.preSelected
+        var popupWindow: PopupWindow? = null
+
+        val fieldBackground = GradientDrawable().apply {
+            setStroke(activity.dp(1), dividerColor)
+            cornerRadius = activity.dp(4).toFloat()
+        }
+
+        val fieldRow = buildFieldRow(themedContext, activity, fieldBackground).apply {
+            (layoutParams as LinearLayout.LayoutParams).topMargin = topMargin
+        }
+        val fieldLabel = fieldRow.getChildAt(0) as TextView
+        val fieldChevron = fieldRow.getChildAt(1) as TextView
+
+        fun renderLabel() {
+            val option = config.options.find { it.value == selectedValue }
+            fieldLabel.text = option?.label ?: config.placeholder
+            fieldLabel.setTextColor(if (option != null) contentTextColor else dividerColor)
+        }
+        renderLabel()
+
+        fun setActiveState(active: Boolean) {
+            fieldBackground.setStroke(activity.dp(if (active) 2 else 1), if (active) primaryColor else dividerColor)
+            fieldChevron.setTextColor(if (active) primaryColor else dividerColor)
+        }
+
+        fieldRow.setOnClickListener {
+            popupWindow?.dismiss()
+            setActiveState(true)
+            popupWindow = showOptionsPopup(
+                context = themedContext, activity = activity, anchor = fieldRow,
+                options = config.options, selectedValue = selectedValue,
+                onOptionSelected = { value -> selectedValue = value; renderLabel() },
+                onDismissed = { setActiveState(false) }
+            )
+        }
+
+        parent.addView(fieldRow)
+
+        return {
+            config.onSelected?.invoke(selectedValue)
+        }
+    }
+
+    private fun buildFieldRow(themedContext: Context, activity: Activity, background: GradientDrawable): LinearLayout =
+        LinearLayout(themedContext).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            this.background = background
+            setPadding(activity.dp(12), activity.dp(10), activity.dp(12), activity.dp(10))
+            isClickable = true
+            isFocusable = true
+
+            addView(TextView(themedContext).apply {
+                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                textSize = 16f
+            })
+            addView(TextView(themedContext).apply {
+                text = "▾"
+                setTextColor(dividerColor)
+                textSize = 16f
+            })
+        }
+
+    private fun showOptionsPopup(
+        context: Context,
+        activity: Activity,
+        anchor: View,
+        options: List<DialogSelectionOption>,
+        selectedValue: String?,
+        onOptionSelected: (String) -> Unit,
+        onDismissed: () -> Unit
+    ): PopupWindow {
+        val listContainer = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            background = GradientDrawable().apply {
+                setColor(ContextCompat.getColor(activity, android.R.color.white))
+                setStroke(activity.dp(1), dividerColor)
+                cornerRadius = activity.dp(4).toFloat()
+            }
+        }
+
+        options.forEach { option ->
+            listContainer.addView(TextView(context).apply {
+                text = option.label
+                textSize = 16f
+                setPadding(activity.dp(16), activity.dp(12), activity.dp(16), activity.dp(12))
+                setTextColor(if (option.value == selectedValue) primaryColor else contentTextColor)
+                setBackgroundColor(
+                    if (option.value == selectedValue) secondaryColor
+                    else ContextCompat.getColor(activity, android.R.color.white)
+                )
+                isClickable = true
+                setOnClickListener { onOptionSelected(option.value) }
+            })
+        }
+
+        return PopupWindow(listContainer, anchor.width, ViewGroup.LayoutParams.WRAP_CONTENT, true).apply {
+            elevation = activity.dp(8).toFloat()
+            isOutsideTouchable = true
+            setOnDismissListener { onDismissed() }
+            showAsDropDown(anchor, 0, activity.dp(4))
+        }
+    }
+}
