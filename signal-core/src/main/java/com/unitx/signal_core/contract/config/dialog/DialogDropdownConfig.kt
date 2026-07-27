@@ -25,7 +25,7 @@ import com.unitx.signal_core.interop.JavaUnitCallback
 class DialogDropdownConfig {
 
     /** Option to manage dismissing of dropdown, when a value is selected. */
-    val autoDismissOnSelection: Boolean = false
+    var autoDismissOnSelection: Boolean = false
 
     /** Text shown in the field before a selection is made. */
     var placeholder: String = "Select an option"
