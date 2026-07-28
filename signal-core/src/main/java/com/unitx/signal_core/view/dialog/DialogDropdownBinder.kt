@@ -7,6 +7,7 @@ import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.ScrollView
@@ -63,13 +64,27 @@ internal class DialogDropdownBinder(
 
         fieldRow.setOnClickListener {
             popupWindow?.dismiss()
+
+            val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val wasKeyboardVisible = imm.isAcceptingText
+            imm.hideSoftInputFromWindow(fieldRow.windowToken, 0)
+
             setActiveState(true)
-            popupWindow = showOptionsPopup(
-                context = themedContext, activity = activity, anchor = fieldRow,
-                options = config.options, selectedValue = selectedValue,
-                onOptionSelected = { value -> selectedValue = value; renderLabel() },
-                onDismissed = { setActiveState(false) }
-            )
+
+            fun openPopup() {
+                popupWindow = showOptionsPopup(
+                    context = themedContext, activity = activity, anchor = fieldRow,
+                    options = config.options, selectedValue = selectedValue,
+                    onOptionSelected = { value -> selectedValue = value; renderLabel() },
+                    onDismissed = { setActiveState(false) }
+                )
+            }
+
+            if (wasKeyboardVisible) {
+                fieldRow.postDelayed({ openPopup() }, 200)
+            } else {
+                openPopup()
+            }
         }
 
         val wrapper = LinearLayout(themedContext).apply {
@@ -143,6 +158,7 @@ internal class DialogDropdownBinder(
 
         val scrollContainer = ScrollView(context).apply {
             isFillViewport = true
+
             background = GradientDrawable().apply {
                 setColor(ContextCompat.getColor(activity, android.R.color.white))
                 setStroke(activity.dp(1), dividerColor)
