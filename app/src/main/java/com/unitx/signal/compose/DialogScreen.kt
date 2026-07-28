@@ -78,7 +78,7 @@ fun DialogScreen() {
             Signal.dialog(activity) {
                 title = "Update available"
                 message = "A new version is available. Update now to get the latest features."
-                type = DialogType.Default
+                type = DialogType.Warning
                 positive("Update") { Log.i("Dialog", "Update pressed") }
                 negative("Later")
             }
@@ -99,7 +99,7 @@ fun DialogScreen() {
             Signal.dialog(activity) {
                 title = "First dialog"
                 message = "This is the first in queue."
-                type = DialogType.Default
+                type = DialogType.Warning
                 positive("Next") { Log.i("Dialog", "First confirmed") }
             }
             Signal.dialog(activity) {
@@ -115,7 +115,7 @@ fun DialogScreen() {
                 title = "Terms & Conditions"
                 message =
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-                type = DialogType.Default
+                type = DialogType.Warning
                 positive("Accept") { Log.i("Dialog", "Accepted") }
                 negative("Decline")
             }

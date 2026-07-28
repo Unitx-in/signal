@@ -39,7 +39,7 @@ fun DialogInputTest() {
             Signal.dialog(activity) {
                 title = "Login"
                 message = "Enter your credentials."
-                type = DialogType.Default
+                type = DialogType.Warning
                 cancelable = true
                 input { hint = "Username"; onInput = { Log.i("Dialog", "User: $it") } }
                 input {
@@ -76,75 +76,82 @@ fun DialogInputTest() {
             }
         }) { Text("Multi Input — Range") }
 
-        // --- Existing: single selection modes ---
+        // --- Existing: single selection modes, now with validators ---
         Button(onClick = {
             Signal.dialog(activity) {
                 title = "Sort By"
-                type = DialogType.Default
+                type = DialogType.Warning
                 selection {
                     mode = DialogSelectionMode.SINGLE
                     options("Name", "Date Modified", "Size", "Type")
-                    preSelected = setOf("Name")
+                    preSelected = emptySet() // intentionally empty — forces validator to fail on first tap
+                    validator = { it.isNotEmpty() }
+                    validationError = "Pick a sort order"
                     onSelected = { Log.i("Dialog", "Sort: ${it.first()}") }
                 }
                 positive("Apply") {}
                 negative("Cancel")
             }
-        }) { Text("Selection — Radio (Single)") }
+        }) { Text("Selection — Radio (Single, validated)") }
 
         Button(onClick = {
             Signal.dialog(activity) {
                 title = "Notify Me About"
                 message = "Choose what you'd like to be notified about."
-                type = DialogType.Default
+                type = DialogType.Warning
                 selection {
                     mode = DialogSelectionMode.MULTI
                     options("App Updates", "Offers", "News", "Security Alerts")
-                    preSelected = setOf("App Updates", "Security Alerts")
+                    preSelected = emptySet()
+                    validator = { it.isNotEmpty() }
+                    validationError = "Select at least one option"
                     onSelected = { Log.i("Dialog", "Selected: ${it.joinToString()}") }
                 }
                 positive("Save") {}
                 negative("Cancel")
             }
-        }) { Text("Selection — Checkboxes (Multi)") }
+        }) { Text("Selection — Checkboxes (Multi, validated)") }
 
         Button(onClick = {
             Signal.dialog(activity) {
                 title = "Filter By Tags"
-                type = DialogType.Default
+                type = DialogType.Warning
                 selection {
                     mode = DialogSelectionMode.CHIP
                     options("Android", "iOS", "Web", "Backend", "Design")
-                    preSelected = setOf("Android")
+                    preSelected = emptySet()
+                    validator = { it.size <= 3 }
+                    validationError = "Pick at most 3 tags"
                     onSelected = { Log.i("Dialog", "Tags: ${it.joinToString()}") }
                 }
                 positive("Filter") {}
                 negative("Clear")
             }
-        }) { Text("Selection — Chips") }
+        }) { Text("Selection — Chips (max 3, validated)") }
 
-        // --- New: dropdown alone ---
+        // --- Existing: dropdown, now with validator ---
         Button(onClick = {
             Signal.dialog(activity) {
                 title = "Choose Country"
-                type = DialogType.Default
+                type = DialogType.Warning
                 dropdown {
                     placeholder = "Select a country"
                     options("India", "USA", "UK", "Germany", "Japan")
-                    preSelected = "India"
+                    preSelected = null
+                    validator = { it != null }
+                    validationError = "Please select a country"
                     onSelected = { Log.i("Dialog", "Country: $it") }
                 }
                 positive("Confirm") {}
                 negative("Cancel")
             }
-        }) { Text("Dropdown — Country") }
+        }) { Text("Dropdown — Country (validated)") }
 
-        // --- New: same field type called twice — proves append, not overwrite ---
         Button(onClick = {
             Signal.dialog(activity) {
                 title = "Location"
                 message = "Pick your country and state."
-                type = DialogType.Default
+                type = DialogType.Warning
                 dropdown {
                     placeholder = "Select country"
                     options("India", "USA", "UK")
@@ -160,26 +167,30 @@ fun DialogInputTest() {
             }
         }) { Text("Dropdown x2 — Country + State") }
 
-        // --- New: all three selection modes together, same dialog ---
+        // --- Existing: all three selection modes together, now labeled + validated ---
         Button(onClick = {
             Signal.dialog(activity) {
                 title = "Advanced Filters"
                 message = "Combine radio, checkbox, and chip in one dialog."
-                type = DialogType.Default
+                type = DialogType.Warning
                 selection {
-                    label = "Single mode "
+                    label = "Sort by"
                     mode = DialogSelectionMode.SINGLE
                     options("Newest", "Oldest", "A-Z")
                     preSelected = setOf("Newest")
                     onSelected = { Log.i("Dialog", "Sort: ${it.first()}") }
                 }
                 selection {
-                    label = "Multi mode"
+                    label = "Status"
                     mode = DialogSelectionMode.MULTI
                     options("Active", "Archived", "Draft")
+                    preSelected = emptySet()
+                    validator = { it.isNotEmpty() }
+                    validationError = "Select at least one status"
                     onSelected = { Log.i("Dialog", "Status: ${it.joinToString()}") }
                 }
                 selection {
+                    label = "Tags"
                     mode = DialogSelectionMode.CHIP
                     options("Urgent", "Later", "Someday")
                     onSelected = { Log.i("Dialog", "Tags: ${it.joinToString()}") }
@@ -189,7 +200,7 @@ fun DialogInputTest() {
             }
         }) { Text("Selection — Radio + Checkbox + Chip together") }
 
-        // --- New: everything interleaved in a deliberately non-grouped order ---
+        // --- Existing: full mix, now with validators on every field type at once ---
         Button(onClick = {
             Signal.dialog(activity) {
                 title = "New Task"
@@ -205,12 +216,18 @@ fun DialogInputTest() {
                 dropdown {
                     placeholder = "Select priority"
                     options("Low", "Medium", "High")
-                    preSelected = "Medium"
+                    preSelected = null
+                    validator = { it != null }
+                    validationError = "Priority required"
                     onSelected = { Log.i("Dialog", "Priority: $it") }
                 }
                 selection {
+                    label = "Type"
                     mode = DialogSelectionMode.CHIP
                     options("Bug", "Feature", "Chore")
+                    preSelected = emptySet()
+                    validator = { it.isNotEmpty() }
+                    validationError = "Pick a type"
                     onSelected = { Log.i("Dialog", "Type: ${it.joinToString()}") }
                 }
                 input {
@@ -219,6 +236,7 @@ fun DialogInputTest() {
                     onInput = { Log.i("Dialog", "Notes: $it") }
                 }
                 selection {
+                    label = "Notify"
                     mode = DialogSelectionMode.MULTI
                     options("Notify assignee", "Notify watchers")
                     onSelected = { Log.i("Dialog", "Notify: ${it.joinToString()}") }
@@ -226,14 +244,17 @@ fun DialogInputTest() {
                 dropdown {
                     placeholder = "Assign to"
                     options("Navneet", "Pooja", "Anuj")
+                    preSelected = null
+                    validator = { it != null }
+                    validationError = "Assignee required"
                     onSelected = { Log.i("Dialog", "Assignee: $it") }
                 }
                 positive("Create Task") {}
                 negative("Discard")
             }
-        }) { Text("Full Mix — Input/Dropdown/Chip/Input/Checkbox/Dropdown") }
+        }) { Text("Full Mix — all fields validated at once") }
 
-        // --- Existing: input + chip (kept as a simpler mixed case) ---
+        // --- Existing: input + chip ---
         Button(onClick = {
             Signal.dialog(activity) {
                 title = "Create Label"
@@ -256,5 +277,75 @@ fun DialogInputTest() {
                 negative("Cancel")
             }
         }) { Text("Mixed — Input + Chips") }
+
+        // --- NEW: dedicated validation-only tests ---
+
+        // Proves: submit is blocked when the single required field is empty.
+        Button(onClick = {
+            Signal.dialog(activity) {
+                title = "Required Field"
+                message = "Tap Submit without typing anything — it should not dismiss."
+                type = DialogType.Action
+                input {
+                    hint = "Your name"
+                    validator = { it.isNotBlank() }
+                    validationError = "This field is required"
+                    onInput = { Log.i("Dialog", "Name: $it") }
+                }
+                positive("Submit") {}
+                negative("Cancel")
+            }
+        }) { Text("Validation — Single required input") }
+
+        // Proves: all field errors surface together, not just the first failing one.
+        Button(onClick = {
+            Signal.dialog(activity) {
+                title = "All Fields Required"
+                message = "Tap Submit immediately — every field below should show its own error at once."
+                type = DialogType.Warning
+                input {
+                    hint = "Email"
+                    validator = { it.contains("@") }
+                    validationError = "Enter a valid email"
+                    onInput = { Log.i("Dialog", "Email: $it") }
+                }
+                dropdown {
+                    placeholder = "Select role"
+                    options("Admin", "Editor", "Viewer")
+                    validator = { it != null }
+                    validationError = "Role is required"
+                    onSelected = { Log.i("Dialog", "Role: $it") }
+                }
+                selection {
+                    label = "Permissions"
+                    mode = DialogSelectionMode.MULTI
+                    options("Read", "Write", "Delete")
+                    validator = { it.isNotEmpty() }
+                    validationError = "Select at least one permission"
+                    onSelected = { Log.i("Dialog", "Permissions: ${it.joinToString()}") }
+                }
+                positive("Submit") {}
+                negative("Cancel")
+            }
+        }) { Text("Validation — All 3 field types fail at once") }
+
+        // Proves: fixing a field clears only that field's error, without needing to retry others.
+        Button(onClick = {
+            Signal.dialog(activity) {
+                title = "Fix And Retry"
+                message = "Submit once to see the error, then type a valid value and submit again."
+                type = DialogType.Warning
+                input {
+                    hint = "4-digit PIN"
+                    maxLength = 4
+                    inputType = InputType.TYPE_CLASS_NUMBER
+                    validator = { it.length == 4 }
+                    validationError = "PIN must be exactly 4 digits"
+                    onInput = { Log.i("Dialog", "PIN set") }
+                }
+                positive("Confirm") {}
+                negative("Cancel")
+            }
+        }) { Text("Validation — Fix and resubmit") }
     }
 }

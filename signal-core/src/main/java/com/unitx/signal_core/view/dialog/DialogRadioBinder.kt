@@ -11,9 +11,11 @@ import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.unitx.signal_core.R
 import com.unitx.signal_core.contract.config.dialog.DialogSelectionConfig
+import com.unitx.signal_core.contract.model.FieldBinding
 import com.unitx.signal_core.helper.dp
 
 internal class DialogRadioBinder(
@@ -26,7 +28,7 @@ internal class DialogRadioBinder(
         selConfig: DialogSelectionConfig,
         parent: ViewGroup,
         topMargin: Int
-    ): () -> Unit {
+    ): FieldBinding {
         val themedContext = ContextThemeWrapper(activity, com.google.android.material.R.style.Theme_MaterialComponents_Light_NoActionBar)
         val selected = selConfig.preSelected.toMutableSet()
 
@@ -70,12 +72,27 @@ internal class DialogRadioBinder(
             selected.add(value)
         }
 
+        val errorText = TextView(themedContext).apply {
+            setTextColor(ContextCompat.getColor(activity, android.R.color.holo_red_dark))
+            textSize = 12f
+            setPadding(0, activity.dp(4), 0, 0)
+            visibility = View.GONE
+        }
+
         wrapper.addView(radioGroup)
+        wrapper.addView(errorText)
+
         parent.addView(wrapper)
 
-        return {
-            selConfig.onSelected?.invoke(selected)
+        val commit : () -> Unit = { selConfig.onSelected?.invoke(selected) }
+        val validate = {
+            val valid = selConfig.validator?.invoke(selected) ?: true
+            errorText.visibility = if (!valid) View.VISIBLE else View.GONE
+            errorText.text = selConfig.validationError
+            valid
         }
+
+        return FieldBinding(commit, validate)
     }
 
     private fun buildLabel(context: Context, activity: Activity, text: String): TextView =

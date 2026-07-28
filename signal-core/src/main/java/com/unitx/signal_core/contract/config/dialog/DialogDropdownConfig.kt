@@ -24,8 +24,10 @@ import com.unitx.signal_core.interop.JavaUnitCallback
  */
 class DialogDropdownConfig {
 
-    /** Option to manage dismissing of dropdown, when a value is selected. */
-    var autoDismissOnSelection: Boolean = false
+    /** If true (default), the popup auto-dismisses ~150ms after a selection is tapped.
+     * If false, the popup stays open until the user taps outside
+     * — useful if you want them to visually confirm the highlighted choice before it closes. */
+    var autoDismissOnSelection: Boolean = true
 
     /** Text shown in the field before a selection is made. */
     var placeholder: String = "Select an option"
@@ -38,6 +40,12 @@ class DialogDropdownConfig {
 
     /** Called with the selected value (or null if none) when positive is tapped. */
     var onSelected: ((String?) -> Unit)? = null
+
+    /** If provided, submit is blocked until this returns true for the current value. */
+    var validator: ((String?) -> Boolean)? = null
+
+    /** Error message shown below the field when [validator] returns false. */
+    var validationError: String = ""
 
     /**
      * Java-friendly setter for [onSelected]. Avoids requiring `return null;`

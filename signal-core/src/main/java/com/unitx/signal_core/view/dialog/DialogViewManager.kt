@@ -19,6 +19,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.unitx.signal_core.contract.config.dialog.DialogConfig
 import com.unitx.signal_core.contract.config.dialog.DialogScope
 import com.unitx.signal_core.contract.model.DialogField
+import com.unitx.signal_core.contract.model.FieldBinding
 import com.unitx.signal_core.contract.type.DialogSelectionMode
 import com.unitx.signal_core.databinding.SignalDialogBinding
 import com.unitx.signal_core.helper.DimOverlay
@@ -59,22 +60,18 @@ internal class DialogViewManager(
     private fun inflateDialog(context: Context, rootView: ViewGroup, horizontalMargin: Int) {
         if (binding != null) return
         val themedContext = ContextThemeWrapper(
-            context,
-            R.style.Theme_MaterialComponents_Light_NoActionBar
+            context, R.style.Theme_MaterialComponents_Light_NoActionBar
         )
         binding = SignalDialogBinding.inflate(LayoutInflater.from(themedContext), rootView, false)
         rootView.addView(
-            binding!!.root,
-            FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT
+            binding!!.root, FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT
             ).apply {
                 gravity = Gravity.CENTER
                 val margin = context.dp(horizontalMargin)
                 leftMargin = margin
                 rightMargin = margin
-            }
-        )
+            })
     }
 
     private fun applyTheme(context: Context, config: DialogConfig) {
@@ -99,8 +96,10 @@ internal class DialogViewManager(
         b.dialogPrimaryBtn.backgroundTintList = ColorStateList.valueOf(primary)
         b.dialogPrimaryBtn.setTextColor(primaryBtnTextColor)
         b.dialogSecondaryBtn.backgroundTintList = null
-        (b.dialogSecondaryBtn.background.mutate() as GradientDrawable)
-            .setStroke(context.dp(config.secondaryButtonStrokeWidth), primary)
+        (b.dialogSecondaryBtn.background.mutate() as GradientDrawable).setStroke(
+                context.dp(config.secondaryButtonStrokeWidth),
+                primary
+            )
         b.dialogSecondaryBtn.setTextColor(primary)
         b.dialogNeutralText.setTextColor(primary)
         primaryColor = primary
@@ -121,8 +120,11 @@ internal class DialogViewManager(
         when {
             config.iconUrl != null -> {
                 b.dialogIcon.setImageDrawable(null)
-                SignalImageLoader.load(config.iconUrl!!, b.dialogIcon, requestTag = config.iconUrl!!)
+                SignalImageLoader.load(
+                    config.iconUrl!!, b.dialogIcon, requestTag = config.iconUrl!!
+                )
             }
+
             else -> {
                 b.dialogIcon.setImageResource(config.icon ?: config.type.icon)
             }
@@ -135,16 +137,18 @@ internal class DialogViewManager(
             b.dialogHeaderLabel.text = ContextCompat.getString(b.root.context, config.type.header)
         }
 
-        // Bind all fields first — positive listener below needs their commit lambdas in scope.
-        val commits = bindFields(activity, config, b)
+        val bindings = bindFields(activity, config, b)
 
         config.positive?.let { (label, onClick) ->
             b.dialogPrimaryBtn.visibility = View.VISIBLE
             b.dialogPrimaryBtn.text = label
             b.dialogPrimaryBtn.setOnClickListener {
+                val allValid = bindings.map { it.validate() }.all { it }
+                if (!allValid) return@setOnClickListener
+
                 val scope = DialogScope()
                 scope.onClick()
-                commits.forEach { it() }
+                bindings.forEach { it.commit() }
                 if (config.dismissOnPositive && scope.shouldDismiss) onDismiss()
             }
         } ?: run { b.dialogPrimaryBtn.visibility = View.GONE }
@@ -170,12 +174,9 @@ internal class DialogViewManager(
         } ?: run { b.dialogNeutralText.visibility = View.GONE }
     }
 
-    /**
-     * Binds every field in [DialogConfig.fields], in declared order, into the shared
-     * [SignalDialogBinding.dialogFieldsContainer]. Returns one commit lambda per field —
-     * invoked in order when the positive button is tapped.
-     */
-    private fun bindFields(activity: Activity, config: DialogConfig, b: SignalDialogBinding): List<() -> Unit> {
+    private fun bindFields(
+        activity: Activity, config: DialogConfig, b: SignalDialogBinding
+    ): List<FieldBinding> {
         val container = b.dialogFieldsContainer
         container.removeAllViews()
 
@@ -193,23 +194,40 @@ internal class DialogViewManager(
                 is DialogField.Input -> {
                     val autoFocus = !firstInputSeen
                     firstInputSeen = true
-                    DialogInputBinder(primaryColor, dividerColor)
-                        .bindSingle(activity, field.config, container, topMargin, autoFocus)
+                    DialogInputBinder(primaryColor, dividerColor).bindSingle(
+                            activity,
+                            field.config,
+                            container,
+                            topMargin,
+                            autoFocus
+                        )
                 }
+
                 is DialogField.Selection -> when (field.config.mode) {
-                    DialogSelectionMode.CHIP ->
-                        DialogChipBinder(primaryColor, secondaryColor, contentTextColor)
-                            .bindSingle(activity, field.config, container, topMargin)
-                    DialogSelectionMode.SINGLE ->
-                        DialogRadioBinder(primaryColor, contentTextColor)
-                            .bindSingle(activity, field.config, container, topMargin)
-                    DialogSelectionMode.MULTI ->
-                        DialogCheckboxBinder(primaryColor, contentTextColor)
-                            .bindSingle(activity, field.config, container, topMargin)
+                    DialogSelectionMode.CHIP -> DialogChipBinder(
+                        primaryColor,
+                        secondaryColor,
+                        contentTextColor
+                    ).bindSingle(activity, field.config, container, topMargin)
+
+                    DialogSelectionMode.SINGLE -> DialogRadioBinder(
+                        primaryColor,
+                        contentTextColor
+                    ).bindSingle(activity, field.config, container, topMargin)
+
+                    DialogSelectionMode.MULTI -> DialogCheckboxBinder(
+                        primaryColor,
+                        contentTextColor
+                    ).bindSingle(activity, field.config, container, topMargin)
                 }
-                is DialogField.Dropdown ->
-                    DialogDropdownBinder(primaryColor, secondaryColor, contentTextColor, dividerColor, field.config.autoDismissOnSelection)
-                        .bindSingle(activity, field.config, container, topMargin)
+
+                is DialogField.Dropdown -> DialogDropdownBinder(
+                    primaryColor,
+                    secondaryColor,
+                    contentTextColor,
+                    dividerColor,
+                    field.config.autoDismissOnSelection
+                ).bindSingle(activity, field.config, container, topMargin)
             }
         }
     }
@@ -217,13 +235,12 @@ internal class DialogViewManager(
     fun release(onReleased: () -> Unit = {}) {
 
         val fieldsContainer = binding?.dialogFieldsContainer
-        val firstEt = (0 until (fieldsContainer?.childCount ?: 0))
-            .asSequence()
+        val firstEt = (0 until (fieldsContainer?.childCount ?: 0)).asSequence()
             .mapNotNull { fieldsContainer?.getChildAt(it) as? TextInputLayout }
-            .firstOrNull()
-            ?.editText
+            .firstOrNull()?.editText
         firstEt?.let {
-            val imm = it.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm =
+                it.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(it.windowToken, 0)
         }
 

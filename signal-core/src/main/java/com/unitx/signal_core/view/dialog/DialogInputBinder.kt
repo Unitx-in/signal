@@ -19,6 +19,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.unitx.signal_core.R
 import com.unitx.signal_core.helper.dp
 import com.unitx.signal_core.contract.config.dialog.DialogInputConfig
+import com.unitx.signal_core.contract.model.FieldBinding
 
 internal class DialogInputBinder(
     private val primaryColor: Int,
@@ -30,7 +31,7 @@ internal class DialogInputBinder(
         parent: ViewGroup,
         topMargin: Int,
         autoFocus: Boolean
-    ): () -> Unit {
+    ): FieldBinding {
         val themedContext = ContextThemeWrapper(activity, com.google.android.material.R.style.Theme_MaterialComponents_Light_NoActionBar)
 
         val til = TextInputLayout(themedContext).apply {
@@ -91,6 +92,7 @@ internal class DialogInputBinder(
             })
         }
 
+
         if (autoFocus) {
             et.post {
                 et.requestFocus()
@@ -99,8 +101,14 @@ internal class DialogInputBinder(
             }
         }
 
-        return {
-            config.onInput?.invoke(et.text?.toString() ?: "")
+        val commit: () -> Unit = { config.onInput?.invoke(et.text?.toString() ?: "") }
+        val validate = {
+            val value = et.text?.toString() ?: ""
+            val valid = config.validator?.invoke(value) ?: true
+            til.error = if (!valid) config.validationError else null
+            valid
         }
+
+        return FieldBinding(commit, validate)
     }
 }

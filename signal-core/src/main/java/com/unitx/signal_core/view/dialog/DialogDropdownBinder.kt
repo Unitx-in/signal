@@ -17,6 +17,7 @@ import com.unitx.signal_core.contract.config.dialog.DialogDropdownConfig
 import com.unitx.signal_core.contract.model.DialogSelectionOption
 import com.unitx.signal_core.helper.dp
 import androidx.core.graphics.toColorInt
+import com.unitx.signal_core.contract.model.FieldBinding
 
 internal class DialogDropdownBinder(
     private val primaryColor: Int,
@@ -26,7 +27,12 @@ internal class DialogDropdownBinder(
     private val autoDismissOnSelection: Boolean
 ) {
 
-    fun bindSingle(activity: Activity, config: DialogDropdownConfig, parent: ViewGroup, topMargin: Int): () -> Unit {
+    fun bindSingle(
+        activity: Activity,
+        config: DialogDropdownConfig,
+        parent: ViewGroup,
+        topMargin: Int
+    ): FieldBinding {
         val themedContext = ContextThemeWrapper(activity, R.style.Theme_MaterialComponents_Light_NoActionBar)
         var selectedValue: String? = config.preSelected
         var popupWindow: PopupWindow? = null
@@ -65,11 +71,33 @@ internal class DialogDropdownBinder(
             )
         }
 
-        parent.addView(fieldRow)
-
-        return {
-            config.onSelected?.invoke(selectedValue)
+        val wrapper = LinearLayout(themedContext).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { this.topMargin = topMargin }
         }
+
+        val errorText = TextView(themedContext).apply {
+            setTextColor(ContextCompat.getColor(activity, android.R.color.holo_red_dark))
+            textSize = 12f
+            setPadding(0, activity.dp(4), 0, 0)
+            visibility = View.GONE
+        }
+        wrapper.addView(fieldRow.apply { (layoutParams as LinearLayout.LayoutParams).topMargin = 0 })
+        wrapper.addView(errorText)
+        parent.addView(wrapper)
+
+        val commit : () -> Unit = { config.onSelected?.invoke(selectedValue) }
+        val validate = {
+            val valid = config.validator?.invoke(selectedValue) ?: true
+            errorText.visibility = if (!valid) View.VISIBLE else View.GONE
+            errorText.text = config.validationError
+            valid
+        }
+
+        return FieldBinding(commit, validate)
     }
 
     private fun buildFieldRow(themedContext: Context, activity: Activity, background: GradientDrawable): LinearLayout =
@@ -145,7 +173,9 @@ internal class DialogDropdownBinder(
                     applyRowStyle(child, options[i])
                 }
                 onOptionSelected(option.value)
-                listContainer.postDelayed({ popupWindow.dismiss() }, 150)
+                if (autoDismissOnSelection) {
+                    listContainer.postDelayed({ popupWindow.dismiss() }, 150)
+                }
             }
 
             listContainer.addView(row)

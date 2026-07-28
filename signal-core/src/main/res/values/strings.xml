@@ -3,10 +3,10 @@
     <string name="content_snack_icon">Signal Message\n</string>
     <string name="content_snack_cancel">Cancel Message</string>
     <string name="content_toast_icon">Toast Message</string>
-    <string name="dialog_positive_header">Positive dialog</string>
-    <string name="dialog_error_header">Error dialog</string>
-    <string name="dialog_default_header">Default dialog</string>
-    <string name="dialog_action_header">Action dialog</string>
+    <string name="dialog_positive_header">Positive</string>
+    <string name="dialog_error_header">Error</string>
+    <string name="dialog_warning_header">Warning</string>
+    <string name="dialog_action_header">Action</string>
     <string name="loading_icon_desc">Loading Icon</string>
     <string name="please_wait_a_moment">Please wait a moment</string>
     <string name="processing_and_analyzing">Processing and analysing</string>

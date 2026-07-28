@@ -30,11 +30,11 @@ enum class DialogType(
         R.string.dialog_action_header
     ),
     /** Blue theme. Use for general informational dialogs. */
-    Default(
+    Warning(
         R.drawable.ic_signal_info,
         R.color.signalLightBlue,
         R.color.signalBlue,
-        R.string.dialog_default_header
+        R.string.dialog_warning_header
     ),
     /** Green theme. Use for success confirmations or positive outcomes. */
     Positive(

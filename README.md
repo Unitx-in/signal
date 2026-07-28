@@ -273,17 +273,19 @@ Signal.dialog(this) {
 | `type`                       | `DialogType` | `Default` | `Default`, `Positive`, `Action`, `Error`                                       |
 | `header`                     | `String`     | `""`      | Header strip label — defaults to `type` label if blank                         |
 | `icon`                       | `Int?`       | `null`    | Custom header icon — defaults to `type` icon if null                           |
+| `iconUrl`                    | `String?`    | `null`    | Remote icon URL, loaded async — takes precedence over `icon` if both are set   |
 | `cancelable`                 | `Boolean`    | `false`   | Dismiss on outside tap or back press                                           |
 | `horizontalMargin`           | `Int`        | `24`      | Margin from screen edges in dp                                                 |
 | `autoDismiss`                | `Boolean`    | `false`   | Auto-dismiss after `autoDismissDuration`                                       |
 | `autoDismissDuration`        | `Long`       | `4000`    | Duration in ms before auto-dismiss                                             |
-| `dismissOnPositive`          | `Boolean`    | `true`    | Dismiss on positive button tap                                                 |
+| `dismissOnPositive`          | `Boolean`    | `true`    | Dismiss on positive button tap (only if all field validators pass)             |
 | `dismissOnNegative`          | `Boolean`    | `true`    | Dismiss on negative button tap                                                 |
 | `dismissOnNeutral`           | `Boolean`    | `true`    | Dismiss on neutral text tap                                                    |
 | `onShown`                    | `() -> Unit` | `null`    | Called when dialog appears                                                     |
 | `onDismissed`                | `() -> Unit` | `null`    | Called when dialog is dismissed                                                |
 | `accessibilityText`          | `String?`    | `null`    | Overrides the default accessibility description                                |
 | `showCloseButton`            | `Boolean`    | `true`    | Shows the dialog close button at the top right                                 |
+| `disableIconColor`           | `Boolean`    | `false`   | Disables icon tinting — useful with `iconUrl` for full-color remote images     |
 | `secondaryButtonStrokeWidth` | `Int`        | `2`       | Stroke width of the outlined (negative) button in dp — set via `negative(...)` |
 
 > **Back press:** non-cancelable dialogs consume the back press and stay open. Cancelable dialogs
@@ -301,8 +303,7 @@ Signal.dialog(this) {
 
 Each button callback runs with `DialogScope` as its receiver. By default, tapping a button dismisses
 the dialog (governed by `dismissOnPositive` / `dismissOnNegative` / `dismissOnNeutral`). Call
-`prevent()`
-to keep the dialog open — useful for validation or async work — then call `dismiss()` once ready.
+`prevent()` to keep the dialog open — useful for async work — then call `dismiss()` once ready.
 
 ```kotlin
 Signal.dialog(this) {
@@ -316,6 +317,44 @@ Signal.dialog(this) {
     negative("Cancel")
 }
 ```
+
+> **Note:** this is separate from field validation below. `prevent()`/`dismiss()` control the
+> dialog's dismissal after the positive callback *runs*. Field validators run *before* the positive
+> callback runs at all — if any field fails validation, the callback never fires and the dialog
+> stays open with error text shown.
+
+---
+
+### Fields — composing inputs, selections, and dropdowns
+
+A dialog can hold any number of `input { }`, `selection { }`, and `dropdown { }` fields, in any
+combination and any order. Each call **adds** a field — calling the same builder multiple times
+stacks fields rather than overwriting the previous one. Fields render top-to-bottom in the exact
+order they were declared.
+
+```kotlin
+Signal.dialog(this) {
+    title = "New Task"
+    input { hint = "Task title"; onInput = { title = it } }
+    dropdown {
+        placeholder = "Priority"
+        options("Low", "Medium", "High")
+        onSelected = { priority = it }
+    }
+    selection {
+        label = "Type"
+        mode = DialogSelectionMode.CHIP
+        options("Bug", "Feature", "Chore")
+        onSelected = { type = it }
+    }
+    input { hint = "Notes"; multiLine = true; onInput = { notes = it } }
+    positive("Create") {}
+    negative("Cancel")
+}
+```
+
+All field callbacks (`onInput` / `onSelected`) fire once, in declared order, when the positive
+button is tapped — provided every field's validator (if set) passes. See **Validation** below.
 
 ### Text input
 
@@ -356,9 +395,8 @@ Signal.dialog(this) {
 }
 ```
 
-The positive button is automatically disabled until all `validator` checks pass. `onInput` fires
-with
-the field's current value when positive is tapped.
+The first `input { }` field in the dialog auto-focuses and shows the keyboard when the dialog
+opens; subsequent input fields do not.
 
 #### DialogInputConfig options
 
@@ -371,13 +409,18 @@ the field's current value when positive is tapped.
 | `showCounter`     | `Boolean`             | `false`           | Shows character counter — requires `maxLength`      |
 | `password`        | `Boolean`             | `false`           | Masks input with a visibility toggle                |
 | `multiLine`       | `Boolean`             | `false`           | Expands the field to multi-line                     |
-| `validator`       | `(String) -> Boolean` | `null`            | Disables positive button until this returns `true`  |
+| `validator`       | `(String) -> Boolean` | `null`            | Blocks submit until this returns `true`             |
 | `validationError` | `String`              | `""`              | Error shown below the field when validation fails   |
 | `onInput`         | `(String) -> Unit`    | `null`            | Called with the field value when positive is tapped |
 
+> While typing, the field also shows a live error preview as soon as `validator` fails on non-empty
+> input — but this is cosmetic only. The actual submit block happens on tap, described below.
+
 ### Selection
 
-Add a radio (single), checkbox (multi), or chip selection list with `selection { }`.
+Add a radio (single), checkbox (multi), or chip selection list with `selection { }`. An optional
+`label` renders as a heading above the group — recommended whenever a dialog has more than one
+selection group, so each is clearly identified.
 
 ```kotlin
 Signal.dialog(this) {
@@ -400,6 +443,8 @@ Signal.dialog(this) {
         mode = DialogSelectionMode.MULTI
         options("Updates", "Offers", "News")
         preSelected = setOf("Updates")
+        validator = { it.isNotEmpty() }
+        validationError = "Select at least one option"
         onSelected = { selected -> savePreferences(selected) }
     }
     positive("Save") {}
@@ -418,16 +463,139 @@ Signal.dialog(this) {
 }
 ```
 
+Multiple selection groups — of the same or different modes — can be stacked in one dialog:
+
+```kotlin
+Signal.dialog(this) {
+    title = "Advanced Filters"
+    selection {
+        label = "Sort by"
+        mode = DialogSelectionMode.SINGLE
+        options("Newest", "Oldest", "A-Z")
+        preSelected = setOf("Newest")
+        onSelected = { sort -> applySort(sort.first()) }
+    }
+    selection {
+        label = "Status"
+        mode = DialogSelectionMode.MULTI
+        options("Active", "Archived", "Draft")
+        onSelected = { status -> applyStatus(status) }
+    }
+    positive("Apply") {}
+}
+```
+
 #### DialogSelectionConfig options
 
-| Property      | Type                          | Default      | Description                                                         |
-|---------------|-------------------------------|--------------|---------------------------------------------------------------------|
-| `mode`        | `DialogSelectionType`         | `SINGLE`     | `SINGLE` (radio), `MULTI` (checkbox), or `CHIP`                     |
-| `options`     | `List<DialogSelectionOption>` | `[]`         | Selectable options — use `options(vararg labels)` for plain strings |
-| `preSelected` | `Set<String>`                 | `emptySet()` | Option values selected by default                                   |
-| `onSelected`  | `(Set<String>) -> Unit`       | `null`       | Called with selected values when positive is tapped                 |
+| Property          | Type                          | Default      | Description                                                          |
+|-------------------|-------------------------------|--------------|----------------------------------------------------------------------|
+| `label`           | `String`                      | `""`         | Optional heading above this group — recommended when stacking groups |
+| `mode`            | `DialogSelectionMode`         | `SINGLE`     | `SINGLE` (radio), `MULTI` (checkbox), or `CHIP`                      |
+| `options`         | `List<DialogSelectionOption>` | `[]`         | Selectable options — use `options(vararg labels)` for plain strings  |
+| `preSelected`     | `Set<String>`                 | `emptySet()` | Option values selected by default                                    |
+| `validator`       | `(Set<String>) -> Boolean`    | `null`       | Blocks submit until this returns `true` for the current selection    |
+| `validationError` | `String`                      | `""`         | Error shown below the group when validation fails                    |
+| `onSelected`      | `(Set<String>) -> Unit`       | `null`       | Called with selected values when positive is tapped                  |
+
+### Dropdown
+
+Add a tappable field that opens a popup list for single-value selection with `dropdown { }`.
+
+```kotlin
+Signal.dialog(this) {
+    title = "Choose Country"
+    dropdown {
+        placeholder = "Select a country"
+        options("India", "USA", "UK", "Germany", "Japan")
+        preSelected = "India"
+        onSelected = { country -> setCountry(country) }
+    }
+    positive("Confirm") {}
+    negative("Cancel")
+}
+```
+
+Multiple dropdowns can be stacked, same as selections and inputs:
+
+```kotlin
+Signal.dialog(this) {
+    title = "Location"
+    dropdown {
+        placeholder = "Select country"
+        options("India", "USA", "UK")
+        onSelected = { country -> setCountry(country) }
+    }
+    dropdown {
+        placeholder = "Select state"
+        options("Delhi", "UP", "Maharashtra")
+        onSelected = { state -> setState(state) }
+    }
+    positive("Confirm") {}
+}
+```
+
+The field's border and chevron follow the dialog's resolved theme, and highlight in the primary
+color while the popup is open.
+
+#### DialogDropdownConfig options
+
+| Property                 | Type                          | Default              | Description                                                                      |
+|--------------------------|-------------------------------|----------------------|----------------------------------------------------------------------------------|
+| `placeholder`            | `String`                      | `"Select an option"` | Text shown in the field before a selection is made                               |
+| `options`                | `List<DialogSelectionOption>` | `[]`                 | Options shown in the popup list — use `options(vararg labels)` for plain strings |
+| `preSelected`            | `String?`                     | `null`               | Option value selected by default                                                 |
+| `autoDismissOnSelection` | `Boolean`                     | `true`               | If `true`, the popup auto-closes shortly after a selection is tapped             |
+| `validator`              | `(String?) -> Boolean`        | `null`               | Blocks submit until this returns `true` for the current value                    |
+| `validationError`        | `String`                      | `""`                 | Error shown below the field when validation fails                                |
+| `onSelected`             | `(String?) -> Unit`           | `null`               | Called with the selected value (or `null` if none) when positive is tapped       |
 
 ---
+
+### Validation
+
+Every field type — `input`, `selection`, and `dropdown` — supports an optional `validator` and
+`validationError`. Validation runs when the positive button is tapped, **before** any field's
+`onInput`/`onSelected` callback fires and before the dialog checks whether it should dismiss.
+
+- If **any** field's validator returns `false`, the dialog does not dismiss and no field callbacks
+  fire — not just the failing field's, none of them.
+- **Every** field is validated on each tap, not just up to the first failure — so if three fields
+  are invalid at once, all three show their error simultaneously.
+- Once all validators pass, every field's callback fires in the dialog's declared field order,
+  then the dialog dismisses (subject to `dismissOnPositive`).
+
+```kotlin
+Signal.dialog(this) {
+    title = "New Task"
+    input {
+        hint = "Task title"
+        validator = { it.isNotBlank() }
+        validationError = "Title required"
+        onInput = { title = it }
+    }
+    dropdown {
+        placeholder = "Priority"
+        options("Low", "Medium", "High")
+        validator = { it != null }
+        validationError = "Priority required"
+        onSelected = { priority = it }
+    }
+    selection {
+        label = "Type"
+        mode = DialogSelectionMode.CHIP
+        options("Bug", "Feature", "Chore")
+        validator = { it.isNotEmpty() }
+        validationError = "Pick a type"
+        onSelected = { type = it }
+    }
+    positive("Create Task") {}
+    negative("Discard")
+}
+```
+
+Tapping **Create Task** with the title empty, no priority chosen, and no type picked shows all
+three errors at once and keeps the dialog open. Fixing one field and tapping again re-validates
+only against current state — no need to re-trigger the others if they already pass.
 
 ## Loading
 

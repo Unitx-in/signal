@@ -4,13 +4,16 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.view.ContextThemeWrapper
+import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.google.android.material.R
 import com.unitx.signal_core.contract.config.dialog.DialogSelectionConfig
+import com.unitx.signal_core.contract.model.FieldBinding
 import com.unitx.signal_core.helper.dp
 
 internal class DialogCheckboxBinder(
@@ -23,7 +26,7 @@ internal class DialogCheckboxBinder(
         selConfig: DialogSelectionConfig,
         parent: ViewGroup,
         topMargin: Int
-    ): () -> Unit {
+    ): FieldBinding {
         val themedContext = ContextThemeWrapper(activity, R.style.Theme_MaterialComponents_Light_NoActionBar)
         val selected = selConfig.preSelected.toMutableSet()
 
@@ -63,11 +66,26 @@ internal class DialogCheckboxBinder(
         }
 
         wrapper.addView(checkboxGroup)
+
+        val errorText = TextView(themedContext).apply {
+            setTextColor(ContextCompat.getColor(activity, android.R.color.holo_red_dark))
+            textSize = 12f
+            setPadding(0, activity.dp(4), 0, 0)
+            visibility = View.GONE
+        }
+        wrapper.addView(errorText)
+
         parent.addView(wrapper)
 
-        return {
-            selConfig.onSelected?.invoke(selected)
+        val commit: () -> Unit = { selConfig.onSelected?.invoke(selected) }
+        val validate = {
+            val valid = selConfig.validator?.invoke(selected) ?: true
+            errorText.visibility = if (!valid) View.VISIBLE else View.GONE
+            errorText.text = selConfig.validationError
+            valid
         }
+
+        return FieldBinding(commit, validate)
     }
 
     private fun buildLabel(context: Context, activity: Activity, text: String): TextView =

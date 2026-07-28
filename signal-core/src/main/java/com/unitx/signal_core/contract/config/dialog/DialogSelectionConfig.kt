@@ -53,4 +53,10 @@ class DialogSelectionConfig {
     fun options(vararg labels: String) {
         options = labels.map { DialogSelectionOption(it) }
     }
+
+    /** If provided, submit is blocked until this returns true for the current selection. */
+    var validator: ((Set<String>) -> Boolean)? = null
+
+    /** Error message shown below the group when [validator] returns false. */
+    var validationError: String = ""
 }

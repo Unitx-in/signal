@@ -46,8 +46,8 @@ class DialogConfig {
     /** Optional remote icon, loaded async. Takes precedence over [icon] if both are set. */
     var iconUrl: String? = null
 
-    /** Visual style of the dialog — affects colors and default icon/header. Default: [DialogType.Default]. */
-    var type: DialogType = DialogType.Default
+    /** Visual style of the dialog — affects colors and default icon/header. Default: [DialogType.Warning]. */
+    var type: DialogType = DialogType.Warning
 
     /** If true, tapping outside the dialog dismisses it. Default: false. */
     var cancelable: Boolean = false
