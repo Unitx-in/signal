@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.PopupWindow
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -138,11 +139,16 @@ internal class DialogDropdownBinder(
 
         val listContainer = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
+        }
+
+        val scrollContainer = ScrollView(context).apply {
+            isFillViewport = true
             background = GradientDrawable().apply {
                 setColor(ContextCompat.getColor(activity, android.R.color.white))
                 setStroke(activity.dp(1), dividerColor)
                 cornerRadius = activity.dp(4).toFloat()
             }
+            addView(listContainer)
         }
 
         lateinit var popupWindow: PopupWindow
@@ -167,7 +173,7 @@ internal class DialogDropdownBinder(
             applyRowStyle(row, option)
 
             row.setOnClickListener {
-                currentValue = option.value // update local state first
+                currentValue = option.value
                 for (i in 0 until listContainer.childCount) {
                     val child = listContainer.getChildAt(i) as TextView
                     applyRowStyle(child, options[i])
@@ -181,10 +187,17 @@ internal class DialogDropdownBinder(
             listContainer.addView(row)
         }
 
-        popupWindow = PopupWindow(listContainer, anchor.width, ViewGroup.LayoutParams.WRAP_CONTENT, true).apply {
+        val maxPopupHeight = (activity.resources.displayMetrics.heightPixels * 0.5).toInt()
+
+        popupWindow = PopupWindow(scrollContainer, anchor.width, ViewGroup.LayoutParams.WRAP_CONTENT, true).apply {
             elevation = activity.dp(8).toFloat()
             isOutsideTouchable = true
             setOnDismissListener { onDismissed() }
+            contentView.measure(
+                View.MeasureSpec.makeMeasureSpec(anchor.width, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(maxPopupHeight, View.MeasureSpec.AT_MOST)
+            )
+            height = minOf(contentView.measuredHeight, maxPopupHeight)
             showAsDropDown(anchor, 0, activity.dp(4))
         }
 

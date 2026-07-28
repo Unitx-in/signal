@@ -311,7 +311,7 @@ fun DialogInputTest() {
                 }
                 dropdown {
                     placeholder = "Select role"
-                    options("Admin", "Editor", "Viewer")
+                    options("Admin", "Editor", "Viewer", "Admin", "Editor", "Viewer", "Admin", "Editor", "Viewer", "Admin", "Editor", "Viewer", "Admin", "Editor", "Viewer", "Admin", "Editor", "Viewer", "Admin", "Editor", "Viewer", "Admin", "Editor", "Viewer", "Admin", "Editor", "Viewer", "Admin", "Editor", "Viewer", "Admin", "Editor", "Viewer", "Admin", "Editor", "Viewer", )
                     validator = { it != null }
                     validationError = "Role is required"
                     onSelected = { Log.i("Dialog", "Role: $it") }
