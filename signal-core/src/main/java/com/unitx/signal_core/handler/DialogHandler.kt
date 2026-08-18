@@ -28,7 +28,7 @@ internal class DialogHandler(
     private var isTearingDown = false
 
     val isShowing: Boolean
-        get() = viewManager.isShowing
+        get() = viewManager.isShowing || isTearingDown
 
     fun show(activity: Activity, block: DialogConfig.() -> Unit) {
         ensureMainThread()
