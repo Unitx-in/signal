@@ -7,7 +7,6 @@ import com.unitx.signal_core.handler.DialogHandler
 import com.unitx.signal_core.handler.LoadingHandler
 import com.unitx.signal_core.handler.ToastHandler
 import com.unitx.signal_core.helper.SignalAnimator
-import com.unitx.signal_core.helper.SignalDismissScheduler
 import com.unitx.signal_core.view.dialog.DialogViewManager
 import com.unitx.signal_core.handler.SnackHandler
 import com.unitx.signal_core.view.loading.LoadingViewManager
@@ -34,7 +33,6 @@ internal class SignalCore(
         queue = getRequiredQueue(),
         viewManager = ToastViewManager(themeResolver),
         animator = SignalAnimator,
-        scheduler = SignalDismissScheduler()
     )
 
     internal val snackHandler = SnackHandler(
@@ -43,7 +41,6 @@ internal class SignalCore(
         queue = getRequiredQueue(),
         viewManager = SnackViewManager(themeResolver),
         animator = SignalAnimator,
-        scheduler = SignalDismissScheduler()
     )
 
     internal val dialogHandler = DialogHandler(
@@ -52,7 +49,6 @@ internal class SignalCore(
         queue = getRequiredQueue(),
         viewManager = DialogViewManager(themeResolver),
         animator = SignalAnimator,
-        scheduler = SignalDismissScheduler()
     )
 
     internal val loadingHandler = LoadingHandler(
@@ -69,7 +65,6 @@ internal class SignalCore(
         queue = getRequiredQueue(),
         viewManager = NotificationViewManager(themeResolver),
         animator = SignalAnimator,
-        scheduler = SignalDismissScheduler()
     )
 
     private fun getRequiredQueue() = when (globalConfig.queueStrategy) {

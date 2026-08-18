@@ -2,13 +2,12 @@ package com.unitx.signal_core.handler
 
 import android.app.Activity
 import com.unitx.signal_core.contract.config.NotificationConfig
-import com.unitx.signal_core.helper.DismissGuard
+import com.unitx.signal_core.helper.BackPressHandler
+import com.unitx.signal_core.helper.DismissController
 import com.unitx.signal_core.helper.SignalAnimator
-import com.unitx.signal_core.helper.SignalDismissScheduler
 import com.unitx.signal_core.helper.ensureMainThread
 import com.unitx.signal_core.activity.ActivityBinding
 import com.unitx.signal_core.activity.ActivityProvider
-import com.unitx.signal_core.helper.BackPressHandler
 import com.unitx.signal_core.queue.SignalQueue
 import com.unitx.signal_core.view.NotificationViewManager
 
@@ -17,19 +16,18 @@ internal class NotificationHandler(
     private val globalConfig: NotificationConfig,
     private val queue: SignalQueue,
     private val viewManager: NotificationViewManager,
-    private val animator: SignalAnimator,
-    private val scheduler: SignalDismissScheduler
+    private val animator: SignalAnimator
 ) {
 
     private var currentConfig: NotificationConfig = globalConfig.copy()
     private var binding: ActivityBinding? = null
     private val backPressHandler: BackPressHandler = BackPressHandler()
-    private val dismissGuard = DismissGuard()
+    private val dismissController = DismissController()
 
     private var currentTag: String? = null
 
     val isShowing: Boolean
-        get() = viewManager.isShowing
+        get() = viewManager.isShowing || dismissController.isBusy
 
     fun show(activity: Activity, block: NotificationConfig.() -> Unit) {
         ensureMainThread()
@@ -46,7 +44,7 @@ internal class NotificationHandler(
     }
 
     private fun display(activity: Activity, config: NotificationConfig) {
-        dismissGuard.reset()
+        dismissController.reset()
         currentConfig = config
         binding = activityProvider.bindTo(activity) { onOwningActivityDestroyed() }
 
@@ -69,26 +67,31 @@ internal class NotificationHandler(
             backPressHandler.register(activity) { dismiss() }
         }
 
-        scheduler.schedule(config.duration) { dismiss() }
+        dismissController.scheduleAutoDismiss(config.duration) { dismiss() }
     }
 
-    fun dismiss() = dismissGuard.runOnce {
+    fun dismiss() = dismissController.dismissOnce { complete ->
         currentTag = null
         clearBinding()
         backPressHandler.unregister()
-        scheduler.cancel()
-        val container = viewManager.container ?: run { queue.next(); return@runOnce }
+
+        val container = viewManager.container ?: run {
+            complete()
+            queue.next()
+            return@dismissOnce
+        }
         animator.slideOut(container, currentConfig.position) {
+            complete()
             currentConfig.onDismissed?.invoke()
             queue.next()
         }
     }
 
-    private fun onOwningActivityDestroyed() = dismissGuard.runOnce {
+    private fun onOwningActivityDestroyed() = dismissController.dismissOnce { complete ->
         clearBinding()
         backPressHandler.unregister()
-        scheduler.cancel()
         viewManager.release()
+        complete()
         queue.clear()
     }
 

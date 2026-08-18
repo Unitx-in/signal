@@ -3,9 +3,8 @@ package com.unitx.signal_core.handler
 import android.app.Activity
 import com.unitx.signal_core.contract.config.dialog.DialogConfig
 import com.unitx.signal_core.helper.BackPressHandler
-import com.unitx.signal_core.helper.DismissGuard
+import com.unitx.signal_core.helper.DismissController
 import com.unitx.signal_core.helper.SignalAnimator
-import com.unitx.signal_core.helper.SignalDismissScheduler
 import com.unitx.signal_core.helper.ensureMainThread
 import com.unitx.signal_core.activity.ActivityBinding
 import com.unitx.signal_core.activity.ActivityProvider
@@ -17,18 +16,16 @@ internal class DialogHandler(
     private val globalConfig: DialogConfig,
     private val queue: SignalQueue,
     private val viewManager: DialogViewManager,
-    private val animator: SignalAnimator,
-    private val scheduler: SignalDismissScheduler
+    private val animator: SignalAnimator
 ) {
 
     private var currentConfig: DialogConfig = DialogConfig()
     private var binding: ActivityBinding? = null
     private val backPressHandler: BackPressHandler = BackPressHandler()
-    private val dismissGuard = DismissGuard()
-    private var isTearingDown = false
+    private val dismissController = DismissController()
 
     val isShowing: Boolean
-        get() = viewManager.isShowing || isTearingDown
+        get() = viewManager.isShowing || dismissController.isBusy
 
     fun show(activity: Activity, block: DialogConfig.() -> Unit) {
         ensureMainThread()
@@ -42,8 +39,7 @@ internal class DialogHandler(
     }
 
     private fun display(activity: Activity, config: DialogConfig) {
-        dismissGuard.reset()
-        isTearingDown = false
+        dismissController.reset()
         currentConfig = config
         binding = activityProvider.bindTo(activity) { onOwningActivityDestroyed() }
 
@@ -59,7 +55,7 @@ internal class DialogHandler(
         config.onShown?.invoke()
 
         if (config.autoDismiss) {
-            scheduler.schedule(config.autoDismissDuration) { dismiss() }
+            dismissController.scheduleAutoDismiss(config.autoDismissDuration) { dismiss() }
         }
 
         backPressHandler.register(activity) {
@@ -67,33 +63,29 @@ internal class DialogHandler(
         }
     }
 
-    fun dismiss() = dismissGuard.runOnce {
-        isTearingDown = true
+    fun dismiss() = dismissController.dismissOnce { complete ->
         clearBinding()
         backPressHandler.unregister()
-        scheduler.cancel()
 
         val card = viewManager.container ?: run {
-            isTearingDown = false
+            complete()
             queue.next()
-            return@runOnce
+            return@dismissOnce
         }
 
         animator.scaleOut(card) {
             viewManager.release {
-                isTearingDown = false
+                complete()
                 currentConfig.onDismissed?.invoke()
                 queue.next()
             }
         }
     }
 
-    private fun onOwningActivityDestroyed() = dismissGuard.runOnce {
-        isTearingDown = true
+    private fun onOwningActivityDestroyed() = dismissController.dismissOnce { complete ->
         clearBinding()
         backPressHandler.unregister()
-        scheduler.cancel()
-        viewManager.release { isTearingDown = false }
+        viewManager.release { complete() }
         queue.clear()
     }
 

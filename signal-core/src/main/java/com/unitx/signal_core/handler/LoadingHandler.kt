@@ -3,7 +3,7 @@ package com.unitx.signal_core.handler
 import android.app.Activity
 import com.unitx.signal_core.contract.config.LoadingConfig
 import com.unitx.signal_core.helper.BackPressHandler
-import com.unitx.signal_core.helper.DismissGuard
+import com.unitx.signal_core.helper.DismissController
 import com.unitx.signal_core.helper.SignalAnimator
 import com.unitx.signal_core.helper.ensureMainThread
 import com.unitx.signal_core.view.loading.ILoadingViewManager
@@ -23,34 +23,36 @@ internal class LoadingHandler(
     private var currentConfig: LoadingConfig = LoadingConfig()
     private val backPressHandler: BackPressHandler = BackPressHandler()
     private var binding: ActivityBinding? = null
-    private val dismissGuard = DismissGuard()
+    private val dismissController = DismissController()
 
     val isShowing: Boolean
-        get() = activeManager.isShowing
+        get() = activeManager.isShowing || dismissController.isBusy
 
     fun show(activity: Activity, block: LoadingConfig.() -> Unit = {}) {
         ensureMainThread()
         if (isShowing) return
-        dismissGuard.reset()
+        dismissController.reset()
         val config = globalConfig.copy().apply(block)
         display(activity, config)
     }
 
-    fun dismiss() = dismissGuard.runOnce {
+    fun dismiss() = dismissController.dismissOnce { complete ->
         clearBinding()
         backPressHandler.unregister()
-        val container = activeManager.container ?: return@runOnce
+        val container = activeManager.container ?: run { complete(); return@dismissOnce }
         animator.scaleOut(container) {
             activeManager.release {
+                complete()
                 currentConfig.onDismissed?.invoke()
             }
         }
     }
 
-    private fun onOwningActivityDestroyed() = dismissGuard.runOnce {
+    private fun onOwningActivityDestroyed() = dismissController.dismissOnce { complete ->
         clearBinding()
         backPressHandler.unregister()
         activeManager.release()
+        complete()
     }
 
     fun updateProgress(progress: Int, message: String? = null) {

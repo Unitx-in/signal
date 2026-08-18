@@ -2,9 +2,8 @@ package com.unitx.signal_core.handler
 
 import android.app.Activity
 import com.unitx.signal_core.contract.config.ToastConfig
-import com.unitx.signal_core.helper.DismissGuard
+import com.unitx.signal_core.helper.DismissController
 import com.unitx.signal_core.helper.SignalAnimator
-import com.unitx.signal_core.helper.SignalDismissScheduler
 import com.unitx.signal_core.helper.ensureMainThread
 import com.unitx.signal_core.activity.ActivityBinding
 import com.unitx.signal_core.activity.ActivityProvider
@@ -16,18 +15,17 @@ internal class ToastHandler(
     private val globalConfig: ToastConfig,
     private val queue: SignalQueue,
     private val viewManager: ToastViewManager,
-    private val animator: SignalAnimator,
-    private val scheduler: SignalDismissScheduler
+    private val animator: SignalAnimator
 ) {
 
     private var currentConfig: ToastConfig = globalConfig.copy()
     private var binding: ActivityBinding? = null
-    private val dismissGuard = DismissGuard()
+    private val dismissController = DismissController()
 
     private var currentTag: String? = null
 
     val isShowing: Boolean
-        get() = viewManager.isShowing
+        get() = viewManager.isShowing || dismissController.isBusy
 
     fun show(activity: Activity, message: String) = show(activity, message) {}
 
@@ -48,7 +46,7 @@ internal class ToastHandler(
     }
 
     private fun display(activity: Activity, config: ToastConfig) {
-        dismissGuard.reset()
+        dismissController.reset()
         currentConfig = config
         binding = activityProvider.bindTo(activity) { onOwningActivityDestroyed() }
 
@@ -64,24 +62,29 @@ internal class ToastHandler(
         if (config.dismissOnTap) {
             container.setOnClickListener { dismiss() }
         }
-        scheduler.schedule(config.duration) { dismiss() }
+        dismissController.scheduleAutoDismiss(config.duration) { dismiss() }
     }
 
-    fun dismiss() = dismissGuard.runOnce {
+    fun dismiss() = dismissController.dismissOnce { complete ->
         currentTag = null
         clearBinding()
-        scheduler.cancel()
-        val container = viewManager.container ?: run { queue.next(); return@runOnce }
+
+        val container = viewManager.container ?: run {
+            complete()
+            queue.next()
+            return@dismissOnce
+        }
         animator.fadeOut(container) {
+            complete()
             currentConfig.onDismissed?.invoke()
             queue.next()
         }
     }
 
-    private fun onOwningActivityDestroyed() = dismissGuard.runOnce {
+    private fun onOwningActivityDestroyed() = dismissController.dismissOnce { complete ->
         clearBinding()
-        scheduler.cancel()
         viewManager.release()
+        complete()
         queue.clear()
     }
 
