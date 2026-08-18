@@ -25,6 +25,7 @@ internal class DialogHandler(
     private var binding: ActivityBinding? = null
     private val backPressHandler: BackPressHandler = BackPressHandler()
     private val dismissGuard = DismissGuard()
+    private var isTearingDown = false
 
     val isShowing: Boolean
         get() = viewManager.isShowing
@@ -42,6 +43,7 @@ internal class DialogHandler(
 
     private fun display(activity: Activity, config: DialogConfig) {
         dismissGuard.reset()
+        isTearingDown = false
         currentConfig = config
         binding = activityProvider.bindTo(activity) { onOwningActivityDestroyed() }
 
@@ -66,13 +68,20 @@ internal class DialogHandler(
     }
 
     fun dismiss() = dismissGuard.runOnce {
+        isTearingDown = true
         clearBinding()
         backPressHandler.unregister()
         scheduler.cancel()
 
-        val card = viewManager.container ?: run { queue.next(); return@runOnce }
+        val card = viewManager.container ?: run {
+            isTearingDown = false
+            queue.next()
+            return@runOnce
+        }
+
         animator.scaleOut(card) {
             viewManager.release {
+                isTearingDown = false
                 currentConfig.onDismissed?.invoke()
                 queue.next()
             }
@@ -80,10 +89,11 @@ internal class DialogHandler(
     }
 
     private fun onOwningActivityDestroyed() = dismissGuard.runOnce {
+        isTearingDown = true
         clearBinding()
         backPressHandler.unregister()
         scheduler.cancel()
-        viewManager.release()
+        viewManager.release { isTearingDown = false }
         queue.clear()
     }
 
