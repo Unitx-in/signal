@@ -77,7 +77,7 @@ fun SignalTestScreen() {
             0 -> ToastScreen()
             1 -> SnackScreen()
             2 -> NotificationScreen()
-            3 -> DialogInputTest()
+            3 -> DialogScreen()
             4 -> LoadingScreen()
         }
     }

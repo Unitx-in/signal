@@ -24,6 +24,8 @@ internal class DialogHandler(
     private var binding: ActivityBinding? = null
     private val backPressHandler: BackPressHandler = BackPressHandler()
 
+    private var isDismissing = false
+
     val isShowing: Boolean
         get() = viewManager.isShowing
 
@@ -39,6 +41,7 @@ internal class DialogHandler(
     }
 
     private fun display(activity: Activity, config: DialogConfig) {
+        isDismissing = false
         currentConfig = config
         binding = activityProvider.bindTo(activity) { onOwningActivityDestroyed() }
 
@@ -63,6 +66,8 @@ internal class DialogHandler(
     }
 
     fun dismiss() {
+        if (isDismissing) return
+        isDismissing = true
         clearBinding()
         backPressHandler.unregister()
         scheduler.cancel()
@@ -77,6 +82,8 @@ internal class DialogHandler(
     }
 
     private fun onOwningActivityDestroyed() {
+        if (isDismissing) return
+        isDismissing = true
         clearBinding()
         backPressHandler.unregister()
         scheduler.cancel()

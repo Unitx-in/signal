@@ -39,12 +39,14 @@ fun DialogScreen() {
                 title = "Successful purchase!"
                 message = "Your order has been placed and will arrive in 3-5 business days."
                 type = DialogType.Positive
-                dismissOnPositive = false
                 positive("Got it") {
-                    Signal.toast(activity, "Working") {
-                        type = ToastType.Success
-                        position = ToastPosition.Bottom
-                        onDismissed = { Signal.dismissDialog() }
+                    Signal.dialog(activity){
+                        title = "2222Successful purchase!"
+                        message = "2222Your order has been placed and will arrive in 3-5 business days."
+                        type = DialogType.Error
+                        positive("ok"){
+
+                        }
                     }
                 }
             }

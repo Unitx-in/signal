@@ -1,4 +1,4 @@
-package com.unitx.signal.xml
+package com.unitx.signal.xml.oneToOtherActivityTesting
 
 import android.os.Bundle
 import android.util.Log
@@ -10,7 +10,7 @@ import com.unitx.signal.R
 import com.unitx.signal_core.contract.type.DialogType
 import com.unitx.signal_core.main.Signal
 
-class MainActivityXmlTesting2 : AppCompatActivity() {
+class ActivityTwo : AppCompatActivity() {
 
     private var updateDialogShown = false
 
@@ -29,7 +29,16 @@ class MainActivityXmlTesting2 : AppCompatActivity() {
             message = "Does this dialog stay open, or does it vanish when Testing1 is destroyed?"
             cancelable = false
             type = DialogType.Error
-            positive("OK")
+            positive("OK"){
+                Signal.dialog(this@ActivityTwo){
+                    title = "2222Successful purchase!"
+                    message = "2222Your order has been placed and will arrive in 3-5 business days."
+                    type = DialogType.Error
+                    positive("ok"){
+
+                    }
+                }
+            }
             negative("Cancel")
             showCloseButton = false
             onShown = { Log.d("SignalRepro", "Dialog: onShown") }

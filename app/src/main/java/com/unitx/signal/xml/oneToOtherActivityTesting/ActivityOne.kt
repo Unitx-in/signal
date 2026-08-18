@@ -1,4 +1,4 @@
-package com.unitx.signal.xml
+package com.unitx.signal.xml.oneToOtherActivityTesting
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,7 +12,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.unitx.signal.R
 
-class MainActivityXmlTesting1 : AppCompatActivity() {
+class ActivityOne : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -39,7 +39,7 @@ class MainActivityXmlTesting1 : AppCompatActivity() {
 
         goButton.setOnClickListener {
             Log.d("SignalRepro", "Testing1: starting Testing2")
-            startActivity(Intent(this, MainActivityXmlTesting2::class.java))
+            startActivity(Intent(this, ActivityTwo::class.java))
             finish() // <-- mimics your real login→Home flow (finish after navigating)
         }
     }
