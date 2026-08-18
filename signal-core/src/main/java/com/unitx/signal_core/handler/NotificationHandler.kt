@@ -25,6 +25,7 @@ internal class NotificationHandler(
     private var binding: ActivityBinding? = null
 
     private val backPressHandler: BackPressHandler = BackPressHandler()
+    private var isDismissing = false
 
     private var currentTag: String? = null
 
@@ -45,7 +46,9 @@ internal class NotificationHandler(
         )
     }
 
+
     private fun display(activity: Activity, config: NotificationConfig) {
+        isDismissing = false
         currentConfig = config
         binding = activityProvider.bindTo(activity) { onOwningActivityDestroyed() }
 
@@ -72,6 +75,9 @@ internal class NotificationHandler(
     }
 
     fun dismiss() {
+        if (isDismissing) return
+        isDismissing = true
+
         currentTag = null
         clearBinding()
         backPressHandler.unregister()
@@ -84,6 +90,8 @@ internal class NotificationHandler(
     }
 
     private fun onOwningActivityDestroyed() {
+        if (isDismissing) return
+        isDismissing = true
         clearBinding()
         backPressHandler.unregister()
         scheduler.cancel()

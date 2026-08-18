@@ -22,6 +22,8 @@ internal class ToastHandler(
     private var currentConfig: ToastConfig = globalConfig.copy()
     private var binding: ActivityBinding? = null
 
+    private var isDismissing = false
+
     private var currentTag: String? = null
 
     val isShowing: Boolean
@@ -46,6 +48,7 @@ internal class ToastHandler(
     }
 
     private fun display(activity: Activity, config: ToastConfig) {
+        isDismissing = false
         currentConfig = config
         binding = activityProvider.bindTo(activity) { onOwningActivityDestroyed() }
 
@@ -65,6 +68,9 @@ internal class ToastHandler(
     }
 
     fun dismiss() {
+        if (isDismissing) return
+        isDismissing = true
+
         currentTag = null
         clearBinding()
         scheduler.cancel()
@@ -76,6 +82,8 @@ internal class ToastHandler(
     }
 
     private fun onOwningActivityDestroyed() {
+        if (isDismissing) return
+        isDismissing = true
         clearBinding()
         scheduler.cancel()
         viewManager.release()

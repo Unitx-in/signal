@@ -26,11 +26,36 @@ internal class LoadingHandler(
     val isShowing: Boolean
         get() = activeManager.isShowing
 
+    private var isDismissing = false
+
     fun show(activity: Activity, block: LoadingConfig.() -> Unit = {}) {
         ensureMainThread()
         if (isShowing) return
+        isDismissing = false
         val config = globalConfig.copy().apply(block)
         display(activity, config)
+    }
+
+    fun dismiss() {
+        if (isDismissing) return
+        isDismissing = true
+
+        clearBinding()
+        backPressHandler.unregister()
+        val container = activeManager.container ?: return
+        animator.scaleOut(container) {
+            activeManager.release {
+                currentConfig.onDismissed?.invoke()
+            }
+        }
+    }
+
+    private fun onOwningActivityDestroyed() {
+        if (isDismissing) return
+        isDismissing = true
+        clearBinding()
+        backPressHandler.unregister()
+        activeManager.release()
     }
 
     fun updateProgress(progress: Int, message: String? = null) {
@@ -41,16 +66,6 @@ internal class LoadingHandler(
         activeManager.updateProgress(currentConfig)
     }
 
-    fun dismiss() {
-        clearBinding()
-        backPressHandler.unregister()
-        val container = activeManager.container ?: return
-        animator.scaleOut(container) {
-            activeManager.release {
-                currentConfig.onDismissed?.invoke()
-            }
-        }
-    }
 
     private fun display(activity: Activity, config: LoadingConfig) {
         activeManager = if (config.simpleLoading) simpleViewManager else advancedViewManager
@@ -73,12 +88,6 @@ internal class LoadingHandler(
         if (config.dismissOnBackPress) {
             backPressHandler.register(activity) { dismiss() }
         }
-    }
-
-    private fun onOwningActivityDestroyed() {
-        clearBinding()
-        backPressHandler.unregister()
-        activeManager.release()
     }
 
     private fun clearBinding() {

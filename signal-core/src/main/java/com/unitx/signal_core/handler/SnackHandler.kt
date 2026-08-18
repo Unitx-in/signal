@@ -24,6 +24,7 @@ internal class SnackHandler(
     private var binding: ActivityBinding? = null
     private val backPressHandler: BackPressHandler = BackPressHandler()
 
+    private var isDismissing = false
     private var currentTag: String? = null
 
     val isShowing: Boolean
@@ -47,6 +48,7 @@ internal class SnackHandler(
     }
 
     private fun display(activity: Activity, config: SnackConfig) {
+        isDismissing = false
         currentConfig = config
         binding = activityProvider.bindTo(activity) { onOwningActivityDestroyed() }
 
@@ -70,6 +72,9 @@ internal class SnackHandler(
     }
 
     fun dismiss() {
+        if (isDismissing) return
+        isDismissing = true
+
         currentTag = null
         clearBinding()
         backPressHandler.unregister()
@@ -82,6 +87,8 @@ internal class SnackHandler(
     }
 
     private fun onOwningActivityDestroyed() {
+        if (isDismissing) return
+        isDismissing = true
         clearBinding()
         backPressHandler.unregister()
         scheduler.cancel()
