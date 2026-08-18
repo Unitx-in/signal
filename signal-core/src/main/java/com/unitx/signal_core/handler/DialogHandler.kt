@@ -3,6 +3,7 @@ package com.unitx.signal_core.handler
 import android.app.Activity
 import com.unitx.signal_core.contract.config.dialog.DialogConfig
 import com.unitx.signal_core.helper.BackPressHandler
+import com.unitx.signal_core.helper.DismissGuard
 import com.unitx.signal_core.helper.SignalAnimator
 import com.unitx.signal_core.helper.SignalDismissScheduler
 import com.unitx.signal_core.helper.ensureMainThread
@@ -23,8 +24,7 @@ internal class DialogHandler(
     private var currentConfig: DialogConfig = DialogConfig()
     private var binding: ActivityBinding? = null
     private val backPressHandler: BackPressHandler = BackPressHandler()
-
-    private var isDismissing = false
+    private val dismissGuard = DismissGuard()
 
     val isShowing: Boolean
         get() = viewManager.isShowing
@@ -41,7 +41,7 @@ internal class DialogHandler(
     }
 
     private fun display(activity: Activity, config: DialogConfig) {
-        isDismissing = false
+        dismissGuard.reset()
         currentConfig = config
         binding = activityProvider.bindTo(activity) { onOwningActivityDestroyed() }
 
@@ -65,14 +65,12 @@ internal class DialogHandler(
         }
     }
 
-    fun dismiss() {
-        if (isDismissing) return
-        isDismissing = true
+    fun dismiss() = dismissGuard.runOnce {
         clearBinding()
         backPressHandler.unregister()
         scheduler.cancel()
 
-        val card = viewManager.container ?: run { queue.next(); return }
+        val card = viewManager.container ?: run { queue.next(); return@runOnce }
         animator.scaleOut(card) {
             viewManager.release {
                 currentConfig.onDismissed?.invoke()
@@ -81,9 +79,7 @@ internal class DialogHandler(
         }
     }
 
-    private fun onOwningActivityDestroyed() {
-        if (isDismissing) return
-        isDismissing = true
+    private fun onOwningActivityDestroyed() = dismissGuard.runOnce {
         clearBinding()
         backPressHandler.unregister()
         scheduler.cancel()

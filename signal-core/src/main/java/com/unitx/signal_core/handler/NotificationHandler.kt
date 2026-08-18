@@ -1,8 +1,8 @@
 package com.unitx.signal_core.handler
 
 import android.app.Activity
-import android.util.Log
 import com.unitx.signal_core.contract.config.NotificationConfig
+import com.unitx.signal_core.helper.DismissGuard
 import com.unitx.signal_core.helper.SignalAnimator
 import com.unitx.signal_core.helper.SignalDismissScheduler
 import com.unitx.signal_core.helper.ensureMainThread
@@ -23,9 +23,8 @@ internal class NotificationHandler(
 
     private var currentConfig: NotificationConfig = globalConfig.copy()
     private var binding: ActivityBinding? = null
-
     private val backPressHandler: BackPressHandler = BackPressHandler()
-    private var isDismissing = false
+    private val dismissGuard = DismissGuard()
 
     private var currentTag: String? = null
 
@@ -46,9 +45,8 @@ internal class NotificationHandler(
         )
     }
 
-
     private fun display(activity: Activity, config: NotificationConfig) {
-        isDismissing = false
+        dismissGuard.reset()
         currentConfig = config
         binding = activityProvider.bindTo(activity) { onOwningActivityDestroyed() }
 
@@ -74,24 +72,19 @@ internal class NotificationHandler(
         scheduler.schedule(config.duration) { dismiss() }
     }
 
-    fun dismiss() {
-        if (isDismissing) return
-        isDismissing = true
-
+    fun dismiss() = dismissGuard.runOnce {
         currentTag = null
         clearBinding()
         backPressHandler.unregister()
         scheduler.cancel()
-        val container = viewManager.container ?: run { queue.next(); return }
+        val container = viewManager.container ?: run { queue.next(); return@runOnce }
         animator.slideOut(container, currentConfig.position) {
             currentConfig.onDismissed?.invoke()
             queue.next()
         }
     }
 
-    private fun onOwningActivityDestroyed() {
-        if (isDismissing) return
-        isDismissing = true
+    private fun onOwningActivityDestroyed() = dismissGuard.runOnce {
         clearBinding()
         backPressHandler.unregister()
         scheduler.cancel()

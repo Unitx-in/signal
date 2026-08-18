@@ -3,6 +3,7 @@ package com.unitx.signal_core.handler
 import android.app.Activity
 import com.unitx.signal_core.contract.config.SnackConfig
 import com.unitx.signal_core.helper.BackPressHandler
+import com.unitx.signal_core.helper.DismissGuard
 import com.unitx.signal_core.helper.SignalAnimator
 import com.unitx.signal_core.helper.SignalDismissScheduler
 import com.unitx.signal_core.helper.ensureMainThread
@@ -23,8 +24,8 @@ internal class SnackHandler(
     private var currentConfig: SnackConfig = globalConfig.copy()
     private var binding: ActivityBinding? = null
     private val backPressHandler: BackPressHandler = BackPressHandler()
+    private val dismissGuard = DismissGuard()
 
-    private var isDismissing = false
     private var currentTag: String? = null
 
     val isShowing: Boolean
@@ -48,7 +49,7 @@ internal class SnackHandler(
     }
 
     private fun display(activity: Activity, config: SnackConfig) {
-        isDismissing = false
+        dismissGuard.reset()
         currentConfig = config
         binding = activityProvider.bindTo(activity) { onOwningActivityDestroyed() }
 
@@ -71,24 +72,19 @@ internal class SnackHandler(
         }
     }
 
-    fun dismiss() {
-        if (isDismissing) return
-        isDismissing = true
-
+    fun dismiss() = dismissGuard.runOnce {
         currentTag = null
         clearBinding()
         backPressHandler.unregister()
         scheduler.cancel()
-        val container = viewManager.container ?: run { queue.next(); return }
+        val container = viewManager.container ?: run { queue.next(); return@runOnce }
         animator.slideOut(container, currentConfig.position) {
             currentConfig.onDismissed?.invoke()
             queue.next()
         }
     }
 
-    private fun onOwningActivityDestroyed() {
-        if (isDismissing) return
-        isDismissing = true
+    private fun onOwningActivityDestroyed() = dismissGuard.runOnce {
         clearBinding()
         backPressHandler.unregister()
         scheduler.cancel()

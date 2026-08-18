@@ -2,6 +2,7 @@ package com.unitx.signal_core.handler
 
 import android.app.Activity
 import com.unitx.signal_core.contract.config.ToastConfig
+import com.unitx.signal_core.helper.DismissGuard
 import com.unitx.signal_core.helper.SignalAnimator
 import com.unitx.signal_core.helper.SignalDismissScheduler
 import com.unitx.signal_core.helper.ensureMainThread
@@ -21,8 +22,7 @@ internal class ToastHandler(
 
     private var currentConfig: ToastConfig = globalConfig.copy()
     private var binding: ActivityBinding? = null
-
-    private var isDismissing = false
+    private val dismissGuard = DismissGuard()
 
     private var currentTag: String? = null
 
@@ -48,7 +48,7 @@ internal class ToastHandler(
     }
 
     private fun display(activity: Activity, config: ToastConfig) {
-        isDismissing = false
+        dismissGuard.reset()
         currentConfig = config
         binding = activityProvider.bindTo(activity) { onOwningActivityDestroyed() }
 
@@ -67,23 +67,18 @@ internal class ToastHandler(
         scheduler.schedule(config.duration) { dismiss() }
     }
 
-    fun dismiss() {
-        if (isDismissing) return
-        isDismissing = true
-
+    fun dismiss() = dismissGuard.runOnce {
         currentTag = null
         clearBinding()
         scheduler.cancel()
-        val container = viewManager.container ?: run { queue.next(); return }
+        val container = viewManager.container ?: run { queue.next(); return@runOnce }
         animator.fadeOut(container) {
             currentConfig.onDismissed?.invoke()
             queue.next()
         }
     }
 
-    private fun onOwningActivityDestroyed() {
-        if (isDismissing) return
-        isDismissing = true
+    private fun onOwningActivityDestroyed() = dismissGuard.runOnce {
         clearBinding()
         scheduler.cancel()
         viewManager.release()
