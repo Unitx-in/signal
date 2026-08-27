@@ -24,6 +24,44 @@ class ActivityTwo : AppCompatActivity() {
             insets
         }
         Log.d("SignalRepro", "Testing2: onCreate")
+
+        showCommitOrderTestDialog {
+            showLifecycleTestDialog()
+        }
+    }
+
+    // --- Repro for the field-commit-order bug ---
+    // Expected AFTER the fix: log line (1) appears before log line (2), and
+    // capturedValue is non-null in (2).
+    // Before the fix: (2) fires first and capturedValue is still null.
+    private fun showCommitOrderTestDialog(onFinished: () -> Unit) {
+        var capturedValue: String? = null
+        Signal.dialog(this) {
+            title = "Commit order test"
+            message = "Pick an option, then tap Ok, without touching anything else first."
+            cancelable = false
+            type = DialogType.Action
+
+            dropdown {
+                placeholder = "Select from the list"
+                options("Alpha", "Beta", "Gamma")
+                validator = { it != null }
+                validationError = "Choose one"
+                onSelected {
+                    Log.d("SignalRepro", "(1) onSelected fired, value=[$it]")
+                    capturedValue = it
+                }
+            }
+
+            positive("Ok") {
+                Log.d("SignalRepro", "(2) positive fired, capturedValue=[$capturedValue]")
+            }
+            onDismissed = { onFinished() }
+        }
+    }
+    // --- end repro ---
+
+    private fun showLifecycleTestDialog() {
         Signal.dialog(this) {
             title = "Update Required"
             message = "Does this dialog stay open, or does it vanish when Testing1 is destroyed?"

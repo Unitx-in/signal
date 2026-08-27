@@ -146,9 +146,9 @@ internal class DialogViewManager(
                 val allValid = bindings.map { it.validate() }.all { it }
                 if (!allValid) return@setOnClickListener
 
+                bindings.forEach { it.commit() }
                 val scope = DialogScope()
                 scope.onClick()
-                bindings.forEach { it.commit() }
                 if (config.dismissOnPositive && scope.shouldDismiss) onDismiss()
             }
         } ?: run { b.dialogPrimaryBtn.visibility = View.GONE }
