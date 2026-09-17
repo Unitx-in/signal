@@ -1,23 +1,27 @@
 package com.unitx.signal_core.queue
 
 /**
- * Controls how toasts, snackbars, and dialogs are queued when multiple signals are triggered.
- * Configured via [SignalConfig.setQueueStrategy].
+ * Controls how Toast, Snack, Dialog, and Notification are queued when multiple signals
+ * are triggered. Configured via [SignalConfig.setQueueStrategy].
+ *
+ * Loading is not governed by this strategy — it always runs on its own independent
+ * queue, since it reflects an in-flight operation rather than an advisory message.
  */
 enum class QueueStrategy {
-    /**
-     * Each signal type (Toast, Snack, Dialog) manages its own independent queue.
-     * A toast inside a dialog's action will show immediately without waiting for the dialog to dismiss.
-     */
+    /** Every governed signal type manages its own independent queue. */
     Independent,
 
+    /** Every governed signal type shares one global queue. */
+    Global,
+
     /**
-     * All signal types share a single global queue.
-     * Nothing will show until the previous signal — regardless of type — is fully dismissed.
+     * Toast, Snack, and Dialog share one global queue.
+     * Notification is exempted onto its own independent queue, since it's an ephemeral
+     * banner rather than an advisory message that should wait its turn.
      */
-    GlobalSequential;
+    GlobalWithExemptRequired;
 
     companion object {
-        val default = Independent
+        val default = GlobalWithExemptRequired
     }
 }

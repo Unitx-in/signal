@@ -25,12 +25,13 @@ internal class SignalCore(
 
     private val activityProvider = ActivityProvider(app)
     private val sharedQueue = SignalQueue()
+    private val realtimeQueue = SignalQueue()
     private val themeResolver = ThemeResolver(globalConfig.theme)
 
     internal val toastHandler = ToastHandler(
         activityProvider = activityProvider,
         globalConfig = globalConfig.toastConfig,
-        queue = getRequiredQueue(),
+        queue = getQueue(),
         viewManager = ToastViewManager(themeResolver),
         animator = SignalAnimator,
     )
@@ -38,7 +39,7 @@ internal class SignalCore(
     internal val snackHandler = SnackHandler(
         activityProvider = activityProvider,
         globalConfig = globalConfig.snackConfig,
-        queue = getRequiredQueue(),
+        queue = getQueue(),
         viewManager = SnackViewManager(themeResolver),
         animator = SignalAnimator,
     )
@@ -46,7 +47,7 @@ internal class SignalCore(
     internal val dialogHandler = DialogHandler(
         activityProvider = activityProvider,
         globalConfig = globalConfig.dialogConfig,
-        queue = getRequiredQueue(),
+        queue = getQueue(),
         viewManager = DialogViewManager(themeResolver),
         animator = SignalAnimator,
     )
@@ -56,19 +57,26 @@ internal class SignalCore(
         globalConfig = globalConfig.loadingConfig,
         advancedViewManager = LoadingViewManager(themeResolver),
         simpleViewManager = SimpleLoadingViewManager(themeResolver),
-        animator = SignalAnimator
+        animator = SignalAnimator,
     )
 
     internal val notifHandler = NotificationHandler(
         activityProvider = activityProvider,
         globalConfig = globalConfig.notifConfig,
-        queue = getRequiredQueue(),
+        queue = getRealtimeQueue(),
         viewManager = NotificationViewManager(themeResolver),
         animator = SignalAnimator,
     )
 
-    private fun getRequiredQueue() = when (globalConfig.queueStrategy) {
+    private fun getQueue() = when (globalConfig.queueStrategy) {
         QueueStrategy.Independent -> SignalQueue()
-        QueueStrategy.GlobalSequential -> sharedQueue
+        QueueStrategy.Global -> sharedQueue
+        QueueStrategy.GlobalWithExemptRequired -> sharedQueue
+    }
+
+    private fun getRealtimeQueue() = when (globalConfig.queueStrategy) {
+        QueueStrategy.Independent -> SignalQueue()
+        QueueStrategy.Global -> sharedQueue
+        QueueStrategy.GlobalWithExemptRequired -> realtimeQueue
     }
 }
