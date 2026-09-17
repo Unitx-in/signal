@@ -89,7 +89,7 @@ public class InteropTesting extends AppCompatActivity {
 
                     config.input(inputConfig -> {
                         inputConfig.setHint("File name");
-                        inputConfig.setPrefill("Untitled");
+                        inputConfig.setPrefillProvider(() -> "Untitled");
                         inputConfig.setMaxLength(50);
                         inputConfig.setShowCounter(true);
                         // validator returns Boolean, not Unit — plain lambda works directly
@@ -118,7 +118,7 @@ public class InteropTesting extends AppCompatActivity {
 
                         Set<String> preSelected = new HashSet<>();
                         preSelected.add("Name");
-                        selectionConfig.setPreSelected(preSelected);
+                        selectionConfig.setPreSelectedProvider(()->preSelected);
 
                         selectionConfig.onSelected(selected -> {
                             Log.d(TAG, "Selected: " + selected);

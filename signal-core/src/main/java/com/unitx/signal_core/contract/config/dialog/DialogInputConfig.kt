@@ -1,6 +1,7 @@
 package com.unitx.signal_core.contract.config.dialog
 
 import android.text.InputType
+import com.unitx.signal_core.interop.JavaStringSupplier
 import com.unitx.signal_core.interop.JavaUnitCallback
 
 /**
@@ -9,12 +10,17 @@ import com.unitx.signal_core.interop.JavaUnitCallback
  * A dialog can have multiple inputs — call [DialogConfig.input] more than once
  * to stack fields (e.g. username + password).
  *
+ * [prefillProvider] is evaluated lazily at show time rather than when this
+ * config block runs, so it reflects the current value even if the dialog
+ * sits in a queue behind other signals before it's actually shown.
+ *
  * Usage:
+ * ```kotlin
  * Signal.dialog(this) {
  *     title = "Rename file"
  *     input {
  *         hint = "File name"
- *         prefill = currentName
+ *         prefillProvider = { currentName }
  *         maxLength = 50
  *         showCounter = true
  *         validator = { it.isNotBlank() }
@@ -26,11 +32,15 @@ import com.unitx.signal_core.interop.JavaUnitCallback
  */
 class DialogInputConfig {
 
+    /** Pre-filled value, resolved from [prefillProvider] at show time. Empty if unset. */
+    internal val prefill: String get() = prefillProvider?.invoke() ?: ""
+
     /** Hint text shown inside the input field. */
     var hint: String = ""
 
-    /** Pre-filled value. */
-    var prefill: String = ""
+    /** Supplies the pre-filled value, evaluated lazily at show time. */
+    var prefillProvider: (() -> String)? = null
+        @JvmName("setPrefillProviderKt") set
 
     /** Android [InputType] flags. Default: plain text. */
     var inputType: Int = InputType.TYPE_CLASS_TEXT
@@ -66,10 +76,16 @@ class DialogInputConfig {
     /**
      * Java-friendly setter for [onInput]. Avoids requiring `return null;`
      * from Java lambdas.
-     *
-     * Called with the current input value when positive is tapped.
      */
     fun onInput(block: JavaUnitCallback<String>) {
         onInput = { block.invoke(it) }
+    }
+
+    /**
+     * Java-friendly setter for [prefillProvider].
+     * Avoids requiring Java callers to implement a Kotlin `Function0<String>`.
+     */
+    fun setPrefillProvider(supplier: JavaStringSupplier?) {
+        prefillProvider = supplier?.let { { it.get() } }
     }
 }

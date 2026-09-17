@@ -84,7 +84,7 @@ fun DialogInputTest() {
                 selection {
                     mode = DialogSelectionMode.SINGLE
                     options("Name", "Date Modified", "Size", "Type")
-                    preSelected = emptySet() // intentionally empty — forces validator to fail on first tap
+                    preSelectedProvider = { emptySet() }
                     validator = { it.isNotEmpty() }
                     validationError = "Pick a sort order"
                     onSelected = { Log.i("Dialog", "Sort: ${it.first()}") }
@@ -102,7 +102,7 @@ fun DialogInputTest() {
                 selection {
                     mode = DialogSelectionMode.MULTI
                     options("App Updates", "Offers", "News", "Security Alerts")
-                    preSelected = emptySet()
+                    preSelectedProvider = { emptySet() }
                     validator = { it.isNotEmpty() }
                     validationError = "Select at least one option"
                     onSelected = { Log.i("Dialog", "Selected: ${it.joinToString()}") }
@@ -119,7 +119,7 @@ fun DialogInputTest() {
                 selection {
                     mode = DialogSelectionMode.CHIP
                     options("Android", "iOS", "Web", "Backend", "Design")
-                    preSelected = emptySet()
+                    preSelectedProvider = { emptySet() }
                     validator = { it.size <= 3 }
                     validationError = "Pick at most 3 tags"
                     onSelected = { Log.i("Dialog", "Tags: ${it.joinToString()}") }
@@ -137,7 +137,7 @@ fun DialogInputTest() {
                 dropdown {
                     placeholder = "Select a country"
                     options("India", "USA", "UK", "Germany", "Japan")
-                    preSelected = null
+                    preSelectedProvider = { null }
                     validator = { it != null }
                     validationError = "Please select a country"
                     onSelected = { Log.i("Dialog", "Country: $it") }
@@ -177,14 +177,14 @@ fun DialogInputTest() {
                     label = "Sort by"
                     mode = DialogSelectionMode.SINGLE
                     options("Newest", "Oldest", "A-Z")
-                    preSelected = setOf("Newest")
+                    preSelectedProvider = { setOf("Newest") }
                     onSelected = { Log.i("Dialog", "Sort: ${it.first()}") }
                 }
                 selection {
                     label = "Status"
                     mode = DialogSelectionMode.MULTI
                     options("Active", "Archived", "Draft")
-                    preSelected = emptySet()
+                    preSelectedProvider = { emptySet() }
                     validator = { it.isNotEmpty() }
                     validationError = "Select at least one status"
                     onSelected = { Log.i("Dialog", "Status: ${it.joinToString()}") }
@@ -216,7 +216,7 @@ fun DialogInputTest() {
                 dropdown {
                     placeholder = "Select priority"
                     options("Low", "Medium", "High")
-                    preSelected = null
+                    preSelectedProvider = { null }
                     validator = { it != null }
                     validationError = "Priority required"
                     onSelected = { Log.i("Dialog", "Priority: $it") }
@@ -225,7 +225,7 @@ fun DialogInputTest() {
                     label = "Type"
                     mode = DialogSelectionMode.CHIP
                     options("Bug", "Feature", "Chore")
-                    preSelected = emptySet()
+                    preSelectedProvider = { emptySet() }
                     validator = { it.isNotEmpty() }
                     validationError = "Pick a type"
                     onSelected = { Log.i("Dialog", "Type: ${it.joinToString()}") }
@@ -244,7 +244,7 @@ fun DialogInputTest() {
                 dropdown {
                     placeholder = "Assign to"
                     options("Navneet", "Pooja", "Anuj")
-                    preSelected = null
+                    preSelectedProvider = { null }
                     validator = { it != null }
                     validationError = "Assignee required"
                     onSelected = { Log.i("Dialog", "Assignee: $it") }

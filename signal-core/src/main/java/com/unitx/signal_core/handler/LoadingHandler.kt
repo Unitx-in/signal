@@ -58,8 +58,8 @@ internal class LoadingHandler(
     fun updateProgress(progress: Int, message: String? = null) {
         ensureMainThread()
         if (!isShowing) return
-        currentConfig.progress = progress
-        currentConfig.progressMessage = message
+        currentConfig.progressProvider = { progress }
+        currentConfig.progressMessageProvider = { message }
         activeManager.updateProgress(currentConfig)
     }
 

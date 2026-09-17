@@ -834,14 +834,18 @@ Controls how signals are queued when multiple are triggered at once.
 
 ```kotlin
 Signal.createCore(this) {
-    setQueueStrategy(QueueStrategy.Independent) // default
+    setQueueStrategy(QueueStrategy.GlobalWithExemptRequired) // default
 }
 ```
 
-| Strategy           | Behavior                                                                                   |
-|--------------------|--------------------------------------------------------------------------------------------|
-| `Independent`      | Each type (Toast, Snack, Dialog) has its own queue. A toast can appear alongside a dialog. |
-| `GlobalSequential` | All types share one queue. Nothing shows until the previous signal is fully dismissed.     |
+| Strategy                   | Behavior                                                                                                                |
+|----------------------------|-------------------------------------------------------------------------------------------------------------------------|
+| `Independent`              | Toast, Snack, Dialog, and Notification each have their own queue. Any of them can appear alongside another.             |
+| `Global`                   | Toast, Snack, Dialog, and Notification all share one queue. Nothing shows until the previous signal is fully dismissed. |
+| `GlobalWithExemptRequired` | Toast, Snack, and Dialog share one queue and wait their turn. Notification is exempted onto its own independent queue.  |
+
+> **Loading** is never governed by `QueueStrategy` — it always runs on its own independent queue,
+> since it reflects an in-flight operation rather than an advisory message that can wait its turn.
 
 ---
 

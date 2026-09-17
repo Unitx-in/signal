@@ -43,8 +43,8 @@ fun LoadingScreen() {
                 title = "Downloading files"
                 subtitle = "This may take a few seconds."
                 type = LoadingType.Determinate
-                progress = 0
-                progressMessage = "Starting download..."
+                progressProvider = { 0 }
+                progressMessageProvider = { "Starting download..." }
                 icon = R.drawable.ic_download
                 iconUrl = "https://picsum.photos/200/300.jpg"
             }
