@@ -366,7 +366,7 @@ Signal.dialog(this) {
     title = "Rename file"
     input {
         hint = "File name"
-        prefill = currentName
+        prefillProvider = { currentName }
         maxLength = 50
         showCounter = true
         validator = { it.isNotBlank() }
@@ -400,18 +400,18 @@ opens; subsequent input fields do not.
 
 #### DialogInputConfig options
 
-| Property          | Type                  | Default           | Description                                         |
-|-------------------|-----------------------|-------------------|-----------------------------------------------------|
-| `hint`            | `String`              | `""`              | Hint text shown inside the field                    |
-| `prefill`         | `String`              | `""`              | Pre-filled value                                    |
-| `inputType`       | `Int`                 | `TYPE_CLASS_TEXT` | Android `InputType` flags                           |
-| `maxLength`       | `Int?`                | `null`            | Max character length                                |
-| `showCounter`     | `Boolean`             | `false`           | Shows character counter — requires `maxLength`      |
-| `password`        | `Boolean`             | `false`           | Masks input with a visibility toggle                |
-| `multiLine`       | `Boolean`             | `false`           | Expands the field to multi-line                     |
-| `validator`       | `(String) -> Boolean` | `null`            | Blocks submit until this returns `true`             |
-| `validationError` | `String`              | `""`              | Error shown below the field when validation fails   |
-| `onInput`         | `(String) -> Unit`    | `null`            | Called with the field value when positive is tapped |
+| Property          | Type                  | Default           | Description                                           |
+|-------------------|-----------------------|-------------------|-------------------------------------------------------|
+| `hint`            | `String`              | `""`              | Hint text shown inside the field                      |
+| `prefillProvider` | `() -> String`        | `null`            | Supplies the pre-filled value, evaluated at show time |
+| `inputType`       | `Int`                 | `TYPE_CLASS_TEXT` | Android `InputType` flags                             |
+| `maxLength`       | `Int?`                | `null`            | Max character length                                  |
+| `showCounter`     | `Boolean`             | `false`           | Shows character counter — requires `maxLength`        |
+| `password`        | `Boolean`             | `false`           | Masks input with a visibility toggle                  |
+| `multiLine`       | `Boolean`             | `false`           | Expands the field to multi-line                       |
+| `validator`       | `(String) -> Boolean` | `null`            | Blocks submit until this returns `true`               |
+| `validationError` | `String`              | `""`              | Error shown below the field when validation fails     |
+| `onInput`         | `(String) -> Unit`    | `null`            | Called with the field value when positive is tapped   |
 
 > While typing, the field also shows a live error preview as soon as `validator` fails on non-empty
 > input — but this is cosmetic only. The actual submit block happens on tap, described below.
@@ -428,7 +428,7 @@ Signal.dialog(this) {
     selection {
         mode = DialogSelectionMode.SINGLE
         options("Name", "Date", "Size")
-        preSelected = setOf("Name")
+        preSelectedProvider = { setOf("Name") }
         onSelected = { selected -> applySort(selected.first()) }
     }
     positive("Apply") {}
@@ -442,7 +442,7 @@ Signal.dialog(this) {
     selection {
         mode = DialogSelectionMode.MULTI
         options("Updates", "Offers", "News")
-        preSelected = setOf("Updates")
+        preSelectedProvider = { setOf("Updates") }
         validator = { it.isNotEmpty() }
         validationError = "Select at least one option"
         onSelected = { selected -> savePreferences(selected) }
@@ -472,7 +472,7 @@ Signal.dialog(this) {
         label = "Sort by"
         mode = DialogSelectionMode.SINGLE
         options("Newest", "Oldest", "A-Z")
-        preSelected = setOf("Newest")
+        preSelectedProvider = { setOf("Newest") }
         onSelected = { sort -> applySort(sort.first()) }
     }
     selection {
@@ -487,15 +487,15 @@ Signal.dialog(this) {
 
 #### DialogSelectionConfig options
 
-| Property          | Type                          | Default      | Description                                                          |
-|-------------------|-------------------------------|--------------|----------------------------------------------------------------------|
-| `label`           | `String`                      | `""`         | Optional heading above this group — recommended when stacking groups |
-| `mode`            | `DialogSelectionMode`         | `SINGLE`     | `SINGLE` (radio), `MULTI` (checkbox), or `CHIP`                      |
-| `options`         | `List<DialogSelectionOption>` | `[]`         | Selectable options — use `options(vararg labels)` for plain strings  |
-| `preSelected`     | `Set<String>`                 | `emptySet()` | Option values selected by default                                    |
-| `validator`       | `(Set<String>) -> Boolean`    | `null`       | Blocks submit until this returns `true` for the current selection    |
-| `validationError` | `String`                      | `""`         | Error shown below the group when validation fails                    |
-| `onSelected`      | `(Set<String>) -> Unit`       | `null`       | Called with selected values when positive is tapped                  |
+| Property              | Type                          | Default  | Description                                                          |
+|-----------------------|-------------------------------|----------|----------------------------------------------------------------------|
+| `label`               | `String`                      | `""`     | Optional heading above this group — recommended when stacking groups |
+| `mode`                | `DialogSelectionMode`         | `SINGLE` | `SINGLE` (radio), `MULTI` (checkbox), or `CHIP`                      |
+| `options`             | `List<DialogSelectionOption>` | `[]`     | Selectable options — use `options(vararg labels)` for plain strings  |
+| `preSelectedProvider` | `() -> Set<String>`           | `null`   | Supplies default-selected values, evaluated at show time             |
+| `validator`           | `(Set<String>) -> Boolean`    | `null`   | Blocks submit until this returns `true` for the current selection    |
+| `validationError`     | `String`                      | `""`     | Error shown below the group when validation fails                    |
+| `onSelected`          | `(Set<String>) -> Unit`       | `null`   | Called with selected values when positive is tapped                  |
 
 ### Dropdown
 
@@ -507,7 +507,7 @@ Signal.dialog(this) {
     dropdown {
         placeholder = "Select a country"
         options("India", "USA", "UK", "Germany", "Japan")
-        preSelected = "India"
+        preSelectedProvider = { "India" }
         onSelected = { country -> setCountry(country) }
     }
     positive("Confirm") {}
@@ -543,7 +543,7 @@ color while the popup is open.
 |--------------------------|-------------------------------|----------------------|----------------------------------------------------------------------------------|
 | `placeholder`            | `String`                      | `"Select an option"` | Text shown in the field before a selection is made                               |
 | `options`                | `List<DialogSelectionOption>` | `[]`                 | Options shown in the popup list — use `options(vararg labels)` for plain strings |
-| `preSelected`            | `String?`                     | `null`               | Option value selected by default                                                 |
+| `preSelectedProvider`    | `() -> String?`               | `null`               | Supplies the default-selected value, evaluated at show time                      |
 | `autoDismissOnSelection` | `Boolean`                     | `true`               | If `true`, the popup auto-closes shortly after a selection is tapped             |
 | `validator`              | `(String?) -> Boolean`        | `null`               | Blocks submit until this returns `true` for the current value                    |
 | `validationError`        | `String`                      | `""`                 | Error shown below the field when validation fails                                |
@@ -640,7 +640,7 @@ Button(onClick = {
 Signal.loading(this) {
     title = "Downloading"
     type = LoadingType.Determinate
-    progress = 0
+    progressProvider = { 0 }
 }
 
 // Update progress from anywhere
@@ -659,22 +659,22 @@ Signal.loading(this) { simpleLoading = true }
 
 ### LoadingConfig options
 
-| Property             | Type          | Default                   | Description                                                |
-|----------------------|---------------|---------------------------|------------------------------------------------------------|
-| `title`              | `String`      | `"Please wait a moment."` | Primary label below the animation                          |
-| `subtitle`           | `String?`     | `null`                    | Secondary label below the title                            |
-| `type`               | `LoadingType` | `Indefinite`              | `Indefinite` or `Determinate`                              |
-| `progress`           | `Int`         | `0`                       | Initial progress (0–100), used with `Determinate`          |
-| `progressMessage`    | `String?`     | `null`                    | Appended to the percentage, e.g. `"42% · Uploading files"` |
-| `simpleLoading`      | `Boolean`     | `false`                   | Minimal dots-only overlay, no text or icon                 |
-| `icon`               | `Int?`        | `null`                    | Drawable shown in the center of the animation ring         |
-| `horizontalMargin`   | `Int`         | `12`                      | Margin from screen edges in dp                             |
-| `cancelable`         | `Boolean`     | `false`                   | Dismiss on dim overlay tap, triggers `onCancelled`         |
-| `dismissOnBackPress` | `Boolean`     | `false`                   | Dismiss on back press                                      |
-| `onShown`            | `() -> Unit`  | `null`                    | Called when overlay appears                                |
-| `onDismissed`        | `() -> Unit`  | `null`                    | Called when overlay is dismissed                           |
-| `onCancelled`        | `() -> Unit`  | `null`                    | Called when user cancels via tap or back press             |
-| `accessibilityText`  | `String?`     | `null`                    | Overrides the default accessibility description            |
+| Property                  | Type            | Default                   | Description                                                |
+|---------------------------|-----------------|---------------------------|------------------------------------------------------------|
+| `title`                   | `String`        | `"Please wait a moment."` | Primary label below the animation                          |
+| `subtitle`                | `String?`       | `null`                    | Secondary label below the title                            |
+| `type`                    | `LoadingType`   | `Indefinite`              | `Indefinite` or `Determinate`                              |
+| `progressProvider`        | `() -> Int`     | `null`                    | Supplies current progress (0–100), polled each render tick |
+| `progressMessageProvider` | `() -> String?` | `null`                    | Supplies the appended message, polled each render tick     |
+| `simpleLoading`           | `Boolean`       | `false`                   | Minimal dots-only overlay, no text or icon                 |
+| `icon`                    | `Int?`          | `null`                    | Drawable shown in the center of the animation ring         |
+| `horizontalMargin`        | `Int`           | `12`                      | Margin from screen edges in dp                             |
+| `cancelable`              | `Boolean`       | `false`                   | Dismiss on dim overlay tap, triggers `onCancelled`         |
+| `dismissOnBackPress`      | `Boolean`       | `false`                   | Dismiss on back press                                      |
+| `onShown`                 | `() -> Unit`    | `null`                    | Called when overlay appears                                |
+| `onDismissed`             | `() -> Unit`    | `null`                    | Called when overlay is dismissed                           |
+| `onCancelled`             | `() -> Unit`    | `null`                    | Called when user cancels via tap or back press             |
+| `accessibilityText`       | `String?`       | `null`                    | Overrides the default accessibility description            |
 
 ---
 
